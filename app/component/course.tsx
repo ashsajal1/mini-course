@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import { Bookmark, ArrowRight } from "lucide-react";
 
 type CourseCardProps = {
   id: string;
@@ -43,6 +43,16 @@ export default function CourseCard({
         <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
           {description}
         </p>
+        <div className="mt-4 flex justify-end gap-2">
+          <button className="btn btn-sm btn-ghost">
+            <Bookmark className="h-4 w-4" />
+            Save
+          </button>
+          <button className="btn btn-sm btn-primary">
+            Start Now
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </article>
   );
