@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Bookmark, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 type CourseCardProps = {
   id: string;
@@ -48,10 +49,12 @@ export default function CourseCard({
             <Bookmark className="h-4 w-4" />
             Save
           </button>
-          <button className="btn btn-sm btn-primary">
-            Start Now
-            <ArrowRight className="h-4 w-4" />
-          </button>
+          <Link href={`course/${id}`}>
+            <button className="btn btn-sm btn-primary">
+              Start Now
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </Link>
         </div>
       </div>
     </article>
