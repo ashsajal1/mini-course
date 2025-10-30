@@ -49,7 +49,7 @@ export default function CreateCoursePage() {
                   id="creator"
                   name="creator"
                   required
-                  className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  className="input input-bordered w-full"
                   placeholder="Enter your name"
                 />
               </div>
@@ -64,7 +64,7 @@ export default function CreateCoursePage() {
                   id="name"
                   name="name"
                   required
-                  className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  className="input input-bordered w-full  focus:ring-primary"
                   placeholder="e.g., Introduction to React"
                 />
               </div>
@@ -80,7 +80,7 @@ export default function CreateCoursePage() {
                 name="description"
                 required
                 rows={4}
-                className="textarea textarea-bordered w-full focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                className="textarea textarea-bordered w-full"
                 placeholder="Describe what students will learn in this course..."
               ></textarea>
             </div>
@@ -95,7 +95,7 @@ export default function CreateCoursePage() {
                   id="difficulty"
                   name="difficulty"
                   required
-                  className="select select-bordered w-full focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  className="select select-bordered w-full"
                   defaultValue=""
                 >
                   <option value="" disabled>Select difficulty level</option>
@@ -115,7 +115,7 @@ export default function CreateCoursePage() {
                   id="thumbnail_url"
                   name="thumbnail_url"
                   required
-                  className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  className="input input-bordered w-full"
                   placeholder="https://example.com/image.jpg"
                 />
                 <label className="label">
