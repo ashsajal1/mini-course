@@ -29,123 +29,121 @@ async function createCourse(formData: FormData) {
 }
 
 export default function CreateCoursePage() {
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black p-6">
-      <div className="w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold mb-6 text-zinc-900 dark:text-white">
-          Create New Course
-        </h1>
+    <div className="min-h-screen bg-base-200 p-6">
+      <div className="w-full max-w-4xl mx-auto card bg-base-100 shadow-xl">
+        <div className="card-body">
+          <h1 className="text-3xl font-bold mb-2">Create New Course</h1>
+          <p className="text-base-content/70 mb-6">Fill in the details below to create a new course</p>
 
-        <form action={createCourse} className="space-y-6">
-          {/* Creator */}
-          <div>
-            <label
-              htmlFor="creator"
-              className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
-            >
-              Creator Name
-            </label>
-            <input
-              type="text"
-              id="creator"
-              name="creator"
-              required
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-zinc-800 dark:text-white"
-              placeholder="Enter your name"
-            />
-          </div>
+          <form action={createCourse} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Creator */}
+              <div className="form-control">
+                <label className="label" htmlFor="creator">
+                  <span className="label-text font-semibold">Creator Name</span>
+                </label>
+                <input
+                  type="text"
+                  id="creator"
+                  name="creator"
+                  required
+                  className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  placeholder="Enter your name"
+                />
+              </div>
 
-          {/* Course Name */}
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
-            >
-              Course Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-zinc-800 dark:text-white"
-              placeholder="e.g., Introduction to React"
-            />
-          </div>
+              {/* Course Name */}
+              <div className="form-control">
+                <label className="label" htmlFor="name">
+                  <span className="label-text font-semibold">Course Name</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  placeholder="e.g., Introduction to React"
+                />
+              </div>
+            </div>
 
-          {/* Description */}
-          <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
-            >
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              required
-              rows={4}
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-zinc-800 dark:text-white"
-              placeholder="Describe your course..."
-            />
-          </div>
+            {/* Description */}
+            <div className="form-control">
+              <label className="label" htmlFor="description">
+                <span className="label-text font-semibold">Course Description</span>
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                required
+                rows={4}
+                className="textarea textarea-bordered w-full focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                placeholder="Describe what students will learn in this course..."
+              ></textarea>
+            </div>
 
-          {/* Difficulty */}
-          <div>
-            <label
-              htmlFor="difficulty"
-              className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
-            >
-              Difficulty Level
-            </label>
-            <select
-              id="difficulty"
-              name="difficulty"
-              required
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-zinc-800 dark:text-white"
-            >
-              <option value="">Select difficulty</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-            </select>
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Difficulty */}
+              <div className="form-control">
+                <label className="label" htmlFor="difficulty">
+                  <span className="label-text font-semibold">Difficulty Level</span>
+                </label>
+                <select
+                  id="difficulty"
+                  name="difficulty"
+                  required
+                  className="select select-bordered w-full focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  defaultValue=""
+                >
+                  <option value="" disabled>Select difficulty level</option>
+                  <option value="Beginner" className="text-success">Beginner</option>
+                  <option value="Intermediate" className="text-warning">Intermediate</option>
+                  <option value="Advanced" className="text-error">Advanced</option>
+                </select>
+              </div>
 
-          {/* Thumbnail URL */}
-          <div>
-            <label
-              htmlFor="thumbnail_url"
-              className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
-            >
-              Thumbnail URL
-            </label>
-            <input
-              type="url"
-              id="thumbnail_url"
-              name="thumbnail_url"
-              required
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-zinc-800 dark:text-white"
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
+              {/* Thumbnail URL */}
+              <div className="form-control">
+                <label className="label" htmlFor="thumbnail_url">
+                  <span className="label-text font-semibold">Course Thumbnail URL</span>
+                </label>
+                <input
+                  type="url"
+                  id="thumbnail_url"
+                  name="thumbnail_url"
+                  required
+                  className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  placeholder="https://example.com/image.jpg"
+                />
+                <label className="label">
+                  <span className="label-text-alt text-info">Enter a valid image URL (JPG, PNG)</span>
+                </label>
+              </div>
+            </div>
 
-          {/* Submit Button */}
-          <div className="flex gap-4">
-            <button
-              type="submit"
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md transition-colors duration-200"
-            >
-              Create Course
-            </button>
-            <Link
-              href="/"
-              className="flex-1 text-center bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-900 dark:text-white font-semibold py-2 px-6 rounded-md transition-colors duration-200"
-            >
-              Cancel
-            </Link>
-          </div>
-        </form>
+            {/* Submit Button */}
+            <div className="flex flex-col sm:flex-row gap-4 mt-8">
+              <button
+                type="submit"
+                className="btn btn-primary flex-1 gap-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                </svg>
+                Create Course
+              </button>
+              <Link
+                href="/"
+                className="btn btn-outline flex-1"
+              >
+                Cancel
+              </Link>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
