@@ -1,26 +1,8 @@
-import data from "./mockdata.json";
 import CourseCard from "./component/course";
+import prisma from "./lib/client";
 
-type Course = {
-  id: string;
-  title: string;
-  description: string;
-  difficulty: string;
-  thumbnail_url: string;
-};
-
-type Root = {
-  course: Course;
-};
-
-export default function Home() {
-  const root = data as Root;
-  const baseCourse = root.course;
-  // Duplicate the single mocked course so the grid shows multiple cards
-  const courses: Course[] = Array.from({ length: 8 }, (_, i) => ({
-    ...baseCourse,
-    id: `${baseCourse.id}_${i}`,
-  }));
+export default async function Home() {
+  const courses = await prisma?.course.findMany();
 
   return (
     <div className="flex min-h-screen items-start justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -35,11 +17,11 @@ export default function Home() {
         </header>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {courses.map((course) => (
+          {courses?.map((course) => (
             <CourseCard
               key={course.id}
               id={course.id}
-              title={course.title}
+              title={course.name}
               description={course.description}
               difficulty={course.difficulty}
               thumbnail_url={course.thumbnail_url}
