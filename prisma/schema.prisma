@@ -13,3 +13,102 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Course {
+  id            String    @id @default(cuid())
+  creator       String
+  name          String
+  description   String
+  difficulty    String
+  thumbnail_url String
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  deleted_at    DateTime?
+  Module        Module[]
+}
+
+model Module {
+  id         String    @id @default(cuid())
+  title      String
+  course_id  String
+  course     Course    @relation(fields: [course_id], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  // Module can have multiple slides and questions, each with their own order
+  slides    Slide[]
+  questions Question[]
+
+  // Module content items (polymorphic relation)
+  content Content[]
+}
+
+// Polymorphic content item for module
+model Content {
+  id        String @id @default(cuid())
+  type      String // 'SLIDE' or 'QUESTION'
+  order     Int    @default(0)
+  module_id String
+  module    Module @relation(fields: [module_id], references: [id])
+
+  // Relations to content items
+  slide    Slide?    @relation("SlideToContent")
+  question Question? @relation("QuestionToContent")
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([module_id, order])
+}
+
+model Slide {
+  id         String    @id @default(cuid())
+  content    String
+  module_id  String
+  module     Module    @relation(fields: [module_id], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  // Reference to the polymorphic content item
+  content_item    Content @relation("SlideToContent", fields: [content_item_id], references: [id])
+  content_item_id String  @unique
+}
+
+model Question {
+  id      String @id @default(cuid())
+  content String
+
+  // Multiple choice options
+  options Option[]
+
+  module_id  String
+  module     Module    @relation(fields: [module_id], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  // Reference to the polymorphic content item
+  content_item    Content? @relation("QuestionToContent", fields: [content_item_id], references: [id])
+  content_item_id String?  @unique
+}
+
+model Option {
+  id          String  @id @default(cuid())
+  text        String
+  explanation String?
+  isCorrect   Boolean @default(false)
+
+  // Relations
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String
+
+  // Timestamps
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Ensure only one correct answer per question
+  @@unique([questionId, isCorrect])
+  @@index([questionId])
+}
