@@ -24,7 +24,7 @@ model Course {
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
   deleted_at    DateTime?
-  Module        Module[]
+  modules        Module[]
 }
 
 model Module {
