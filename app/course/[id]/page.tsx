@@ -139,7 +139,7 @@ export default async function CoursePage({
 
           <div className="card-actions justify-end mt-8">
             <Link
-              href={`/course/${id}/start`}
+              href={`/course/learn/${id}`}
               className="btn btn-primary gap-2"
             >
               Start Learning
