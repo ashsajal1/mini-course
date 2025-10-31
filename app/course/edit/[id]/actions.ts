@@ -1,5 +1,6 @@
 "use server";
 
+import { ContentType } from "@/app/generated/prisma/enums";
 import prisma from "@/app/lib/client";
 import { revalidatePath } from "next/cache";
 
@@ -56,12 +57,12 @@ export async function deleteModule(moduleId: string) {
 }
 
 // Slide Actions
-export async function createSlide(moduleId: string, content: string) {
+export async function createSlide(moduleId: string, title: string, content: string) {
   try {
     // First create the content item
     const contentItem = await prisma.content.create({
       data: {
-        type: "SLIDE",
+        type: ContentType.SLIDE,
         module_id: moduleId,
         order: await getNextOrder(moduleId),
       },
@@ -70,6 +71,7 @@ export async function createSlide(moduleId: string, content: string) {
     // Then create the slide
     const slide = await prisma.slide.create({
       data: {
+        title,
         content,
         module_id: moduleId,
         content_item_id: contentItem.id,
@@ -84,11 +86,11 @@ export async function createSlide(moduleId: string, content: string) {
   }
 }
 
-export async function updateSlide(slideId: string, content: string) {
+export async function updateSlide(slideId: string, title: string, content: string) {
   try {
     const updatedSlide = await prisma.slide.update({
       where: { id: slideId },
-      data: { content },
+      data: { title, content },
       include: { module: true },
     });
 
@@ -135,7 +137,7 @@ export async function createQuestion(
     // First create the content item
     const contentItem = await prisma.content.create({
       data: {
-        type: "QUESTION",
+        type: ContentType.QUESTION,
         module_id: moduleId,
         order: await getNextOrder(moduleId),
       },
