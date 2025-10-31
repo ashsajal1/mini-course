@@ -1,5 +1,5 @@
 import prisma from "@/app/lib/client";
-import type { Prisma } from "@/app/generated/prisma/client";
+import { ContentType, type Prisma } from "@/app/generated/prisma/client";
 import ModuleContent from "./module-content";
 
 // This creates a type that includes the relations
@@ -29,6 +29,9 @@ export default async function Page({
   const moduleContent = await prisma.content.findMany({
     where: {
       module_id: moduleId,
+      type: {
+        in: [ContentType.SLIDE, ContentType.QUESTION]
+      }
     },
     include: {
       slide: true,
