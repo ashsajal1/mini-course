@@ -7,9 +7,14 @@ import { createModule } from "./actions";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
-// Dynamically import SlideForm with no SSR
+// Dynamically import forms with no SSR
 const SlideForm = dynamic(
   () => import('./slide-form'),
+  { ssr: false }
+);
+
+const QuestionForm = dynamic(
+  () => import('./question-form'),
   { ssr: false }
 );
 
@@ -22,6 +27,7 @@ export default function Modules({ modules, courseId }: ModulesProps) {
   const [activeModule, setActiveModule] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [showSlideForm, setShowSlideForm] = useState(false);
+  const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
   const [newModuleTitle, setNewModuleTitle] = useState("");
   const router = useRouter();
@@ -31,9 +37,20 @@ export default function Modules({ modules, courseId }: ModulesProps) {
     setShowSlideForm(true);
   };
 
-  const handleSlideFormSuccess = () => {
+  const handleAddQuestion = (moduleId: string) => {
+    setSelectedModuleId(moduleId);
+    setShowQuestionForm(true);
+  };
+
+  const handleFormSuccess = () => {
     setShowSlideForm(false);
+    setShowQuestionForm(false);
     router.refresh();
+  };
+
+  const closeAllForms = () => {
+    setShowSlideForm(false);
+    setShowQuestionForm(false);
   };
 
   const toggleModule = (moduleId: string) => {
@@ -202,9 +219,12 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                       <Plus className="w-4 h-4 mr-1" />
                       Add Slide
                     </button>
-                    <button className="btn btn-outline btn-sm">
+                    <button 
+                      className="btn btn-outline btn-sm"
+                      onClick={() => handleAddQuestion(module.id)}
+                    >
                       <Plus className="w-4 h-4 mr-1" />
-                      Add Quiz
+                      Add Question
                     </button>
                     <div className="divider divider-horizontal my-0">OR</div>
                     <button className="btn btn-ghost btn-sm text-error">
@@ -221,8 +241,16 @@ export default function Modules({ modules, courseId }: ModulesProps) {
       {showSlideForm && selectedModuleId && (
         <SlideForm
           moduleId={selectedModuleId}
-          onClose={() => setShowSlideForm(false)}
-          onSuccess={handleSlideFormSuccess}
+          onClose={closeAllForms}
+          onSuccess={handleFormSuccess}
+        />
+      )}
+
+      {showQuestionForm && selectedModuleId && (
+        <QuestionForm
+          moduleId={selectedModuleId}
+          onClose={closeAllForms}
+          onSuccess={handleFormSuccess}
         />
       )}
     </div>
