@@ -5,6 +5,13 @@ import { ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { Module } from "@/app/generated/prisma/client";
 import { createModule } from "./actions";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+// Dynamically import SlideForm with no SSR
+const SlideForm = dynamic(
+  () => import('./slide-form'),
+  { ssr: false }
+);
 
 interface ModulesProps {
   modules: Module[];
@@ -14,8 +21,20 @@ interface ModulesProps {
 export default function Modules({ modules, courseId }: ModulesProps) {
   const [activeModule, setActiveModule] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [showSlideForm, setShowSlideForm] = useState(false);
+  const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
   const [newModuleTitle, setNewModuleTitle] = useState("");
   const router = useRouter();
+
+  const handleAddSlide = (moduleId: string) => {
+    setSelectedModuleId(moduleId);
+    setShowSlideForm(true);
+  };
+
+  const handleSlideFormSuccess = () => {
+    setShowSlideForm(false);
+    router.refresh();
+  };
 
   const toggleModule = (moduleId: string) => {
     setActiveModule(activeModule === moduleId ? null : moduleId);
@@ -176,7 +195,10 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                     Module content will be displayed here
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    <button className="btn btn-outline btn-sm">
+                    <button 
+                      className="btn btn-outline btn-sm"
+                      onClick={() => handleAddSlide(module.id)}
+                    >
                       <Plus className="w-4 h-4 mr-1" />
                       Add Slide
                     </button>
@@ -195,6 +217,14 @@ export default function Modules({ modules, courseId }: ModulesProps) {
           </div>
         ))}
       </div>
+      
+      {showSlideForm && selectedModuleId && (
+        <SlideForm
+          moduleId={selectedModuleId}
+          onClose={() => setShowSlideForm(false)}
+          onSuccess={handleSlideFormSuccess}
+        />
+      )}
     </div>
   );
 }
