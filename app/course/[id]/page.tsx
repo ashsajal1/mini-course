@@ -1,8 +1,8 @@
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowLeft, ArrowRight, Bookmark, Clock, Award } from 'lucide-react';
-import data from '@/app/mockdata.json';
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowLeft, ArrowRight, Bookmark, Clock, Award } from "lucide-react";
+import prisma from "@/app/lib/client";
 
 interface PageProps {
   params: {
@@ -10,13 +10,20 @@ interface PageProps {
   };
 }
 
-export default function CoursePage({ params }: PageProps) {
-  const course = data.course;
-  
+export default async function CoursePage({ params }: PageProps) {
+  const course = await prisma.course.findUnique({
+    where: {
+      id: params.id,
+    },
+    include: {
+      modules: true,
+    },
+  });
+
   // If course ID doesn't match, show 404
-  // if (!course.id.endsWith(params.id)) {
-  //   notFound();
-  // }
+  if (!course) {
+    notFound();
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -31,8 +38,8 @@ export default function CoursePage({ params }: PageProps) {
         {/* Course Header */}
         <figure className="relative h-64">
           <Image
-            src={course.thumbnail_url || '/placeholder-course.jpg'}
-            alt={course.title}
+            src={course.thumbnail_url || "/placeholder-course.jpg"}
+            alt={course.name}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
@@ -40,7 +47,7 @@ export default function CoursePage({ params }: PageProps) {
           />
           <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent" />
           <div className="absolute bottom-0 left-0 p-6 text-white">
-            <h1 className="text-3xl font-bold mb-2">{course.title}</h1>
+            <h1 className="text-3xl font-bold mb-2">{course.name}</h1>
             <div className="flex items-center gap-4">
               <div className="badge badge-accent gap-2">
                 <Award className="h-3 w-3" />
@@ -61,8 +68,8 @@ export default function CoursePage({ params }: PageProps) {
               <div className="avatar-group -space-x-4">
                 <div className="avatar">
                   <div className="w-10">
-                    <Image 
-                      src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" 
+                    <Image
+                      src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
                       alt="Student avatar"
                       width={40}
                       height={40}
@@ -72,8 +79,8 @@ export default function CoursePage({ params }: PageProps) {
                 </div>
                 <div className="avatar">
                   <div className="w-10">
-                    <Image 
-                      src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" 
+                    <Image
+                      src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
                       alt="Student avatar"
                       width={40}
                       height={40}
@@ -94,19 +101,27 @@ export default function CoursePage({ params }: PageProps) {
           <div className="prose max-w-none">
             <h2 className="text-2xl font-bold mb-4">About This Course</h2>
             <p className="text-base-content/80">{course.description}</p>
-            
+
             <h3 className="text-xl font-bold mt-8 mb-4">Course Modules</h3>
             <div className="space-y-4">
               {course.modules.map((module, index) => (
-                <div key={module.id} className="collapse collapse-arrow bg-base-200">
-                  <input aria-label='module' type="radio" name="my-accordion-2" defaultChecked={index === 0} /> 
+                <div
+                  key={module.id}
+                  className="collapse collapse-arrow bg-base-200"
+                >
+                  <input
+                    aria-label="module"
+                    type="radio"
+                    name="my-accordion-2"
+                    defaultChecked={index === 0}
+                  />
                   <div className="collapse-title text-lg font-medium">
                     {module.title}
                   </div>
-                  <div className="collapse-content">
-                    <div 
-                      className="prose-sm mt-2" 
-                      dangerouslySetInnerHTML={{ __html: module.content }} 
+                  {/* <div className="collapse-content">
+                    <div
+                      className="prose-sm mt-2"
+                      dangerouslySetInnerHTML={{ __html: module.content }}
                     />
                     {module.has_quiz && (
                       <div className="mt-4">
@@ -115,14 +130,17 @@ export default function CoursePage({ params }: PageProps) {
                         </span>
                       </div>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>
           </div>
 
           <div className="card-actions justify-end mt-8">
-            <Link href={`/course/${params.id}/start`} className="btn btn-primary gap-2">
+            <Link
+              href={`/course/${params.id}/start`}
+              className="btn btn-primary gap-2"
+            >
               Start Learning
               <ArrowRight className="h-4 w-4" />
             </Link>
