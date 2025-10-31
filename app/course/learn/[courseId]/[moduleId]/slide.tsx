@@ -1,6 +1,7 @@
 "use client";
 
 import ReactMarkdown from "react-markdown";
+import type { Components } from "react-markdown";
 import "highlight.js/styles/github-dark.css";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
@@ -13,14 +14,14 @@ type SlideType = Prisma.SlideGetPayload<{
 }>;
 
 interface CodeProps extends React.HTMLAttributes<HTMLElement> {
-  node?: any;
+  node?: unknown;
   inline?: boolean;
   className?: string;
   children?: React.ReactNode;
 }
 
 export default function Slide({ slide }: { slide: SlideType }) {
-  const components = {
+  const components: Components = {
     h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
       <h1 className="text-4xl font-bold my-6" {...props} />
     ),
