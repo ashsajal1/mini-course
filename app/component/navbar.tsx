@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { ModeToggle } from "./mode-toggle";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -63,6 +64,7 @@ export default function Navbar() {
           >
             Create Course
           </Link>
+          <ModeToggle />
         </div>
 
         {/* Mobile menu button */}
@@ -96,6 +98,11 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
+            <div className="px-2 py-2">
+              <div className="px-2">
+                <ModeToggle />
+              </div>
+            </div>
             <div className="px-2 pt-2">
               <Link
                 href="/course/create"
