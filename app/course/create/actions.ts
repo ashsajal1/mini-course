@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import prisma from "@/app/lib/client";
 import { validateCourseData } from "./course-validation";
 
@@ -39,8 +38,6 @@ export async function createCourse(
       data: validation.data!,
     });
 
-    // Redirect on success
-    redirect("/");
     return { success: true, course }; // This line is a fallback in case redirect doesn't work
   } catch (error) {
     console.error("Error creating course:", error);
