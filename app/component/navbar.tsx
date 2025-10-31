@@ -34,13 +34,13 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 w-full z-50 h-20 flex items-center transition-all duration-300 ${
         scrolled
-          ? "bg-base-100/90 backdrop-blur-sm shadow-sm"
+          ? "bg-base-100/90 dark:bg-base-300/90 backdrop-blur-sm shadow-sm"
           : "bg-transparent"
-      }`}
+      } border-b border-base-200 dark:border-base-300`}
     >
       <div className="navbar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex-1">
-          <Link href="/" className="text-xl font-bold">
+          <Link href="/" className="text-xl font-bold text-base-content">
             Mini Course
           </Link>
         </div>
@@ -52,7 +52,9 @@ export default function Navbar() {
               key={item.name}
               href={item.href}
               className={`btn btn-ghost btn-sm ${
-                pathname === item.href ? "btn-active" : ""
+                pathname === item.href 
+                  ? 'text-primary' 
+                  : 'text-base-content hover:bg-base-200 hover:bg-opacity-50'
               }`}
             >
               {item.name}
@@ -71,7 +73,7 @@ export default function Navbar() {
         <div className="md:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="btn btn-ghost btn-square btn-sm"
+            className="btn btn-ghost btn-square btn-sm text-base-content"
           >
             {mobileMenuOpen ? (
               <X className="h-5 w-5" />
@@ -84,14 +86,16 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-20 left-0 right-0 bg-base-100 shadow-lg">
+        <div className="md:hidden absolute top-20 left-0 right-0 bg-base-100 shadow-lg border-t border-base-200">
           <div className="px-2 pt-2 pb-4 space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
                 className={`btn btn-ghost btn-block justify-start ${
-                  pathname === item.href ? "btn-active" : ""
+                  pathname === item.href 
+                    ? 'text-primary' 
+                    : 'text-base-content hover:bg-base-200 hover:bg-opacity-50'
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
