@@ -11,7 +11,7 @@ interface PageProps {
 }
 
 export default async function CoursePage({ params }: PageProps) {
-  const course = await prisma.course.findUnique({
+  const course = await prisma.course.findFirst({
     where: {
       id: params.id,
     },
