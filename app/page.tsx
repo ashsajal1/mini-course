@@ -1,4 +1,4 @@
-import CourseCard from "./component/course";
+import CourseCard from "./component/course-card";
 import prisma from "./lib/client";
 
 export default async function Home() {
