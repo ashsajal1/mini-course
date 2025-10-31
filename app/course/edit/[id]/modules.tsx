@@ -3,27 +3,25 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { Module } from "@/app/generated/prisma/client";
-import { createModule, deleteModule, deleteSlide, deleteQuestion } from "./actions";
+import {
+  createModule,
+  deleteModule,
+  deleteSlide,
+  deleteQuestion,
+  updateSlide,
+  updateQuestionContent,
+} from "./actions";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
 // Dynamically import components with no SSR
-const SlideForm = dynamic(
-  () => import('./slide-form'),
-  { ssr: false }
-);
+const SlideForm = dynamic(() => import("./slide-form"), { ssr: false });
 
-const QuestionForm = dynamic(
-  () => import('./question-form'),
-  { ssr: false }
-);
+const QuestionForm = dynamic(() => import("./question-form"), { ssr: false });
 
-const DeleteDialog = dynamic(
-  () => import('./delete-dialog'),
-  { ssr: false }
-);
+const DeleteDialog = dynamic(() => import("./delete-dialog"), { ssr: false });
 
-type DeleteType = 'module' | 'slide' | 'question';
+type DeleteType = "module" | "slide" | "question";
 
 interface DeleteState {
   isOpen: boolean;
@@ -49,21 +47,81 @@ export default function Modules({ modules, courseId }: ModulesProps) {
   const [showSlideForm, setShowSlideForm] = useState(false);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
-  
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [editState, setEditState] = useState<{
+    isOpen: boolean;
+    type: "slide" | "question" | null;
+    id: string;
+    moduleId: string;
+    title: string;
+    content: string;
+  }>({
+    isOpen: false,
+    type: null,
+    id: "",
+    moduleId: "",
+    title: "",
+    content: "",
+  });
+
   const [deleteState, setDeleteState] = useState<DeleteState>({
     isOpen: false,
     type: null,
-    id: '',
-    title: '',
-    moduleId: '',
+    id: "",
+    title: "",
+    moduleId: "",
   });
-  
+
   const [newModuleTitle, setNewModuleTitle] = useState("");
   const router = useRouter();
 
   const handleAddSlide = (moduleId: string) => {
     setSelectedModuleId(moduleId);
     setShowSlideForm(true);
+  };
+
+  const openEditDialog = (
+    type: "slide" | "question",
+    item: { id: string; title?: string | null; content?: string },
+    moduleId: string
+  ) => {
+    setEditState({
+      isOpen: true,
+      type,
+      id: item.id,
+      moduleId,
+      title: item.title || "",
+      content: item.content || "",
+    });
+  };
+
+  const closeEditDialog = () => {
+    setEditState({
+      isOpen: false,
+      type: null,
+      id: "",
+      moduleId: "",
+      title: "",
+      content: "",
+    });
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editState.type || !editState.id) return;
+    try {
+      setIsSavingEdit(true);
+      if (editState.type === "slide") {
+        await updateSlide(editState.id, editState.title, editState.content);
+      } else {
+        await updateQuestionContent(editState.id, editState.content);
+      }
+      closeEditDialog();
+      router.refresh();
+    } catch (e) {
+      console.error("Failed to save edits", e);
+    } finally {
+      setIsSavingEdit(false);
+    }
   };
 
   const handleAddQuestion = (moduleId: string) => {
@@ -82,7 +140,12 @@ export default function Modules({ modules, courseId }: ModulesProps) {
     setShowQuestionForm(false);
   };
 
-  const openDeleteDialog = (type: DeleteType, id: string, title: string, moduleId?: string) => {
+  const openDeleteDialog = (
+    type: DeleteType,
+    id: string,
+    title: string,
+    moduleId?: string
+  ) => {
     setDeleteState({
       isOpen: true,
       type,
@@ -93,7 +156,7 @@ export default function Modules({ modules, courseId }: ModulesProps) {
   };
 
   const closeDeleteDialog = () => {
-    setDeleteState(prev => ({ ...prev, isOpen: false }));
+    setDeleteState((prev) => ({ ...prev, isOpen: false }));
   };
 
   const handleDelete = async () => {
@@ -102,19 +165,19 @@ export default function Modules({ modules, courseId }: ModulesProps) {
 
     try {
       let success = false;
-      
+
       switch (type) {
-        case 'module':
+        case "module":
           const moduleResponse = await deleteModule(id);
           success = moduleResponse.success;
           break;
-          
-        case 'slide':
+
+        case "slide":
           const slideResponse = await deleteSlide(id);
           success = slideResponse.success;
           break;
-          
-        case 'question':
+
+        case "question":
           const questionResponse = await deleteQuestion(id);
           success = questionResponse.success;
           break;
@@ -285,14 +348,14 @@ export default function Modules({ modules, courseId }: ModulesProps) {
               <div className="p-4 pt-2 space-y-4">
                 <div className="bg-base-100 p-4 rounded-lg">
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <button 
+                    <button
                       className="btn btn-outline btn-sm"
                       onClick={() => handleAddSlide(module.id)}
                     >
                       <Plus className="w-4 h-4 mr-1" />
                       Add Slide
                     </button>
-                    <button 
+                    <button
                       className="btn btn-outline btn-sm"
                       onClick={() => handleAddQuestion(module.id)}
                     >
@@ -300,9 +363,11 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                       Add Question
                     </button>
                     <div className="divider divider-horizontal my-0">OR</div>
-                    <button 
+                    <button
                       className="btn btn-ghost btn-sm text-error gap-1"
-                      onClick={() => openDeleteDialog('module', module.id, module.title)}
+                      onClick={() =>
+                        openDeleteDialog("module", module.id, module.title)
+                      }
                     >
                       <Trash2 className="w-4 h-4" />
                       Delete Module
@@ -313,23 +378,49 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                     {(module.slides?.length ?? 0) > 0 && (
                       <div className="space-y-1">
                         {module.slides!.map((s) => (
-                          <div key={s.id} className="collapse collapse-arrow bg-base-200">
-                            <input type="checkbox" aria-label={`Toggle slide details: ${s.title || 'Untitled Slide'}`} />
+                          <div
+                            key={s.id}
+                            className="collapse collapse-arrow bg-base-200"
+                          >
+                            <input
+                              type="checkbox"
+                              aria-label={`Toggle slide details: ${
+                                s.title || "Untitled Slide"
+                              }`}
+                            />
                             <div className="collapse-title text-sm font-medium">
-                              {s.title || 'Untitled Slide'}
+                              {s.title || "Untitled Slide"}
                             </div>
                             <div className="collapse-content">
                               {s.content && (
                                 <p className="text-xs text-base-content/70 mb-2">
-                                  {s.content.length > 120 ? s.content.slice(0, 120) + '…' : s.content}
+                                  {s.content.length > 120
+                                    ? s.content.slice(0, 120) + "…"
+                                    : s.content}
                                 </p>
                               )}
-                              <div className="flex justify-end">
+                              <div className="flex justify-end gap-2">
+                                <button
+                                  className="btn btn-ghost btn-xs"
+                                  onClick={() =>
+                                    openEditDialog("slide", s, module.id)
+                                  }
+                                >
+                                  Edit Slide
+                                </button>
                                 <button
                                   className="btn btn-ghost btn-xs text-error"
-                                  onClick={() => openDeleteDialog('slide', s.id, s.title || 'Untitled Slide', module.id)}
+                                  onClick={() =>
+                                    openDeleteDialog(
+                                      "slide",
+                                      s.id,
+                                      s.title || "Untitled Slide",
+                                      module.id
+                                    )
+                                  }
                                 >
-                                  <Trash2 className="w-3 h-3 mr-1" /> Delete Slide
+                                  <Trash2 className="w-3 h-3 mr-1" /> Delete
+                                  Slide
                                 </button>
                               </div>
                             </div>
@@ -341,23 +432,49 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                     {(module.questions?.length ?? 0) > 0 && (
                       <div className="space-y-1">
                         {module.questions!.map((q) => (
-                          <div key={q.id} className="collapse collapse-arrow bg-base-200">
-                            <input type="checkbox" aria-label={`Toggle question details: ${q.title || 'Untitled Question'}`} />
+                          <div
+                            key={q.id}
+                            className="collapse collapse-arrow bg-base-200"
+                          >
+                            <input
+                              type="checkbox"
+                              aria-label={`Toggle question details: ${
+                                q.title || "Untitled Question"
+                              }`}
+                            />
                             <div className="collapse-title text-sm font-medium">
-                              {q.title || 'Untitled Question'}
+                              {q.title || "Untitled Question"}
                             </div>
                             <div className="collapse-content">
                               {q.content && (
                                 <p className="text-xs text-base-content/70 mb-2">
-                                  {q.content.length > 120 ? q.content.slice(0, 120) + '…' : q.content}
+                                  {q.content.length > 120
+                                    ? q.content.slice(0, 120) + "…"
+                                    : q.content}
                                 </p>
                               )}
-                              <div className="flex justify-end">
+                              <div className="flex justify-end gap-2">
+                                <button
+                                  className="btn btn-ghost btn-xs"
+                                  onClick={() =>
+                                    openEditDialog("question", q, module.id)
+                                  }
+                                >
+                                  Edit Question
+                                </button>
                                 <button
                                   className="btn btn-ghost btn-xs text-error"
-                                  onClick={() => openDeleteDialog('question', q.id, q.title || 'Untitled Question', module.id)}
+                                  onClick={() =>
+                                    openDeleteDialog(
+                                      "question",
+                                      q.id,
+                                      q.title || "Untitled Question",
+                                      module.id
+                                    )
+                                  }
                                 >
-                                  <Trash2 className="w-3 h-3 mr-1" /> Delete Question
+                                  <Trash2 className="w-3 h-3 mr-1" /> Delete
+                                  Question
                                 </button>
                               </div>
                             </div>
@@ -372,7 +489,7 @@ export default function Modules({ modules, courseId }: ModulesProps) {
           </div>
         ))}
       </div>
-      
+
       {showSlideForm && selectedModuleId && (
         <SlideForm
           moduleId={selectedModuleId}
@@ -393,10 +510,86 @@ export default function Modules({ modules, courseId }: ModulesProps) {
         isOpen={deleteState.isOpen}
         onClose={closeDeleteDialog}
         onConfirm={handleDelete}
-        title={`Delete ${deleteState.type || 'item'}`}
+        title={`Delete ${deleteState.type || "item"}`}
         description={`Are you sure you want to delete "${deleteState.title}"? This action cannot be undone.`}
         isLoading={false}
       />
+
+      {editState.isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-base-100 p-6 rounded-lg w-full max-w-2xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold">
+                {editState.type === "slide" ? "Edit Slide" : "Edit Question"}
+              </h3>
+              <button
+                onClick={closeEditDialog}
+                className="btn btn-ghost btn-sm"
+                disabled={isSavingEdit}
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="form-control w-full mb-4">
+              {editState.type === "slide" && (
+                <>
+                  <label className="label">
+                    <span className="label-text">Title</span>
+                  </label>
+                  <input
+                  aria-label="input"
+                    type="text"
+                    value={editState.title}
+                    onChange={(e) =>
+                      setEditState((s) => ({ ...s, title: e.target.value }))
+                    }
+                    className="input input-bordered w-full mb-4"
+                    disabled={isSavingEdit}
+                  />
+                </>
+              )}
+
+              <label className="label">
+                <span className="label-text">Content</span>
+              </label>
+              <textarea
+                aria-label="Textrea for slide"
+                value={editState.content}
+                onChange={(e) =>
+                  setEditState((s) => ({ ...s, content: e.target.value }))
+                }
+                className="textarea textarea-bordered w-full min-h-[200px]"
+                disabled={isSavingEdit}
+              />
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={closeEditDialog}
+                className="btn btn-ghost"
+                disabled={isSavingEdit}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveEdit}
+                className="btn btn-primary"
+                disabled={
+                  isSavingEdit ||
+                  (editState.type === "slide"
+                    ? !editState.title.trim()
+                    : !editState.content.trim())
+                }
+              >
+                {isSavingEdit ? "Saving..." : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

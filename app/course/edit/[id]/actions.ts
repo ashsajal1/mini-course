@@ -21,6 +21,20 @@ export async function createModule(courseId: string, title: string) {
   }
 }
 
+export async function updateQuestionContent(questionId: string, content: string) {
+  try {
+    const question = await prisma.question.update({
+      where: { id: questionId },
+      data: { content },
+      include: { module: true },
+    });
+    revalidatePath(`/course/edit/module/${question.module_id}`);
+    return { success: true, question };
+  } catch {
+    return { success: false, error: "Failed to update question" };
+  }
+}
+
 export async function updateModule(moduleId: string, title: string) {
   try {
     const updatedModule = await prisma.module.update({
