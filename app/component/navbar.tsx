@@ -31,82 +31,75 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 h-[80px] flex items-center justify-between transition-all duration-300 ${
+      className={`fixed top-0 w-full z-50 h-20 flex items-center transition-all duration-300 ${
         scrolled
-          ? "bg-gray/50 backdrop-blur-sm shadow-sm"
+          ? "bg-base-100/90 backdrop-blur-sm shadow-sm"
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="shrink-0">
-            <Link href="/" className="text-xl font-bold text-gray-900">
-              Mini Course
-            </Link>
-          </div>
+      <div className="navbar max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex-1">
+          <Link href="/" className="text-xl font-bold">
+            Mini Course
+          </Link>
+        </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`px-3 py-2 text-sm font-medium ${
-                  pathname === item.href
-                    ? "text-indigo-600"
-                    : "text-gray-700 hover:text-indigo-600"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-4">
+          {navItems.map((item) => (
             <Link
-              href="/course/create"
-              className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+              key={item.name}
+              href={item.href}
+              className={`btn btn-ghost btn-sm ${
+                pathname === item.href ? "btn-active" : ""
+              }`}
             >
-              Create Course
+              {item.name}
             </Link>
-          </div>
+          ))}
+          <Link
+            href="/course/create"
+            className="btn btn-primary btn-sm"
+          >
+            Create Course
+          </Link>
+        </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-indigo-600 hover:bg-gray-100"
-            >
-              {mobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
+        {/* Mobile menu button */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="btn btn-ghost btn-square btn-sm"
+          >
+            {mobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </button>
         </div>
       </div>
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-sm">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <div className="md:hidden absolute top-20 left-0 right-0 bg-base-100 shadow-lg">
+          <div className="px-2 pt-2 pb-4 space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  pathname === item.href
-                    ? "bg-gray-100 text-indigo-600"
-                    : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600"
+                className={`btn btn-ghost btn-block justify-start ${
+                  pathname === item.href ? "btn-active" : ""
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
-            <div className="px-3 py-2">
+            <div className="px-2 pt-2">
               <Link
                 href="/course/create"
-                className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                className="btn btn-primary btn-block"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Create Course
