@@ -41,7 +41,6 @@ export default function CourseForm() {
       } else {
         reset();
         router.push('/');
-        router.refresh();
       }
     } catch (error) {
       console.error('Error creating course:', error);
