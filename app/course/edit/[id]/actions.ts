@@ -181,7 +181,7 @@ export async function createQuestion(
         options: {
           create: options.map((opt) => ({
             text: opt.text,
-            is_correct: opt.isCorrect,
+            isCorrect: opt.isCorrect,
             explanation: opt.explanation || null,
           })),
         },
@@ -194,7 +194,7 @@ export async function createQuestion(
 
     revalidatePath(`/course/edit/module/${moduleId}`);
     return { success: true, question };
-  } catch {
+  } catch{
     return { success: false, error: "Failed to create question" };
   }
 }
