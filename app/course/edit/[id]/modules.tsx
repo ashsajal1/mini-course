@@ -33,8 +33,13 @@ interface DeleteState {
   moduleId?: string;
 }
 
+type ModuleWithItems = Module & {
+  slides?: { id: string; title: string | null; content?: string }[];
+  questions?: { id: string; title: string | null; content?: string }[];
+};
+
 interface ModulesProps {
-  modules: Module[];
+  modules: ModuleWithItems[];
   courseId: string;
 }
 
@@ -279,10 +284,7 @@ export default function Modules({ modules, courseId }: ModulesProps) {
             <div className="collapse-content">
               <div className="p-4 pt-2 space-y-4">
                 <div className="bg-base-100 p-4 rounded-lg">
-                  <p className="text-base-content/70 mb-4">
-                    Module content will be displayed here
-                  </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 mb-4">
                     <button 
                       className="btn btn-outline btn-sm"
                       onClick={() => handleAddSlide(module.id)}
@@ -305,6 +307,64 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                       <Trash2 className="w-4 h-4" />
                       Delete Module
                     </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {(module.slides?.length ?? 0) > 0 && (
+                      <div className="space-y-1">
+                        {module.slides!.map((s) => (
+                          <div key={s.id} className="collapse collapse-arrow bg-base-200">
+                            <input type="checkbox" aria-label={`Toggle slide details: ${s.title || 'Untitled Slide'}`} />
+                            <div className="collapse-title text-sm font-medium">
+                              {s.title || 'Untitled Slide'}
+                            </div>
+                            <div className="collapse-content">
+                              {s.content && (
+                                <p className="text-xs text-base-content/70 mb-2">
+                                  {s.content.length > 120 ? s.content.slice(0, 120) + '…' : s.content}
+                                </p>
+                              )}
+                              <div className="flex justify-end">
+                                <button
+                                  className="btn btn-ghost btn-xs text-error"
+                                  onClick={() => openDeleteDialog('slide', s.id, s.title || 'Untitled Slide', module.id)}
+                                >
+                                  <Trash2 className="w-3 h-3 mr-1" /> Delete Slide
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {(module.questions?.length ?? 0) > 0 && (
+                      <div className="space-y-1">
+                        {module.questions!.map((q) => (
+                          <div key={q.id} className="collapse collapse-arrow bg-base-200">
+                            <input type="checkbox" aria-label={`Toggle question details: ${q.title || 'Untitled Question'}`} />
+                            <div className="collapse-title text-sm font-medium">
+                              {q.title || 'Untitled Question'}
+                            </div>
+                            <div className="collapse-content">
+                              {q.content && (
+                                <p className="text-xs text-base-content/70 mb-2">
+                                  {q.content.length > 120 ? q.content.slice(0, 120) + '…' : q.content}
+                                </p>
+                              )}
+                              <div className="flex justify-end">
+                                <button
+                                  className="btn btn-ghost btn-xs text-error"
+                                  onClick={() => openDeleteDialog('question', q.id, q.title || 'Untitled Question', module.id)}
+                                >
+                                  <Trash2 className="w-3 h-3 mr-1" /> Delete Question
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

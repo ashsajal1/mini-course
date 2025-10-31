@@ -12,7 +12,16 @@ export default async function ManageCourse({
       id: id,
     },
     include: {
-      modules: true,
+      modules: {
+        include: {
+          slides: {
+            select: { id: true, title: true, content: true },
+          },
+          questions: {
+            select: { id: true, title: true, content: true },
+          },
+        },
+      },
     },
   });
   return <div>
