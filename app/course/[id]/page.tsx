@@ -4,21 +4,22 @@ import Image from "next/image";
 import { ArrowLeft, ArrowRight, Bookmark, Clock, Award } from "lucide-react";
 import prisma from "@/app/lib/client";
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function CoursePage({ params }: PageProps) {
+export default async function CoursePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   const course = await prisma.course.findFirst({
     where: {
-      id: params.id,
+      id,
     },
     include: {
       modules: true,
     },
   });
+
+  console.log(course);
 
   // If course ID doesn't match, show 404
   if (!course) {
@@ -138,7 +139,7 @@ export default async function CoursePage({ params }: PageProps) {
 
           <div className="card-actions justify-end mt-8">
             <Link
-              href={`/course/${params.id}/start`}
+              href={`/course/${id}/start`}
               className="btn btn-primary gap-2"
             >
               Start Learning
