@@ -6,14 +6,14 @@ import { revalidatePath } from "next/cache";
 // Module Actions
 export async function createModule(courseId: string, title: string) {
   try {
-    const module = await prisma.module.create({
+    const newMdoule = await prisma.module.create({
       data: {
         title,
         course_id: courseId,
       },
     });
     revalidatePath(`/course/edit/${courseId}`);
-    return { success: true, module };
+    return { success: true, newMdoule };
   } catch (error) {
     return { success: false, error: "Failed to create module" };
   }
@@ -35,12 +35,12 @@ export async function updateModule(moduleId: string, title: string) {
 export async function deleteModule(moduleId: string) {
   try {
     // First get the module to get course_id for revalidation
-    const module = await prisma.module.findUnique({
+    const deletedModule = await prisma.module.findUnique({
       where: { id: moduleId },
       select: { course_id: true },
     });
 
-    if (!module) {
+    if (!deletedModule) {
       return { success: false, error: "Module not found" };
     }
 
@@ -48,7 +48,7 @@ export async function deleteModule(moduleId: string) {
       where: { id: moduleId },
     });
 
-    revalidatePath(`/course/edit/${module.course_id}`);
+    revalidatePath(`/course/edit/${deletedModule.course_id}`);
     return { success: true };
   } catch (error) {
     return { success: false, error: "Failed to delete module" };
