@@ -2,27 +2,51 @@
 
 import { redirect } from "next/navigation";
 import prisma from "@/app/lib/client";
+import { validateCourseData } from "./course-validation";
 
-export async function createCourse(formData: FormData) {
-  const name = formData.get("name") as string;
-  const description = formData.get("description") as string;
-  const difficulty = formData.get("difficulty") as string;
-  const thumbnail_url = formData.get("thumbnail_url") as string;
-  const creator = formData.get("creator") as string;
+type CreateCourseResponse = {
+  success: boolean;
+  error?: string;
+  course?: {
+    id: string;
+    name: string;
+    description: string;
+    difficulty: string;
+    thumbnail_url: string;
+    creator: string;
+    created_at: Date;
+    updated_at: Date | null;
+    deleted_at: Date | null;
+  };
+};
 
-  if (!name || !description || !difficulty || !thumbnail_url || !creator) {
-    throw new Error("All fields are required");
+export async function createCourse(
+  formData: FormData
+): Promise<CreateCourseResponse> {
+  try {
+    // Convert FormData to plain object
+    const formDataObj = Object.fromEntries(formData.entries());
+
+    // Validate the form data using the common validation
+    const validation = validateCourseData(formDataObj);
+
+    if (!validation.success) {
+      return { success: false, error: validation.error };
+    }
+
+    // If validation passes, create the course
+    const course = await prisma.course.create({
+      data: validation.data!,
+    });
+
+    // Redirect on success
+    redirect("/");
+    return { success: true, course }; // This line is a fallback in case redirect doesn't work
+  } catch (error) {
+    console.error("Error creating course:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to create course",
+    };
   }
-
-  await prisma.course.create({
-    data: {
-      name,
-      description,
-      difficulty,
-      thumbnail_url,
-      creator,
-    },
-  });
-
-  redirect("/");
 }
