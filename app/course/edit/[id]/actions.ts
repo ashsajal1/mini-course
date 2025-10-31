@@ -1,5 +1,6 @@
 "use server";
 
+import { Prisma } from "@/app/generated/prisma/client";
 import { ContentType } from "@/app/generated/prisma/enums";
 import prisma from "@/app/lib/client";
 import { revalidatePath } from "next/cache";
@@ -57,7 +58,19 @@ export async function deleteModule(moduleId: string) {
 }
 
 // Slide Actions
-export async function createSlide(moduleId: string, title: string, content: string) {
+type SlideWithContentItem = Prisma.SlideGetPayload<{
+  include: { content_item: true };
+}>;
+
+export async function createSlide(
+  moduleId: string,
+  title: string,
+  content: string
+): Promise<{
+  success: boolean;
+  slide?: SlideWithContentItem;
+  error?: string;
+}> {
   try {
     // First create the content item
     const contentItem = await prisma.content.create({
@@ -68,25 +81,41 @@ export async function createSlide(moduleId: string, title: string, content: stri
       },
     });
 
-    // Then create the slide
+    // Then create the slide with the content_item_id
     const slide = await prisma.slide.create({
       data: {
-        title,
-        content,
+        title: title,
+        content: content,
         module_id: moduleId,
         content_item_id: contentItem.id,
       },
-      include: { content_item: true },
+      include: {
+        content_item: true,
+      },
     });
 
     revalidatePath(`/course/edit/module/${moduleId}`);
-    return { success: true, slide };
-  } catch {
-    return { success: false, error: "Failed to create slide" };
+    return {
+      success: true,
+      slide: {
+        ...slide,
+        content_item: contentItem,
+      },
+    };
+  } catch (error) {
+    console.error("Error creating slide:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to create slide",
+    };
   }
 }
 
-export async function updateSlide(slideId: string, title: string, content: string) {
+export async function updateSlide(
+  slideId: string,
+  title: string,
+  content: string
+) {
   try {
     const updatedSlide = await prisma.slide.update({
       where: { id: slideId },
