@@ -13,17 +13,19 @@ export default function SlideForm({
   onClose: () => void;
   onSuccess: () => void;
 }) {
+  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!content.trim()) return;
+    if (!title.trim() || !content.trim()) return;
 
     setIsSubmitting(true);
     try {
-      const response = await createSlide(moduleId, content);
+      const response = await createSlide(moduleId, title, content);
       if (response.success) {
+        setTitle("");
         setContent("");
         onSuccess();
       }
@@ -50,6 +52,19 @@ export default function SlideForm({
         </div>
         <form onSubmit={handleSubmit}>
           <div className="form-control w-full mb-4">
+            <label className="label">
+              <span className="label-text">Slide Title</span>
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter slide title"
+              className="input input-bordered w-full mb-4"
+              required
+              disabled={isSubmitting}
+            />
+            
             <label className="label">
               <span className="label-text">Slide Content</span>
             </label>
