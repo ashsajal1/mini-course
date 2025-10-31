@@ -99,6 +99,32 @@ export async function updateSlide(slideId: string, content: string) {
   }
 }
 
+export async function deleteSlide(slideId: string) {
+  try {
+    // First get the slide to get module_id for revalidation
+    const slide = await prisma.slide.findUnique({
+      where: { id: slideId },
+      include: { content_item: true },
+    });
+
+    if (!slide) {
+      return { success: false, error: "Slide not found" };
+    }
+
+    // Delete the slide and its associated content item in a transaction
+    await prisma.$transaction([
+      prisma.slide.delete({ where: { id: slideId } }),
+      prisma.content.delete({ where: { id: slide.content_item_id } }),
+    ]);
+
+    revalidatePath(`/course/edit/module/${slide.module_id}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete slide:", error);
+    return { success: false, error: "Failed to delete slide" };
+  }
+}
+
 // Question & Quiz Actions
 export async function createQuestion(
   moduleId: string,
@@ -179,6 +205,33 @@ export async function updateQuestion(
     return { success: true, question };
   } catch {
     return { success: false, error: "Failed to update question" };
+  }
+}
+
+export async function deleteQuestion(questionId: string) {
+  try {
+    // First get the question to get module_id for revalidation
+    const question = await prisma.question.findUnique({
+      where: { id: questionId },
+      include: { content_item: true },
+    });
+
+    if (!question) {
+      return { success: false, error: "Question not found" };
+    }
+
+    // Delete the question, its options, and associated content item in a transaction
+    await prisma.$transaction([
+      prisma.option.deleteMany({ where: { questionId } }),
+      prisma.question.delete({ where: { id: questionId } }),
+      prisma.content.delete({ where: { id: question.content_item_id! } }), // Non-null assertion as we know it exists
+    ]);
+
+    revalidatePath(`/course/edit/module/${question.module_id}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete question:", error);
+    return { success: false, error: "Failed to delete question" };
   }
 }
 

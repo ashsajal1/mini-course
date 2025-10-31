@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { Module } from "@/app/generated/prisma/client";
-import { createModule } from "./actions";
+import { createModule, deleteModule, deleteSlide, deleteQuestion } from "./actions";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
-// Dynamically import forms with no SSR
+// Dynamically import components with no SSR
 const SlideForm = dynamic(
   () => import('./slide-form'),
   { ssr: false }
@@ -17,6 +17,21 @@ const QuestionForm = dynamic(
   () => import('./question-form'),
   { ssr: false }
 );
+
+const DeleteDialog = dynamic(
+  () => import('./delete-dialog'),
+  { ssr: false }
+);
+
+type DeleteType = 'module' | 'slide' | 'question';
+
+interface DeleteState {
+  isOpen: boolean;
+  type: DeleteType | null;
+  id: string;
+  title: string;
+  moduleId?: string;
+}
 
 interface ModulesProps {
   modules: Module[];
@@ -29,6 +44,15 @@ export default function Modules({ modules, courseId }: ModulesProps) {
   const [showSlideForm, setShowSlideForm] = useState(false);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
+  
+  const [deleteState, setDeleteState] = useState<DeleteState>({
+    isOpen: false,
+    type: null,
+    id: '',
+    title: '',
+    moduleId: '',
+  });
+  
   const [newModuleTitle, setNewModuleTitle] = useState("");
   const router = useRouter();
 
@@ -51,6 +75,53 @@ export default function Modules({ modules, courseId }: ModulesProps) {
   const closeAllForms = () => {
     setShowSlideForm(false);
     setShowQuestionForm(false);
+  };
+
+  const openDeleteDialog = (type: DeleteType, id: string, title: string, moduleId?: string) => {
+    setDeleteState({
+      isOpen: true,
+      type,
+      id,
+      title,
+      moduleId,
+    });
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteState(prev => ({ ...prev, isOpen: false }));
+  };
+
+  const handleDelete = async () => {
+    const { type, id } = deleteState;
+    if (!type || !id) return;
+
+    try {
+      let success = false;
+      
+      switch (type) {
+        case 'module':
+          const moduleResponse = await deleteModule(id);
+          success = moduleResponse.success;
+          break;
+          
+        case 'slide':
+          const slideResponse = await deleteSlide(id);
+          success = slideResponse.success;
+          break;
+          
+        case 'question':
+          const questionResponse = await deleteQuestion(id);
+          success = questionResponse.success;
+          break;
+      }
+
+      if (success) {
+        closeDeleteDialog();
+        router.refresh();
+      }
+    } catch (error) {
+      console.error(`Failed to delete ${type}:`, error);
+    }
   };
 
   const toggleModule = (moduleId: string) => {
@@ -227,7 +298,11 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                       Add Question
                     </button>
                     <div className="divider divider-horizontal my-0">OR</div>
-                    <button className="btn btn-ghost btn-sm text-error">
+                    <button 
+                      className="btn btn-ghost btn-sm text-error gap-1"
+                      onClick={() => openDeleteDialog('module', module.id, module.title)}
+                    >
+                      <Trash2 className="w-4 h-4" />
                       Delete Module
                     </button>
                   </div>
@@ -253,6 +328,15 @@ export default function Modules({ modules, courseId }: ModulesProps) {
           onSuccess={handleFormSuccess}
         />
       )}
+
+      <DeleteDialog
+        isOpen={deleteState.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDelete}
+        title={`Delete ${deleteState.type || 'item'}`}
+        description={`Are you sure you want to delete "${deleteState.title}"? This action cannot be undone.`}
+        isLoading={false}
+      />
     </div>
   );
 }
