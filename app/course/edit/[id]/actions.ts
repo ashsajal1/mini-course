@@ -14,7 +14,7 @@ export async function createModule(courseId: string, title: string) {
     });
     revalidatePath(`/course/edit/${courseId}`);
     return { success: true, newMdoule };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Failed to create module" };
   }
 }
@@ -27,7 +27,7 @@ export async function updateModule(moduleId: string, title: string) {
     });
     revalidatePath(`/course/edit/${updatedModule.course_id}`);
     return { success: true, module: updatedModule };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Failed to update module" };
   }
 }
@@ -50,7 +50,7 @@ export async function deleteModule(moduleId: string) {
 
     revalidatePath(`/course/edit/${deletedModule.course_id}`);
     return { success: true };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Failed to delete module" };
   }
 }
@@ -79,7 +79,7 @@ export async function createSlide(moduleId: string, content: string) {
 
     revalidatePath(`/course/edit/module/${moduleId}`);
     return { success: true, slide };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Failed to create slide" };
   }
 }
@@ -94,7 +94,7 @@ export async function updateSlide(slideId: string, content: string) {
 
     revalidatePath(`/course/edit/module/${updatedSlide.module_id}`);
     return { success: true, slide: updatedSlide };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Failed to update slide" };
   }
 }
@@ -137,7 +137,7 @@ export async function createQuestion(
 
     revalidatePath(`/course/edit/module/${moduleId}`);
     return { success: true, question };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Failed to create question" };
   }
 }
@@ -177,7 +177,7 @@ export async function updateQuestion(
 
     revalidatePath(`/course/edit/module/${question.module_id}`);
     return { success: true, question };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Failed to update question" };
   }
 }
@@ -207,7 +207,7 @@ export async function reorderContent(moduleId: string, contentIds: string[]) {
 
     revalidatePath(`/course/edit/module/${moduleId}`);
     return { success: true };
-  } catch (error) {
+  } catch {
     return { success: false, error: "Failed to reorder content" };
   }
 }
