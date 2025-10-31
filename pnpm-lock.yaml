@@ -35,6 +35,9 @@ importers:
       ws:
         specifier: ^8.18.3
         version: 8.18.3
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@neondatabase/serverless':
         specifier: ^1.0.2
