@@ -22,9 +22,9 @@ export type ContentWithRelations = Prisma.ContentGetPayload<{
 export default async function Page({
   params,
 }: {
-  params: { courseId: string; moduleId: string };
+  params: Promise<{ courseId: string; moduleId: string }>;
 }) {
-  const { moduleId } = params;
+  const { moduleId } = await params;
 
   const moduleContent = await prisma.content.findMany({
     where: {
