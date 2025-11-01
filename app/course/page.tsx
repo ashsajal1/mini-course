@@ -1,7 +1,8 @@
 import CourseList from "./course-list";
+import prisma from "@/prisma/client";
 
 export default async function CoursePage() {
-  const courses = await prisma?.course.findMany();
+  const courses = await prisma.course.findMany();
 
   return (
     <div className="min-h-screen w-full bg-base-100">
