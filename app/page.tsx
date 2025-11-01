@@ -1,5 +1,5 @@
 import CourseCard from "./component/course-card";
-import prisma from "./lib/client";
+import prisma from "@/prisma/client";
 
 export default async function Home() {
   const courses = await prisma?.course.findMany();

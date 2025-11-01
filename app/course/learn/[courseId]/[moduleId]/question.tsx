@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Prisma } from "@/app/generated/prisma/client";
+import type { Prisma } from "@prisma/client";
 
 type QuestionWithOptions = Prisma.QuestionGetPayload<{
   include: {

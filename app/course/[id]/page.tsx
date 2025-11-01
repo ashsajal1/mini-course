@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Bookmark, Clock, Award } from "lucide-react";
-import prisma from "@/app/lib/client";
+import prisma from "@/prisma/client";
 
 export default async function CoursePage({
   params,

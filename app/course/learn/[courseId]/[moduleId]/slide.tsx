@@ -5,7 +5,7 @@ import type { Components } from "react-markdown";
 import "highlight.js/styles/github-dark.css";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import type { Prisma } from "@/app/generated/prisma/client";
+import type { Prisma } from "@prisma/client";
 
 type SlideType = Prisma.SlideGetPayload<{
   include: {

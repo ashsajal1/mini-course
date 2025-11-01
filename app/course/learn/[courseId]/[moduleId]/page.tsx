@@ -1,5 +1,6 @@
-import prisma from "@/app/lib/client";
-import { ContentType, type Prisma } from "@/app/generated/prisma/client";
+import prisma from "@/prisma/client";
+import { ContentType } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import ContentSlider from "./content-slider";
 
 // This creates a type that includes the relations

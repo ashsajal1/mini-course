@@ -1,4 +1,4 @@
-import prisma from "@/app/lib/client";
+import prisma from "@/prisma/client";
 import Link from "next/link";
 
 export default async function page({

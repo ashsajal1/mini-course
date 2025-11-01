@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@/app/lib/client";
+import prisma from "@/prisma/client";
 
 export const getCourses = async () => {
   const courses = await prisma.course.findMany({

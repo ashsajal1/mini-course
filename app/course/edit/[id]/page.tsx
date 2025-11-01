@@ -1,4 +1,4 @@
-import prisma from "@/app/lib/client";
+import prisma from "@/prisma/client";
 import Modules from "./modules";
 
 export default async function ManageCourse({

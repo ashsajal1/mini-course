@@ -1,8 +1,7 @@
 "use server";
 
-import { Prisma } from "@/app/generated/prisma/client";
-import { ContentType } from "@/app/generated/prisma/enums";
-import prisma from "@/app/lib/client";
+import { Prisma, ContentType } from "@prisma/client";
+import prisma from "@/prisma/client";
 import { revalidatePath } from "next/cache";
 
 // Module Actions

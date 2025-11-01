@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@/app/lib/client";
+import prisma from "@/prisma/client";
 import { validateCourseData } from "./course-validation";
 
 type CreateCourseResponse = {

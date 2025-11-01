@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
-import { Module } from "@/app/generated/prisma/client";
+import type { Module } from "@prisma/client";
 import {
   createModule,
   deleteModule,
