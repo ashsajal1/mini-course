@@ -63,7 +63,7 @@ export default function Question({ question }: QuestionProps) {
   const showFeedback = isSubmitted && isCorrect !== null;
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
+    <div className="container mx-auto p-4 ">
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">
           <h2 className="card-title text-2xl">

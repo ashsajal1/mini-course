@@ -74,7 +74,7 @@ export default function Slide({ slide }: { slide: SlideType }) {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
+    <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">{slide?.title || 'Untitled Slide'}</h1>
 
       <div className="prose dark:prose-invert max-w-none">
