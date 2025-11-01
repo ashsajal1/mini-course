@@ -9,58 +9,60 @@ export default function ContentSlider({
 }: {
   moduleContent: ContentWithRelations[];
 }) {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const totalSlides = moduleContent.length;
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const totalItems = moduleContent.length;
+  const currentContent = moduleContent[currentIndex];
 
   const goToNext = () => {
-    setCurrentSlide((prev) => (prev === totalSlides - 1 ? prev : prev + 1));
+    if (currentIndex < totalItems - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
   };
 
   const goToPrev = () => {
-    setCurrentSlide((prev) => (prev === 0 ? 0 : prev - 1));
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
   };
 
-  if (totalSlides === 0) return null;
+  if (totalItems === 0) return null;
 
   return (
-    <div className="relative w-full">
-      <div className="carousel w-full">
-        {moduleContent.map((content,) => (
-          <div
-            key={content.id}
-            className="carousel-item w-full transition ease-in-out duration-300"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
-            <ModuleContent content={content as ContentWithRelations} />
-          </div>
-        ))}
+    <div className="w-full">
+      <div className="w-full min-h-[50vh] flex items-center justify-center">
+        <ModuleContent content={currentContent} />
       </div>
 
-      {totalSlides > 1 && (
-        <>
-          {/* Navigation Controls */}
-          <div className="mt-8 px-12 py-4 border-t border-base-300 flex justify-between">
+      {totalItems > 1 && (
+        <div className="mt-8 px-4 py-4 border-t border-base-300">
+          <div className="flex justify-between items-center max-w-4xl mx-auto">
             <button
               type="button"
-              className="btn btn-outline"
+              className={`btn btn-outline ${currentIndex === 0 ? 'invisible' : ''}`}
               onClick={goToPrev}
+              disabled={currentIndex === 0}
+              aria-label="Previous slide"
             >
-              <ChevronLeft />
+              <ChevronLeft className="mr-2" />
               Previous
             </button>
+            
+            <span className="text-sm text-base-content/70">
+              {currentIndex + 1} / {totalItems}
+            </span>
+            
             <button
               type="button"
-              className="btn btn-primary"
+              className={`btn btn-primary ${currentIndex === totalItems - 1 ? 'invisible' : ''}`}
               onClick={goToNext}
+              disabled={currentIndex === totalItems - 1}
+              aria-label="Next slide"
             >
               Next
-              <ChevronRight />
+              <ChevronRight className="ml-2" />
             </button>
           </div>
-          <div className="text-center mt-4 text-sm text-base-content/70">
-            {currentSlide + 1} / {totalSlides}
-          </div>
-        </>
+        </div>
       )}
     </div>
   );
