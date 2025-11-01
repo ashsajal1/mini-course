@@ -35,25 +35,26 @@ export default function ContentSlider({
           </div>
         ))}
       </div>
-      
+
       {totalSlides > 1 && (
         <>
-          <button
-            onClick={goToPrev}
-            disabled={currentSlide === 0}
-            className="btn btn-circle absolute left-4 top-1/2 -translate-y-1/2 z-10"
-            aria-label="Previous slide"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
-            onClick={goToNext}
-            disabled={currentSlide === totalSlides - 1}
-            className="btn btn-circle absolute right-4 top-1/2 -translate-y-1/2 z-10"
-            aria-label="Next slide"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
+          {/* Navigation Controls */}
+          <div className="mt-8 px-12 py-4 border-t border-base-300 flex justify-between">
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={goToPrev}
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={goToNext}
+            >
+              Next
+            </button>
+          </div>
           <div className="text-center mt-4 text-sm text-base-content/70">
             {currentSlide + 1} / {totalSlides}
           </div>

@@ -86,24 +86,6 @@ export default function Slide({ slide }: { slide: SlideType }) {
           {slide?.content || ""}
         </ReactMarkdown>
       </div>
-
-      {/* Navigation Controls */}
-      <div className="mt-8 pt-4 border-t border-base-300 flex justify-between">
-        <button
-          type="button"
-          className="btn btn-outline"
-          // Add your navigation logic here
-        >
-          Previous
-        </button>
-        <button
-          type="button"
-          className="btn btn-primary"
-          // Add your navigation logic here
-        >
-          Next
-        </button>
-      </div>
     </div>
   );
 }
