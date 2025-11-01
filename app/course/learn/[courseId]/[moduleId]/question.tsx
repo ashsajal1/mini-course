@@ -150,6 +150,10 @@ export default function Question({ question }: QuestionProps) {
                 )}
               </div>
             )}
+
+            <div>
+              <button disabled={isSubmitted} onClick={handleSubmit} className="btn btn-primary">Submit</button>
+            </div>
           </div>
         </div>
       </div>
