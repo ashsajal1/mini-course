@@ -1,6 +1,6 @@
 import prisma from "@/app/lib/client";
 import { ContentType, type Prisma } from "@/app/generated/prisma/client";
-import ModuleContent from "./module-content";
+import ContentSlider from "./content-slider";
 
 // This creates a type that includes the relations
 export type ContentWithRelations = Prisma.ContentGetPayload<{
@@ -30,14 +30,19 @@ export default async function Page({
     where: {
       module_id: moduleId,
       type: {
-        in: [ContentType.SLIDE, ContentType.QUESTION]
-      }
+        in: [ContentType.SLIDE, ContentType.QUESTION],
+      },
     },
     include: {
-      slide: true,
+      slide: {
+        include: {
+          content_item: true,
+        },
+      },
       question: {
         include: {
           options: true,
+          content_item: true,
         },
       },
     },
@@ -48,12 +53,7 @@ export default async function Page({
 
   return (
     <div>
-      {moduleContent.map((content) => (
-        <ModuleContent
-          key={content.id}
-          content={content as ContentWithRelations}
-        />
-      ))}
+      <ContentSlider moduleContent={moduleContent!} />
     </div>
   );
 }
