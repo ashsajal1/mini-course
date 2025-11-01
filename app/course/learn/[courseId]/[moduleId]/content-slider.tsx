@@ -25,7 +25,7 @@ export default function ContentSlider({
   return (
     <div className="relative w-full">
       <div className="carousel w-full">
-        {moduleContent.map((content, index) => (
+        {moduleContent.map((content,) => (
           <div
             key={content.id}
             className="carousel-item w-full"
