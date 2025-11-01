@@ -45,6 +45,7 @@ export default function ContentSlider({
               className="btn btn-outline"
               onClick={goToPrev}
             >
+              <ChevronLeft />
               Previous
             </button>
             <button
@@ -53,6 +54,7 @@ export default function ContentSlider({
               onClick={goToNext}
             >
               Next
+              <ChevronRight />
             </button>
           </div>
           <div className="text-center mt-4 text-sm text-base-content/70">
