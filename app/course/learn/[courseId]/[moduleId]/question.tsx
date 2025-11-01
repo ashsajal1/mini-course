@@ -151,21 +151,6 @@ export default function Question({ question }: QuestionProps) {
               </div>
             )}
           </div>
-
-          <div className="card-actions justify-between mt-6">
-            <button className="btn btn-outline">Previous</button>
-            {!isSubmitted ? (
-              <button
-                className="btn btn-primary"
-                onClick={handleSubmit}
-                disabled={selectedOptions.length === 0}
-              >
-                Submit
-              </button>
-            ) : (
-              <button className="btn btn-primary">Next</button>
-            )}
-          </div>
         </div>
       </div>
     </div>
