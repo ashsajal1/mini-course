@@ -28,7 +28,7 @@ export default function ContentSlider({
         {moduleContent.map((content,) => (
           <div
             key={content.id}
-            className="carousel-item w-full"
+            className="carousel-item w-full transition ease-in-out duration-300"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             <ModuleContent content={content as ContentWithRelations} />
