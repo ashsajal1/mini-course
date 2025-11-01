@@ -105,9 +105,9 @@ export default async function CoursePage({
 
             <h3 className="text-xl font-bold mt-8 mb-4">Course Modules</h3>
             <div className="space-y-4">
-              {course.modules.map((module, index) => (
+              {course.modules.map((courseModule, index) => (
                 <div
-                  key={module.id}
+                  key={courseModule.id}
                   className="collapse collapse-arrow bg-base-200"
                 >
                   <input
@@ -117,14 +117,14 @@ export default async function CoursePage({
                     defaultChecked={index === 0}
                   />
                   <div className="collapse-title text-lg font-medium">
-                    {module.title}
+                    {courseModule.title}
                   </div>
                   {/* <div className="collapse-content">
                     <div
                       className="prose-sm mt-2"
-                      dangerouslySetInnerHTML={{ __html: module.content }}
+                      dangerouslySetInnerHTML={{ __html: courseModule.content }}
                     />
-                    {module.has_quiz && (
+                    {courseModule.has_quiz && (
                       <div className="mt-4">
                         <span className="badge badge-primary gap-2">
                           Quiz Available
