@@ -38,13 +38,13 @@ export default function ContentSlider({
           <div className="flex justify-between items-center max-w-4xl mx-auto">
             <button
               type="button"
-              className={`btn btn-outline ${currentIndex === 0 ? 'invisible' : ''}`}
+              className={`btn btn-outline ${currentIndex === 0 ? 'invisible' : ''} md:gap-2`}
               onClick={goToPrev}
               disabled={currentIndex === 0}
               aria-label="Previous slide"
             >
-              <ChevronLeft className="mr-2" />
-              Previous
+              <ChevronLeft className="md:mr-2" />
+              <span className="hidden md:inline">Previous</span>
             </button>
             
             <span className="text-sm text-base-content/70">
@@ -53,13 +53,13 @@ export default function ContentSlider({
             
             <button
               type="button"
-              className={`btn btn-primary ${currentIndex === totalItems - 1 ? 'invisible' : ''}`}
+              className={`btn btn-primary ${currentIndex === totalItems - 1 ? 'invisible' : ''} md:gap-2`}
               onClick={goToNext}
               disabled={currentIndex === totalItems - 1}
               aria-label="Next slide"
             >
-              Next
-              <ChevronRight className="ml-2" />
+              <span className="hidden md:inline">Next</span>
+              <ChevronRight className="md:ml-2" />
             </button>
           </div>
         </div>
