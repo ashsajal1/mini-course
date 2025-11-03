@@ -33,12 +33,12 @@ export const metadata: Metadata = {
   authors: [{ name: "MiniCourse Team" }],
   creator: "MiniCourse",
   publisher: "MiniCourse",
-  metadataBase: new URL("https://minicourse.com"),
+  metadataBase: new URL("https://minicourse.netlify.app"),
   openGraph: {
     title: "MiniCourse - Learn Something New Today",
     description:
       "Discover and enroll in high-quality online courses to enhance your skills and advance your career.",
-    url: "https://minicourse.com",
+    url: "https://minicourse.netlify.app",
     siteName: "MiniCourse",
     locale: "en_US",
     type: "website",
