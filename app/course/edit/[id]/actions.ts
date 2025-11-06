@@ -212,7 +212,7 @@ export async function createQuestion(
     });
 
     revalidatePath(`/course/edit/module/${moduleId}`);
-    return { success: true, question };
+    return { success: true, question: questionRecord };
   } catch{
     return { success: false, error: "Failed to create question" };
   }
@@ -220,6 +220,7 @@ export async function createQuestion(
 
 export async function updateQuestion(
   questionId: string,
+  title: string,
   content: string,
   options: {
     id?: string;
@@ -232,7 +233,7 @@ export async function updateQuestion(
     // First update the question
     const question = await prisma.question.update({
       where: { id: questionId },
-      data: { content },
+      data: { content, title },
       include: { module: true },
     });
 
@@ -244,7 +245,7 @@ export async function updateQuestion(
     const optionsArr = options.map((opt) => ({
       questionId: questionId,
       text: opt.text,
-      is_correct: opt.isCorrect,
+      isCorrect: opt.isCorrect,
       explanation: opt.explanation || null,
     }));
     await prisma.option.createMany({
