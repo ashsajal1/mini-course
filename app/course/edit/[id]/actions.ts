@@ -172,8 +172,13 @@ export async function deleteSlide(slideId: string) {
 // Question & Quiz Actions
 export async function createQuestion(
   moduleId: string,
-  content: string,
-  options: { text: string; isCorrect: boolean; explanation?: string }[]
+  title: string,
+  question: string,
+  options: Array<{
+    text: string;
+    isCorrect: boolean;
+    explanation: string;
+  }>
 ) {
   try {
     // First create the content item
@@ -186,9 +191,10 @@ export async function createQuestion(
     });
 
     // Create the question with options
-    const question = await prisma.question.create({
+    const questionRecord = await prisma.question.create({
       data: {
-        content,
+        title,
+        content: question,
         module_id: moduleId,
         content_item_id: contentItem.id,
         options: {

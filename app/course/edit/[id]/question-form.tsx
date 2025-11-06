@@ -20,6 +20,7 @@ export default function QuestionForm({
   onClose: () => void;
   onSuccess: () => void;
 }) {
+  const [title, setTitle] = useState("");
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState<Option[]>([
     { id: crypto.randomUUID(), text: "", isCorrect: false, explanation: "" },
@@ -61,7 +62,7 @@ export default function QuestionForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!question.trim() || options.some(opt => !opt.text.trim())) {
+    if (!title.trim() || !question.trim() || options.some(opt => !opt.text.trim())) {
       return; // Basic validation
     }
     
@@ -73,6 +74,7 @@ export default function QuestionForm({
     try {
       const response = await createQuestion(
         moduleId,
+        title,
         question,
         options.map(({ text, isCorrect, explanation }) => ({
           text,
@@ -109,14 +111,29 @@ export default function QuestionForm({
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="form-control">
             <label className="label">
+              <span className="label-text">Title</span>
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter question title"
+              className="input input-bordered w-full"
+              autoFocus
+              disabled={isSubmitting}
+              required
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
               <span className="label-text">Question</span>
             </label>
             <textarea
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Enter your question"
+              placeholder="Enter your question content"
               className="textarea textarea-bordered w-full min-h-[100px]"
-              autoFocus
               disabled={isSubmitting}
               required
             />
@@ -208,6 +225,7 @@ export default function QuestionForm({
               className="btn btn-primary"
               disabled={
                 isSubmitting ||
+                !title.trim() ||
                 !question.trim() ||
                 options.some((opt) => !opt.text.trim()) ||
                 !options.some((opt) => opt.isCorrect)
