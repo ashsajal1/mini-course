@@ -9,7 +9,7 @@ import {
   deleteSlide,
   deleteQuestion,
   updateSlide,
-  updateQuestionContent,
+  updateQuestion,
 } from "./actions";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -33,8 +33,15 @@ interface DeleteState {
 
 type ModuleWithItems = Module & {
   slides?: { id: string; title: string | null; content?: string }[];
-  questions?: { id: string; title: string | null; content?: string }[];
+  questions?: {
+    id: string;
+    title: string | null;
+    content?: string;
+    options?: { id: string; text: string; isCorrect: boolean; explanation: string | null }[];
+  }[];
 };
+
+type QuestionItem = NonNullable<ModuleWithItems["questions"]>[number];
 
 interface ModulesProps {
   modules: ModuleWithItems[];
@@ -55,6 +62,7 @@ export default function Modules({ modules, courseId }: ModulesProps) {
     moduleId: string;
     title: string;
     content: string;
+    options: { id: string; text: string; isCorrect: boolean; explanation: string }[];
   }>({
     isOpen: false,
     type: null,
@@ -62,6 +70,7 @@ export default function Modules({ modules, courseId }: ModulesProps) {
     moduleId: "",
     title: "",
     content: "",
+    options: [],
   });
 
   const [deleteState, setDeleteState] = useState<DeleteState>({
@@ -82,9 +91,10 @@ export default function Modules({ modules, courseId }: ModulesProps) {
 
   const openEditDialog = (
     type: "slide" | "question",
-    item: { id: string; title?: string | null; content?: string },
+    item: { id: string; title?: string | null; content?: string } | QuestionItem,
     moduleId: string
   ) => {
+    const qItem = item as QuestionItem;
     setEditState({
       isOpen: true,
       type,
@@ -92,6 +102,15 @@ export default function Modules({ modules, courseId }: ModulesProps) {
       moduleId,
       title: item.title || "",
       content: item.content || "",
+      options:
+        type === "question" && Array.isArray(qItem.options)
+          ? qItem.options.map((o: NonNullable<QuestionItem["options"]>[number]) => ({
+              id: o.id,
+              text: o.text,
+              isCorrect: !!o.isCorrect,
+              explanation: o.explanation || "",
+            }))
+          : [],
     });
   };
 
@@ -103,6 +122,7 @@ export default function Modules({ modules, courseId }: ModulesProps) {
       moduleId: "",
       title: "",
       content: "",
+      options: [],
     });
   };
 
@@ -113,7 +133,17 @@ export default function Modules({ modules, courseId }: ModulesProps) {
       if (editState.type === "slide") {
         await updateSlide(editState.id, editState.title, editState.content);
       } else {
-        await updateQuestionContent(editState.id, editState.content);
+        await updateQuestion(
+          editState.id,
+          editState.title,
+          editState.content,
+          editState.options.map((o) => ({
+            id: o.id,
+            text: o.text,
+            isCorrect: o.isCorrect,
+            explanation: o.explanation || "",
+          }))
+        );
       }
       closeEditDialog();
       router.refresh();
@@ -122,6 +152,37 @@ export default function Modules({ modules, courseId }: ModulesProps) {
     } finally {
       setIsSavingEdit(false);
     }
+  };
+
+  const addEditOption = () => {
+    setEditState((s) => ({
+      ...s,
+      options: [
+        ...s.options,
+        { id: crypto.randomUUID(), text: "", isCorrect: false, explanation: "" },
+      ],
+    }));
+  };
+
+  const removeEditOption = (id: string) => {
+    setEditState((s) => ({
+      ...s,
+      options: s.options.length <= 2 ? s.options : s.options.filter((o) => o.id !== id),
+    }));
+  };
+
+  const updateEditOption = (id: string, updates: Partial<{ text: string; isCorrect: boolean; explanation: string }>) => {
+    setEditState((s) => ({
+      ...s,
+      options: s.options.map((o) => (o.id === id ? { ...o, ...updates } : o)),
+    }));
+  };
+
+  const toggleEditCorrect = (id: string) => {
+    setEditState((s) => ({
+      ...s,
+      options: s.options.map((o) => ({ ...o, isCorrect: o.id === id ? !o.isCorrect : false })),
+    }));
   };
 
   const handleAddQuestion = (moduleId: string) => {
@@ -550,8 +611,24 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                 </>
               )}
 
+              {editState.type === "question" && (
+                <>
+                  <label className="label">
+                    <span className="label-text">Title</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={editState.title}
+                    onChange={(e) => setEditState((s) => ({ ...s, title: e.target.value }))}
+                    className="input input-bordered w-full mb-4"
+                    placeholder="Enter question title"
+                    disabled={isSavingEdit}
+                  />
+                </>
+              )}
+
               <label className="label">
-                <span className="label-text">Content</span>
+                <span className="label-text">{editState.type === "slide" ? "Content" : "Question"}</span>
               </label>
               <textarea
                 aria-label="Textrea for slide"
@@ -562,6 +639,70 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                 className="textarea textarea-bordered w-full min-h-[200px]"
                 disabled={isSavingEdit}
               />
+
+              {editState.type === "question" && (
+                <div className="mt-4 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <label className="label">
+                      <span className="label-text">Options</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={addEditOption}
+                      className="btn btn-ghost btn-sm"
+                      disabled={isSavingEdit || editState.options.length >= 5}
+                    >
+                      Add Option
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    {editState.options.map((opt, index) => (
+                      <div key={opt.id} className="bg-base-200 p-3 rounded-lg">
+                        <div className="flex gap-2 mb-2">
+                          <input
+                            type="checkbox"
+                            checked={opt.isCorrect}
+                            onChange={() => toggleEditCorrect(opt.id)}
+                            className="checkbox checkbox-primary"
+                            disabled={isSavingEdit}
+                            id={`edit-correct-${opt.id}`}
+                          />
+                          <label htmlFor={`edit-correct-${opt.id}`} className="text-sm cursor-pointer">
+                            Correct Answer
+                          </label>
+                          {editState.options.length > 2 && (
+                            <button
+                              type="button"
+                              onClick={() => removeEditOption(opt.id)}
+                              className="ml-auto text-error"
+                              disabled={isSavingEdit}
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
+                        <input
+                          type="text"
+                          value={opt.text}
+                          onChange={(e) => updateEditOption(opt.id, { text: e.target.value })}
+                          placeholder={`Option ${index + 1}`}
+                          className="input input-bordered w-full mb-2"
+                          disabled={isSavingEdit}
+                        />
+                        <input
+                          type="text"
+                          value={opt.explanation}
+                          onChange={(e) => updateEditOption(opt.id, { explanation: e.target.value })}
+                          placeholder="Explanation (optional)"
+                          className="input input-bordered w-full text-sm"
+                          disabled={isSavingEdit}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end gap-2">
@@ -580,8 +721,12 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                 disabled={
                   isSavingEdit ||
                   (editState.type === "slide"
-                    ? !editState.title.trim()
-                    : !editState.content.trim())
+                    ? !editState.title.trim() || !editState.content.trim()
+                    : !editState.title.trim() ||
+                      !editState.content.trim() ||
+                      editState.options.length < 2 ||
+                      editState.options.some((o) => !o.text.trim()) ||
+                      !editState.options.some((o) => o.isCorrect))
                 }
               >
                 {isSavingEdit ? "Saving..." : "Save"}

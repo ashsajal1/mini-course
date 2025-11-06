@@ -18,7 +18,19 @@ export default async function ManageCourse({
             select: { id: true, title: true, content: true },
           },
           questions: {
-            select: { id: true, title: true, content: true },
+            select: {
+              id: true,
+              title: true,
+              content: true,
+              options: {
+                select: {
+                  id: true,
+                  text: true,
+                  isCorrect: true,
+                  explanation: true,
+                },
+              },
+            },
           },
         },
       },
