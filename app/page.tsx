@@ -1,9 +1,21 @@
 export const dynamic = "force-dynamic";
+import { Course } from "@prisma/client";
 import CourseCard from "./component/course-card";
 import prisma from "@/prisma/client";
 
 export default async function Home() {
-  const courses = await prisma.course.findMany();
+  const courses: Course[] = await prisma.$queryRaw`
+  SELECT c.id,
+         c.name,
+         c.description,
+         c.difficulty,
+         c.thumbnail_url,
+         COUNT(m.id) AS module_count
+  FROM "Course" c
+  JOIN "Module" m ON m.course_id = c.id
+  GROUP BY c.id, c.name, c.description, c.difficulty, c.thumbnail_url
+  HAVING COUNT(m.id) >= 2;
+`;
 
   return (
     <div className="min-h-screen w-full bg-base-100">
