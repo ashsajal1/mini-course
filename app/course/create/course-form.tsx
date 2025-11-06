@@ -1,50 +1,59 @@
 "use client";
 
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { createCourse } from "./actions";
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { courseFormSchema, CourseFormData } from './course-validation';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { courseFormSchema } from "./course-validation";
 
 export default function CourseForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [serverError, setServerError] = useState('');
+  const [serverError, setServerError] = useState("");
+
+  type FormData = {
+    creator: string;
+    name: string;
+    description: string;
+    difficulty: string;
+    thumbnail_url?: string;
+  };
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<CourseFormData>({
+  } = useForm<FormData>({
     resolver: zodResolver(courseFormSchema),
     defaultValues: {
-      difficulty: 'Beginner', // Set default difficulty
+      difficulty: "Beginner",
+      thumbnail_url: "",
     },
   });
 
-  const onSubmit: SubmitHandler<CourseFormData> = async (data) => {
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
       setIsSubmitting(true);
-      setServerError('');
-      
+      setServerError("");
+
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
         formData.append(key, value);
       });
 
       const result = await createCourse(formData);
-      
+
       if (result?.error) {
         setServerError(result.error);
       } else {
         reset();
-        router.push('/');
+        router.push("/");
       }
     } catch (error) {
-      console.error('Error creating course:', error);
-      setServerError('Failed to create course. Please try again.');
+      console.error("Error creating course:", error);
+      setServerError("Failed to create course. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -61,8 +70,18 @@ export default function CourseForm() {
 
           {serverError && (
             <div className="alert alert-error mb-6">
-              <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="stroke-current shrink-0 h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <span>{serverError}</span>
             </div>
@@ -78,8 +97,10 @@ export default function CourseForm() {
                 <input
                   type="text"
                   id="creator"
-                  {...register('creator')}
-                  className={`input input-bordered w-full ${errors.creator ? 'input-error' : ''}`}
+                  {...register("creator")}
+                  className={`input input-bordered w-full ${
+                    errors.creator ? "input-error" : ""
+                  }`}
                   placeholder="John Doe"
                   disabled={isSubmitting}
                 />
@@ -100,8 +121,10 @@ export default function CourseForm() {
                 <input
                   type="text"
                   id="name"
-                  {...register('name')}
-                  className={`input input-bordered w-full ${errors.name ? 'input-error' : ''}`}
+                  {...register("name")}
+                  className={`input input-bordered w-full ${
+                    errors.name ? "input-error" : ""
+                  }`}
                   placeholder="Introduction to Next.js"
                   disabled={isSubmitting}
                 />
@@ -124,8 +147,10 @@ export default function CourseForm() {
               </label>
               <textarea
                 id="description"
-                {...register('description')}
-                className={`textarea textarea-bordered w-full ${errors.description ? 'textarea-error' : ''}`}
+                {...register("description")}
+                className={`textarea textarea-bordered w-full ${
+                  errors.description ? "textarea-error" : ""
+                }`}
                 rows={4}
                 placeholder="Describe what students will learn in this course..."
                 disabled={isSubmitting}
@@ -143,12 +168,16 @@ export default function CourseForm() {
               {/* Difficulty */}
               <div className="form-control">
                 <label className="label" htmlFor="difficulty">
-                  <span className="label-text font-semibold">Difficulty Level</span>
+                  <span className="label-text font-semibold">
+                    Difficulty Level
+                  </span>
                 </label>
                 <select
                   id="difficulty"
-                  {...register('difficulty')}
-                  className={`select select-bordered w-full ${errors.difficulty ? 'select-error' : ''}`}
+                  {...register("difficulty")}
+                  className={`select select-bordered w-full ${
+                    errors.difficulty ? "select-error" : ""
+                  }`}
                   disabled={isSubmitting}
                 >
                   <option value="Beginner">Beginner</option>
@@ -167,19 +196,29 @@ export default function CourseForm() {
               {/* Thumbnail URL */}
               <div className="form-control">
                 <label className="label" htmlFor="thumbnail_url">
-                  <span className="label-text font-semibold">Thumbnail URL</span>
+                  <span className="label-text font-semibold">
+                    Thumbnail URL
+                  </span>
                 </label>
                 <input
                   type="url"
                   id="thumbnail_url"
-                  {...register('thumbnail_url')}
-                  className={`input input-bordered w-full ${errors.thumbnail_url ? 'input-error' : ''}`}
+                  {...register("thumbnail_url")}
+                  className={`input input-bordered w-full ${
+                    errors.thumbnail_url ? "input-error" : ""
+                  }`}
                   placeholder="https://example.com/image.jpg"
                   disabled={isSubmitting}
                 />
                 <label className="label">
-                  <span className={`label-text-alt ${errors.thumbnail_url ? 'text-error' : 'text-info'}`}>
-                    {errors.thumbnail_url ? errors.thumbnail_url.message : 'Enter a valid image URL (JPG, PNG)'}
+                  <span
+                    className={`label-text-alt ${
+                      errors.thumbnail_url ? "text-error" : "text-info"
+                    }`}
+                  >
+                    {errors.thumbnail_url
+                      ? errors.thumbnail_url.message
+                      : "Enter a valid image URL (JPG, PNG)"}
                   </span>
                 </label>
               </div>
@@ -194,8 +233,8 @@ export default function CourseForm() {
               >
                 Cancel
               </button>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="btn btn-primary gap-2"
                 disabled={isSubmitting}
               >
@@ -205,7 +244,7 @@ export default function CourseForm() {
                     Creating...
                   </>
                 ) : (
-                  'Create Course'
+                  "Create Course"
                 )}
               </button>
             </div>
