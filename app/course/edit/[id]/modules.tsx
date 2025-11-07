@@ -47,7 +47,6 @@ type ModuleWithItems = Module & {
   }[];
 };
 
-type QuestionItem = NonNullable<ModuleWithItems["questions"]>[number];
 
 interface ModulesProps {
   modules: ModuleWithItems[];
@@ -98,35 +97,6 @@ export default function Modules({ modules, courseId }: ModulesProps) {
   const handleAddSlide = (moduleId: string) => {
     setSelectedModuleId(moduleId);
     setShowSlideForm(true);
-  };
-
-  const openEditDialog = (
-    type: "slide" | "question",
-    item:
-      | { id: string; title?: string | null; content?: string }
-      | QuestionItem,
-    moduleId: string
-  ) => {
-    const qItem = item as QuestionItem;
-    setEditState({
-      isOpen: true,
-      type,
-      id: item.id,
-      moduleId,
-      title: item.title || "",
-      content: item.content || "",
-      options:
-        type === "question" && Array.isArray(qItem.options)
-          ? qItem.options.map(
-              (o: NonNullable<QuestionItem["options"]>[number]) => ({
-                id: o.id,
-                text: o.text,
-                isCorrect: !!o.isCorrect,
-                explanation: o.explanation || "",
-              })
-            )
-          : [],
-    });
   };
 
   const closeEditDialog = () => {
