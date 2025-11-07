@@ -15,11 +15,6 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
-// Dynamically import components with no SSR
-const SlideForm = dynamic(() => import("./slide-form"), { ssr: false });
-
-const QuestionForm = dynamic(() => import("./question-form"), { ssr: false });
-
 const DeleteDialog = dynamic(() => import("./delete-dialog"), { ssr: false });
 
 type DeleteType = "module" | "slide" | "question";
@@ -47,7 +42,6 @@ type ModuleWithItems = Module & {
   }[];
 };
 
-
 interface ModulesProps {
   modules: ModuleWithItems[];
   courseId: string;
@@ -56,9 +50,6 @@ interface ModulesProps {
 export default function Modules({ modules, courseId }: ModulesProps) {
   const [activeModule, setActiveModule] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [showSlideForm, setShowSlideForm] = useState(false);
-  const [showQuestionForm, setShowQuestionForm] = useState(false);
-  const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
   const [isSavingEdit, setIsSavingEdit] = useState(false);
   const [editState, setEditState] = useState<{
     isOpen: boolean;
@@ -93,11 +84,6 @@ export default function Modules({ modules, courseId }: ModulesProps) {
 
   const [newModuleTitle, setNewModuleTitle] = useState("");
   const router = useRouter();
-
-  const handleAddSlide = (moduleId: string) => {
-    setSelectedModuleId(moduleId);
-    setShowSlideForm(true);
-  };
 
   const closeEditDialog = () => {
     setEditState({
@@ -182,22 +168,6 @@ export default function Modules({ modules, courseId }: ModulesProps) {
         isCorrect: o.id === id ? !o.isCorrect : false,
       })),
     }));
-  };
-
-  const handleAddQuestion = (moduleId: string) => {
-    setSelectedModuleId(moduleId);
-    setShowQuestionForm(true);
-  };
-
-  const handleFormSuccess = () => {
-    setShowSlideForm(false);
-    setShowQuestionForm(false);
-    router.refresh();
-  };
-
-  const closeAllForms = () => {
-    setShowSlideForm(false);
-    setShowQuestionForm(false);
   };
 
   const openDeleteDialog = (
@@ -408,17 +378,11 @@ export default function Modules({ modules, courseId }: ModulesProps) {
               <div className="p-4 pt-2 space-y-4">
                 <div className="bg-base-100 p-4 rounded-lg">
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <button
-                      className="btn btn-outline btn-sm"
-                      onClick={() => handleAddSlide(module.id)}
-                    >
+                    <button className="btn btn-outline btn-sm">
                       <Plus className="w-4 h-4 mr-1" />
                       Add Slide
                     </button>
-                    <button
-                      className="btn btn-outline btn-sm"
-                      onClick={() => handleAddQuestion(module.id)}
-                    >
+                    <button className="btn btn-outline btn-sm">
                       <Plus className="w-4 h-4 mr-1" />
                       Add Question
                     </button>
@@ -518,8 +482,15 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                                 >
                                   Edit Question
                                 </Link>
-                                <button 
-                                  onClick={() => openDeleteDialog("question", q.id, q.title || "Untitled Question", module.id)}
+                                <button
+                                  onClick={() =>
+                                    openDeleteDialog(
+                                      "question",
+                                      q.id,
+                                      q.title || "Untitled Question",
+                                      module.id
+                                    )
+                                  }
                                   className="btn btn-ghost btn-xs text-error"
                                 >
                                   <Trash2 className="w-3 h-3 mr-1" /> Delete
@@ -538,22 +509,6 @@ export default function Modules({ modules, courseId }: ModulesProps) {
           </div>
         ))}
       </div>
-
-      {showSlideForm && selectedModuleId && (
-        <SlideForm
-          moduleId={selectedModuleId}
-          onClose={closeAllForms}
-          onSuccess={handleFormSuccess}
-        />
-      )}
-
-      {showQuestionForm && selectedModuleId && (
-        <QuestionForm
-          moduleId={selectedModuleId}
-          onClose={closeAllForms}
-          onSuccess={handleFormSuccess}
-        />
-      )}
 
       <DeleteDialog
         isOpen={deleteState.isOpen}
