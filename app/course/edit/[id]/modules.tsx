@@ -13,6 +13,7 @@ import {
 } from "./actions";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 // Dynamically import components with no SSR
 const SlideForm = dynamic(() => import("./slide-form"), { ssr: false });
@@ -515,28 +516,19 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                                 </p>
                               )}
                               <div className="flex justify-end gap-2">
-                                <button
+                                <Link
                                   className="btn btn-ghost btn-xs"
-                                  onClick={() =>
-                                    openEditDialog("question", q, module.id)
-                                  }
+                                  href={`/course/edit/${module.id}/question/${q.id}`}
                                 >
                                   Edit Question
-                                </button>
-                                <button
+                                </Link>
+                                <Link
+                                  href={`/course/edit/${module.id}/question/${q.id}/delete`}
                                   className="btn btn-ghost btn-xs text-error"
-                                  onClick={() =>
-                                    openDeleteDialog(
-                                      "question",
-                                      q.id,
-                                      q.title || "Untitled Question",
-                                      module.id
-                                    )
-                                  }
                                 >
                                   <Trash2 className="w-3 h-3 mr-1" /> Delete
                                   Question
-                                </button>
+                                </Link>
                               </div>
                             </div>
                           </div>
