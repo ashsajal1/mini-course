@@ -13,11 +13,7 @@ import {
 } from "./actions";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-
-// Dynamically import components with no SSR
-const SlideForm = dynamic(() => import("./slide-form"), { ssr: false });
-
-const QuestionForm = dynamic(() => import("./question-form"), { ssr: false });
+import Link from "next/link";
 
 const DeleteDialog = dynamic(() => import("./delete-dialog"), { ssr: false });
 
@@ -37,11 +33,14 @@ type ModuleWithItems = Module & {
     id: string;
     title: string | null;
     content?: string;
-    options?: { id: string; text: string; isCorrect: boolean; explanation: string | null }[];
+    options?: {
+      id: string;
+      text: string;
+      isCorrect: boolean;
+      explanation: string | null;
+    }[];
   }[];
 };
-
-type QuestionItem = NonNullable<ModuleWithItems["questions"]>[number];
 
 interface ModulesProps {
   modules: ModuleWithItems[];
@@ -51,9 +50,6 @@ interface ModulesProps {
 export default function Modules({ modules, courseId }: ModulesProps) {
   const [activeModule, setActiveModule] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [showSlideForm, setShowSlideForm] = useState(false);
-  const [showQuestionForm, setShowQuestionForm] = useState(false);
-  const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
   const [isSavingEdit, setIsSavingEdit] = useState(false);
   const [editState, setEditState] = useState<{
     isOpen: boolean;
@@ -62,7 +58,12 @@ export default function Modules({ modules, courseId }: ModulesProps) {
     moduleId: string;
     title: string;
     content: string;
-    options: { id: string; text: string; isCorrect: boolean; explanation: string }[];
+    options: {
+      id: string;
+      text: string;
+      isCorrect: boolean;
+      explanation: string;
+    }[];
   }>({
     isOpen: false,
     type: null,
@@ -83,36 +84,6 @@ export default function Modules({ modules, courseId }: ModulesProps) {
 
   const [newModuleTitle, setNewModuleTitle] = useState("");
   const router = useRouter();
-
-  const handleAddSlide = (moduleId: string) => {
-    setSelectedModuleId(moduleId);
-    setShowSlideForm(true);
-  };
-
-  const openEditDialog = (
-    type: "slide" | "question",
-    item: { id: string; title?: string | null; content?: string } | QuestionItem,
-    moduleId: string
-  ) => {
-    const qItem = item as QuestionItem;
-    setEditState({
-      isOpen: true,
-      type,
-      id: item.id,
-      moduleId,
-      title: item.title || "",
-      content: item.content || "",
-      options:
-        type === "question" && Array.isArray(qItem.options)
-          ? qItem.options.map((o: NonNullable<QuestionItem["options"]>[number]) => ({
-              id: o.id,
-              text: o.text,
-              isCorrect: !!o.isCorrect,
-              explanation: o.explanation || "",
-            }))
-          : [],
-    });
-  };
 
   const closeEditDialog = () => {
     setEditState({
@@ -159,7 +130,12 @@ export default function Modules({ modules, courseId }: ModulesProps) {
       ...s,
       options: [
         ...s.options,
-        { id: crypto.randomUUID(), text: "", isCorrect: false, explanation: "" },
+        {
+          id: crypto.randomUUID(),
+          text: "",
+          isCorrect: false,
+          explanation: "",
+        },
       ],
     }));
   };
@@ -167,11 +143,17 @@ export default function Modules({ modules, courseId }: ModulesProps) {
   const removeEditOption = (id: string) => {
     setEditState((s) => ({
       ...s,
-      options: s.options.length <= 2 ? s.options : s.options.filter((o) => o.id !== id),
+      options:
+        s.options.length <= 2
+          ? s.options
+          : s.options.filter((o) => o.id !== id),
     }));
   };
 
-  const updateEditOption = (id: string, updates: Partial<{ text: string; isCorrect: boolean; explanation: string }>) => {
+  const updateEditOption = (
+    id: string,
+    updates: Partial<{ text: string; isCorrect: boolean; explanation: string }>
+  ) => {
     setEditState((s) => ({
       ...s,
       options: s.options.map((o) => (o.id === id ? { ...o, ...updates } : o)),
@@ -181,24 +163,11 @@ export default function Modules({ modules, courseId }: ModulesProps) {
   const toggleEditCorrect = (id: string) => {
     setEditState((s) => ({
       ...s,
-      options: s.options.map((o) => ({ ...o, isCorrect: o.id === id ? !o.isCorrect : false })),
+      options: s.options.map((o) => ({
+        ...o,
+        isCorrect: o.id === id ? !o.isCorrect : false,
+      })),
     }));
-  };
-
-  const handleAddQuestion = (moduleId: string) => {
-    setSelectedModuleId(moduleId);
-    setShowQuestionForm(true);
-  };
-
-  const handleFormSuccess = () => {
-    setShowSlideForm(false);
-    setShowQuestionForm(false);
-    router.refresh();
-  };
-
-  const closeAllForms = () => {
-    setShowSlideForm(false);
-    setShowQuestionForm(false);
   };
 
   const openDeleteDialog = (
@@ -409,17 +378,11 @@ export default function Modules({ modules, courseId }: ModulesProps) {
               <div className="p-4 pt-2 space-y-4">
                 <div className="bg-base-100 p-4 rounded-lg">
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <button
-                      className="btn btn-outline btn-sm"
-                      onClick={() => handleAddSlide(module.id)}
-                    >
+                    <button className="btn btn-outline btn-sm">
                       <Plus className="w-4 h-4 mr-1" />
                       Add Slide
                     </button>
-                    <button
-                      className="btn btn-outline btn-sm"
-                      onClick={() => handleAddQuestion(module.id)}
-                    >
+                    <button className="btn btn-outline btn-sm">
                       <Plus className="w-4 h-4 mr-1" />
                       Add Question
                     </button>
@@ -461,14 +424,12 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                                 </p>
                               )}
                               <div className="flex justify-end gap-2">
-                                <button
+                                <Link
+                                  href={`/course/edit/${module.id}/slide/${s.id}`}
                                   className="btn btn-ghost btn-xs"
-                                  onClick={() =>
-                                    openEditDialog("slide", s, module.id)
-                                  }
                                 >
                                   Edit Slide
-                                </button>
+                                </Link>
                                 <button
                                   className="btn btn-ghost btn-xs text-error"
                                   onClick={() =>
@@ -515,16 +476,13 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                                 </p>
                               )}
                               <div className="flex justify-end gap-2">
-                                <button
+                                <Link
                                   className="btn btn-ghost btn-xs"
-                                  onClick={() =>
-                                    openEditDialog("question", q, module.id)
-                                  }
+                                  href={`/course/edit/${module.id}/question/${q.id}`}
                                 >
                                   Edit Question
-                                </button>
+                                </Link>
                                 <button
-                                  className="btn btn-ghost btn-xs text-error"
                                   onClick={() =>
                                     openDeleteDialog(
                                       "question",
@@ -533,6 +491,7 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                                       module.id
                                     )
                                   }
+                                  className="btn btn-ghost btn-xs text-error"
                                 >
                                   <Trash2 className="w-3 h-3 mr-1" /> Delete
                                   Question
@@ -550,22 +509,6 @@ export default function Modules({ modules, courseId }: ModulesProps) {
           </div>
         ))}
       </div>
-
-      {showSlideForm && selectedModuleId && (
-        <SlideForm
-          moduleId={selectedModuleId}
-          onClose={closeAllForms}
-          onSuccess={handleFormSuccess}
-        />
-      )}
-
-      {showQuestionForm && selectedModuleId && (
-        <QuestionForm
-          moduleId={selectedModuleId}
-          onClose={closeAllForms}
-          onSuccess={handleFormSuccess}
-        />
-      )}
 
       <DeleteDialog
         isOpen={deleteState.isOpen}
@@ -599,7 +542,7 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                     <span className="label-text">Title</span>
                   </label>
                   <input
-                  aria-label="input"
+                    aria-label="input"
                     type="text"
                     value={editState.title}
                     onChange={(e) =>
@@ -619,7 +562,9 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                   <input
                     type="text"
                     value={editState.title}
-                    onChange={(e) => setEditState((s) => ({ ...s, title: e.target.value }))}
+                    onChange={(e) =>
+                      setEditState((s) => ({ ...s, title: e.target.value }))
+                    }
                     className="input input-bordered w-full mb-4"
                     placeholder="Enter question title"
                     disabled={isSavingEdit}
@@ -628,7 +573,9 @@ export default function Modules({ modules, courseId }: ModulesProps) {
               )}
 
               <label className="label">
-                <span className="label-text">{editState.type === "slide" ? "Content" : "Question"}</span>
+                <span className="label-text">
+                  {editState.type === "slide" ? "Content" : "Question"}
+                </span>
               </label>
               <textarea
                 aria-label="Textrea for slide"
@@ -668,7 +615,10 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                             disabled={isSavingEdit}
                             id={`edit-correct-${opt.id}`}
                           />
-                          <label htmlFor={`edit-correct-${opt.id}`} className="text-sm cursor-pointer">
+                          <label
+                            htmlFor={`edit-correct-${opt.id}`}
+                            className="text-sm cursor-pointer"
+                          >
                             Correct Answer
                           </label>
                           {editState.options.length > 2 && (
@@ -685,7 +635,9 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                         <input
                           type="text"
                           value={opt.text}
-                          onChange={(e) => updateEditOption(opt.id, { text: e.target.value })}
+                          onChange={(e) =>
+                            updateEditOption(opt.id, { text: e.target.value })
+                          }
                           placeholder={`Option ${index + 1}`}
                           className="input input-bordered w-full mb-2"
                           disabled={isSavingEdit}
@@ -693,7 +645,11 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                         <input
                           type="text"
                           value={opt.explanation}
-                          onChange={(e) => updateEditOption(opt.id, { explanation: e.target.value })}
+                          onChange={(e) =>
+                            updateEditOption(opt.id, {
+                              explanation: e.target.value,
+                            })
+                          }
                           placeholder="Explanation (optional)"
                           className="input input-bordered w-full text-sm"
                           disabled={isSavingEdit}
