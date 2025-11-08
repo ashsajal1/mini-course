@@ -378,10 +378,13 @@ export default function Modules({ modules, courseId }: ModulesProps) {
               <div className="p-4 pt-2 space-y-4">
                 <div className="bg-base-100 p-4 rounded-lg">
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <button className="btn btn-outline btn-sm">
+                    <Link
+                      href={`/course/edit/${courseId}/slide?moduleId=${module.id}`}
+                      className="btn btn-outline btn-sm"
+                    >
                       <Plus className="w-4 h-4 mr-1" />
                       Add Slide
-                    </button>
+                    </Link>
                     <button className="btn btn-outline btn-sm">
                       <Plus className="w-4 h-4 mr-1" />
                       Add Question
