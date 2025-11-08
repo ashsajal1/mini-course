@@ -4,7 +4,6 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import type { Module } from "@prisma/client";
 import {
-  createModule,
   deleteModule,
   deleteSlide,
   deleteQuestion,
@@ -12,6 +11,7 @@ import {
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import CreateModuleDialog from "./create-module-dialog";
 
 const DeleteDialog = dynamic(() => import("./delete-dialog"), { ssr: false });
 
@@ -57,7 +57,6 @@ export default function Modules({ modules, courseId }: ModulesProps) {
     moduleId: "",
   });
 
-  const [newModuleTitle, setNewModuleTitle] = useState("");
   const router = useRouter();
 
   const openDeleteDialog = (
@@ -116,20 +115,7 @@ export default function Modules({ modules, courseId }: ModulesProps) {
     setActiveModule(activeModule === moduleId ? null : moduleId);
   };
 
-  const handleCreateModule = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newModuleTitle.trim()) return;
 
-    try {
-      const response = await createModule(courseId, newModuleTitle);
-
-      if (response.success) {
-        router.refresh();
-      }
-    } catch (error) {
-      console.error("Failed to create module:", error);
-    }
-  };
 
   if (!modules || modules.length === 0) {
     return (
@@ -151,43 +137,11 @@ export default function Modules({ modules, courseId }: ModulesProps) {
           </button>
         </div>
 
-        {isCreating && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-base-100 p-6 rounded-lg w-full max-w-md">
-              <h3 className="text-xl font-semibold mb-4">Create New Module</h3>
-              <form onSubmit={handleCreateModule}>
-                <div className="form-control w-full mb-4">
-                  <label className="label">
-                    <span className="label-text">Module Title</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={newModuleTitle}
-                    onChange={(e) => setNewModuleTitle(e.target.value)}
-                    placeholder="Enter module title"
-                    className="input input-bordered w-full"
-                    autoFocus
-                  />
-                </div>
-                <div className="flex justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsCreating(false);
-                      setNewModuleTitle("");
-                    }}
-                    className="btn btn-ghost"
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    Create Module
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+        <CreateModuleDialog
+          isOpen={isCreating}
+          onClose={() => setIsCreating(false)}
+          courseId={courseId}
+        />
       </div>
     );
   }
@@ -205,43 +159,11 @@ export default function Modules({ modules, courseId }: ModulesProps) {
         </button>
       </div>
 
-      {isCreating && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-base-100 p-6 rounded-lg w-full max-w-md">
-            <h3 className="text-xl font-semibold mb-4">Create New Module</h3>
-            <form onSubmit={handleCreateModule}>
-              <div className="form-control w-full mb-4">
-                <label className="label">
-                  <span className="label-text">Module Title</span>
-                </label>
-                <input
-                  type="text"
-                  value={newModuleTitle}
-                  onChange={(e) => setNewModuleTitle(e.target.value)}
-                  placeholder="Enter module title"
-                  className="input input-bordered w-full"
-                  autoFocus
-                />
-              </div>
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsCreating(false);
-                    setNewModuleTitle("");
-                  }}
-                  className="btn btn-ghost"
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  Create Module
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <CreateModuleDialog
+        isOpen={isCreating}
+        onClose={() => setIsCreating(false)}
+        courseId={courseId}
+      />
 
       <div className="space-y-2">
         {modules.map((module) => (
