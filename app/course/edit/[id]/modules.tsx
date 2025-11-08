@@ -8,8 +8,6 @@ import {
   deleteModule,
   deleteSlide,
   deleteQuestion,
-  updateSlide,
-  updateQuestion,
 } from "./actions";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -50,29 +48,6 @@ interface ModulesProps {
 export default function Modules({ modules, courseId }: ModulesProps) {
   const [activeModule, setActiveModule] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [isSavingEdit, setIsSavingEdit] = useState(false);
-  const [editState, setEditState] = useState<{
-    isOpen: boolean;
-    type: "slide" | "question" | null;
-    id: string;
-    moduleId: string;
-    title: string;
-    content: string;
-    options: {
-      id: string;
-      text: string;
-      isCorrect: boolean;
-      explanation: string;
-    }[];
-  }>({
-    isOpen: false,
-    type: null,
-    id: "",
-    moduleId: "",
-    title: "",
-    content: "",
-    options: [],
-  });
 
   const [deleteState, setDeleteState] = useState<DeleteState>({
     isOpen: false,
@@ -84,91 +59,6 @@ export default function Modules({ modules, courseId }: ModulesProps) {
 
   const [newModuleTitle, setNewModuleTitle] = useState("");
   const router = useRouter();
-
-  const closeEditDialog = () => {
-    setEditState({
-      isOpen: false,
-      type: null,
-      id: "",
-      moduleId: "",
-      title: "",
-      content: "",
-      options: [],
-    });
-  };
-
-  const handleSaveEdit = async () => {
-    if (!editState.type || !editState.id) return;
-    try {
-      setIsSavingEdit(true);
-      if (editState.type === "slide") {
-        await updateSlide(editState.id, editState.title, editState.content);
-      } else {
-        await updateQuestion(
-          editState.id,
-          editState.title,
-          editState.content,
-          editState.options.map((o) => ({
-            id: o.id,
-            text: o.text,
-            isCorrect: o.isCorrect,
-            explanation: o.explanation || "",
-          }))
-        );
-      }
-      closeEditDialog();
-      router.refresh();
-    } catch (e) {
-      console.error("Failed to save edits", e);
-    } finally {
-      setIsSavingEdit(false);
-    }
-  };
-
-  const addEditOption = () => {
-    setEditState((s) => ({
-      ...s,
-      options: [
-        ...s.options,
-        {
-          id: crypto.randomUUID(),
-          text: "",
-          isCorrect: false,
-          explanation: "",
-        },
-      ],
-    }));
-  };
-
-  const removeEditOption = (id: string) => {
-    setEditState((s) => ({
-      ...s,
-      options:
-        s.options.length <= 2
-          ? s.options
-          : s.options.filter((o) => o.id !== id),
-    }));
-  };
-
-  const updateEditOption = (
-    id: string,
-    updates: Partial<{ text: string; isCorrect: boolean; explanation: string }>
-  ) => {
-    setEditState((s) => ({
-      ...s,
-      options: s.options.map((o) => (o.id === id ? { ...o, ...updates } : o)),
-    }));
-  };
-
-  const toggleEditCorrect = (id: string) => {
-    setEditState((s) => ({
-      ...s,
-      options: s.options.map((o) => ({
-        ...o,
-        isCorrect: o.id === id ? !o.isCorrect : false,
-      })),
-    }));
-  };
 
   const openDeleteDialog = (
     type: DeleteType,
@@ -385,10 +275,13 @@ export default function Modules({ modules, courseId }: ModulesProps) {
                       <Plus className="w-4 h-4 mr-1" />
                       Add Slide
                     </Link>
-                    <button className="btn btn-outline btn-sm">
+                    <Link
+                      href={`/course/edit/${courseId}/question?moduleId=${module.id}`}
+                      className="btn btn-outline btn-sm"
+                    >
                       <Plus className="w-4 h-4 mr-1" />
                       Add Question
-                    </button>
+                    </Link>
                     <div className="divider divider-horizontal my-0">OR</div>
                     <button
                       className="btn btn-ghost btn-sm text-error gap-1"
@@ -521,179 +414,6 @@ export default function Modules({ modules, courseId }: ModulesProps) {
         description={`Are you sure you want to delete "${deleteState.title}"? This action cannot be undone.`}
         isLoading={false}
       />
-
-      {editState.isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-base-100 p-6 rounded-lg w-full max-w-2xl">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold">
-                {editState.type === "slide" ? "Edit Slide" : "Edit Question"}
-              </h3>
-              <button
-                onClick={closeEditDialog}
-                className="btn btn-ghost btn-sm"
-                disabled={isSavingEdit}
-              >
-                Close
-              </button>
-            </div>
-
-            <div className="form-control w-full mb-4">
-              {editState.type === "slide" && (
-                <>
-                  <label className="label">
-                    <span className="label-text">Title</span>
-                  </label>
-                  <input
-                    aria-label="input"
-                    type="text"
-                    value={editState.title}
-                    onChange={(e) =>
-                      setEditState((s) => ({ ...s, title: e.target.value }))
-                    }
-                    className="input input-bordered w-full mb-4"
-                    disabled={isSavingEdit}
-                  />
-                </>
-              )}
-
-              {editState.type === "question" && (
-                <>
-                  <label className="label">
-                    <span className="label-text">Title</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={editState.title}
-                    onChange={(e) =>
-                      setEditState((s) => ({ ...s, title: e.target.value }))
-                    }
-                    className="input input-bordered w-full mb-4"
-                    placeholder="Enter question title"
-                    disabled={isSavingEdit}
-                  />
-                </>
-              )}
-
-              <label className="label">
-                <span className="label-text">
-                  {editState.type === "slide" ? "Content" : "Question"}
-                </span>
-              </label>
-              <textarea
-                aria-label="Textrea for slide"
-                value={editState.content}
-                onChange={(e) =>
-                  setEditState((s) => ({ ...s, content: e.target.value }))
-                }
-                className="textarea textarea-bordered w-full min-h-[200px]"
-                disabled={isSavingEdit}
-              />
-
-              {editState.type === "question" && (
-                <div className="mt-4 space-y-4">
-                  <div className="flex justify-between items-center">
-                    <label className="label">
-                      <span className="label-text">Options</span>
-                    </label>
-                    <button
-                      type="button"
-                      onClick={addEditOption}
-                      className="btn btn-ghost btn-sm"
-                      disabled={isSavingEdit || editState.options.length >= 5}
-                    >
-                      Add Option
-                    </button>
-                  </div>
-
-                  <div className="space-y-3">
-                    {editState.options.map((opt, index) => (
-                      <div key={opt.id} className="bg-base-200 p-3 rounded-lg">
-                        <div className="flex gap-2 mb-2">
-                          <input
-                            type="checkbox"
-                            checked={opt.isCorrect}
-                            onChange={() => toggleEditCorrect(opt.id)}
-                            className="checkbox checkbox-primary"
-                            disabled={isSavingEdit}
-                            id={`edit-correct-${opt.id}`}
-                          />
-                          <label
-                            htmlFor={`edit-correct-${opt.id}`}
-                            className="text-sm cursor-pointer"
-                          >
-                            Correct Answer
-                          </label>
-                          {editState.options.length > 2 && (
-                            <button
-                              type="button"
-                              onClick={() => removeEditOption(opt.id)}
-                              className="ml-auto text-error"
-                              disabled={isSavingEdit}
-                            >
-                              Remove
-                            </button>
-                          )}
-                        </div>
-                        <input
-                          type="text"
-                          value={opt.text}
-                          onChange={(e) =>
-                            updateEditOption(opt.id, { text: e.target.value })
-                          }
-                          placeholder={`Option ${index + 1}`}
-                          className="input input-bordered w-full mb-2"
-                          disabled={isSavingEdit}
-                        />
-                        <input
-                          type="text"
-                          value={opt.explanation}
-                          onChange={(e) =>
-                            updateEditOption(opt.id, {
-                              explanation: e.target.value,
-                            })
-                          }
-                          placeholder="Explanation (optional)"
-                          className="input input-bordered w-full text-sm"
-                          disabled={isSavingEdit}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={closeEditDialog}
-                className="btn btn-ghost"
-                disabled={isSavingEdit}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleSaveEdit}
-                className="btn btn-primary"
-                disabled={
-                  isSavingEdit ||
-                  (editState.type === "slide"
-                    ? !editState.title.trim() || !editState.content.trim()
-                    : !editState.title.trim() ||
-                      !editState.content.trim() ||
-                      editState.options.length < 2 ||
-                      editState.options.some((o) => !o.text.trim()) ||
-                      !editState.options.some((o) => o.isCorrect))
-                }
-              >
-                {isSavingEdit ? "Saving..." : "Save"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
