@@ -5,6 +5,8 @@ import Navbar from "./component/navbar";
 import { ThemeProvider } from "./component/theme-provider";
 import Footer from "./component/footer";
 
+import { ClerkProvider } from "@clerk/nextjs";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -84,18 +86,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <ThemeProvider>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <Navbar />
-          <main className="mt-[80px] p-4 dark:bg-base-900 dark:text-base-content dark:border-base-800">
-            {children}
-          </main>
-          <Footer />
-        </body>
-      </ThemeProvider>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <ThemeProvider>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
+            <Navbar />
+            <main className="mt-[80px] p-4 dark:bg-base-900 dark:text-base-content dark:border-base-800">
+              {children}
+            </main>
+            <Footer />
+          </body>
+        </ThemeProvider>
+      </html>
+    </ClerkProvider>
   );
 }
