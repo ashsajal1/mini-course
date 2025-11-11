@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
+import { SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -52,21 +53,26 @@ export default function Navbar() {
               key={item.name}
               href={item.href}
               className={`btn btn-ghost btn-sm ${
-                pathname === item.href 
-                  ? 'text-primary' 
-                  : 'text-base-content hover:bg-base-200 hover:bg-opacity-50'
+                pathname === item.href
+                  ? "text-primary"
+                  : "text-base-content hover:bg-base-200 hover:bg-opacity-50"
               }`}
             >
               {item.name}
             </Link>
           ))}
-          <Link
-            href="/course/create"
-            className="btn btn-primary btn-sm"
-          >
+          <Link href="/course/create" className="btn btn-primary btn-sm">
             Create Course
           </Link>
           <ModeToggle />
+
+          <SignedOut>
+            <SignUpButton>
+              <button className="btn btn-primary btn-sm">
+                Sign Up
+              </button>
+            </SignUpButton>
+          </SignedOut>
         </div>
 
         {/* Mobile menu button */}
@@ -93,9 +99,9 @@ export default function Navbar() {
                 key={item.name}
                 href={item.href}
                 className={`btn btn-ghost btn-block justify-start ${
-                  pathname === item.href 
-                    ? 'text-primary' 
-                    : 'text-base-content hover:bg-base-200 hover:bg-opacity-50'
+                  pathname === item.href
+                    ? "text-primary"
+                    : "text-base-content hover:bg-base-200 hover:bg-opacity-50"
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
