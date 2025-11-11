@@ -1,7 +1,7 @@
 import prisma from "@/prisma/client";
 import { ContentType } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
-import ContentSlider from "./content-slider";
+import LearnModuleView from "./learn-module-view";
 
 // This creates a type that includes the relations
 export type ContentWithRelations = Prisma.ContentGetPayload<{
@@ -54,7 +54,7 @@ export default async function Page({
 
   return (
     <div>
-      <ContentSlider moduleContent={moduleContent!} />
+      <LearnModuleView moduleContent={moduleContent!} />
     </div>
   );
 }
