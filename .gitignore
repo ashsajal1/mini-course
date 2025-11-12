@@ -44,3 +44,9 @@ next-env.d.ts
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# deno
+deno.lock
+
+# netlify
+.netlify
