@@ -8,7 +8,6 @@ import { ModeToggle } from "./mode-toggle";
 import {
   SignedOut,
   SignInButton,
-  SignUpButton,
   SignedIn,
   SignOutButton,
 } from "@clerk/nextjs";
@@ -73,9 +72,9 @@ export default function Navbar() {
           <ModeToggle />
 
           <SignedOut>
-            <SignUpButton>
+            <SignInButton>
               <button className="btn btn-primary btn-sm">Sign Up</button>
-            </SignUpButton>
+            </SignInButton>
           </SignedOut>
 
           <SignedIn>
