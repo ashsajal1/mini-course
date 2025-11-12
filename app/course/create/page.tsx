@@ -1,5 +1,5 @@
 import CourseForm from "./course-form";
 
-export default function CreateCoursePage() {
+export default async function CreateCoursePage() {
   return <CourseForm />;
 }

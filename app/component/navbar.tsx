@@ -5,7 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
-import { SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import {
+  SignedOut,
+  SignInButton,
+  SignedIn,
+  SignOutButton,
+} from "@clerk/nextjs";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -67,12 +72,16 @@ export default function Navbar() {
           <ModeToggle />
 
           <SignedOut>
-            <SignUpButton>
-              <button className="btn btn-primary btn-sm">
-                Sign Up
-              </button>
-            </SignUpButton>
+            <SignInButton>
+              <button className="btn btn-primary btn-sm">Sign In</button>
+            </SignInButton>
           </SignedOut>
+
+          <SignedIn>
+            <SignOutButton>
+              <button className="btn btn-primary btn-sm">Sign Out</button>
+            </SignOutButton>
+          </SignedIn>
         </div>
 
         {/* Mobile menu button */}
