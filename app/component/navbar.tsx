@@ -73,7 +73,7 @@ export default function Navbar() {
 
           <SignedOut>
             <SignInButton>
-              <button className="btn btn-primary btn-sm">Sign Up</button>
+              <button className="btn btn-primary btn-sm">Sign In</button>
             </SignInButton>
           </SignedOut>
 
