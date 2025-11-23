@@ -1,11 +1,6 @@
 import { z } from "zod";
 
 export const courseFormSchema = z.object({
-  creator: z
-    .string()
-    .min(2, "Creator name must be at least 2 characters")
-    .max(50, "Creator name must be less than 50 characters"),
-
   name: z
     .string()
     .min(3, "Course name must be at least 3 characters")

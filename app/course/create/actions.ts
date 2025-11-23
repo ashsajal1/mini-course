@@ -1,5 +1,6 @@
 "use server";
 
+import { currentUser } from "@clerk/nextjs/server";
 import prisma from "@/prisma/client";
 import { validateCourseData } from "./course-validation";
 
@@ -23,6 +24,11 @@ export async function createCourse(
   formData: FormData
 ): Promise<CreateCourseResponse> {
   try {
+    const user = await currentUser();
+    if (!user) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     // Convert FormData to plain object
     const formDataObj = Object.fromEntries(formData.entries());
 
@@ -35,7 +41,10 @@ export async function createCourse(
 
     // If validation passes, create the course
     const course = await prisma.course.create({
-      data: validation.data!,
+      data: {
+        ...validation.data!,
+        creator: user.id,
+      },
     });
 
     return { success: true, course }; // This line is a fallback in case redirect doesn't work

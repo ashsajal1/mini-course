@@ -13,7 +13,6 @@ export default function CourseForm() {
   const [serverError, setServerError] = useState("");
 
   type FormData = {
-    creator: string;
     name: string;
     description: string;
     difficulty: string;
@@ -89,32 +88,8 @@ export default function CourseForm() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Creator */}
-              <div className="form-control">
-                <label className="label" htmlFor="creator">
-                  <span className="label-text font-semibold">Creator Name</span>
-                </label>
-                <input
-                  type="text"
-                  id="creator"
-                  {...register("creator")}
-                  className={`input input-bordered w-full ${
-                    errors.creator ? "input-error" : ""
-                  }`}
-                  placeholder="John Doe"
-                  disabled={isSubmitting}
-                />
-                {errors.creator && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">
-                      {errors.creator.message}
-                    </span>
-                  </label>
-                )}
-              </div>
-
               {/* Course Name */}
-              <div className="form-control">
+              <div className="form-control md:col-span-2">
                 <label className="label" htmlFor="name">
                   <span className="label-text font-semibold">Course Name</span>
                 </label>
