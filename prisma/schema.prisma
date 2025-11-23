@@ -41,7 +41,8 @@ model Module {
   questions Question[]
 
   // Module content items (polymorphic relation)
-  content Content[]
+  content            Content[]
+  UserModuleProgress UserModuleProgress[]
 }
 
 enum ContentType {
@@ -118,4 +119,39 @@ model Option {
   // Ensure only one correct answer per question
   @@unique([questionId, isCorrect])
   @@index([questionId])
+}
+
+enum UserLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  MASTER
+}
+
+model User {
+  id       String    @id @default(cuid())
+  clerk_id String    @unique
+  level    UserLevel @default(BEGINNER)
+  xp       Int       @default(0)
+
+  modules_progress UserModuleProgress[]
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+}
+
+model UserModuleProgress {
+  id           String    @id @default(cuid())
+  user_id      String
+  user         User      @relation(fields: [user_id], references: [id])
+  module_id    String
+  module       Module    @relation(fields: [module_id], references: [id])
+  is_completed Boolean   @default(false)
+  completed_at DateTime?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([user_id, module_id])
 }
