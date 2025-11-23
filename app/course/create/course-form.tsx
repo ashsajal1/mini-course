@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { courseFormSchema } from "./course-validation";
 
-export default function CourseForm() {
+export default function CourseForm({ userName }: { userName?: string }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
@@ -28,6 +28,7 @@ export default function CourseForm() {
   } = useForm<FormData>({
     resolver: zodResolver(courseFormSchema),
     defaultValues: {
+      creator: userName || "",
       difficulty: "Beginner",
       thumbnail_url: "",
     },
