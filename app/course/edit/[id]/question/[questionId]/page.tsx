@@ -6,7 +6,7 @@ import { notFound, useParams, useRouter } from "next/navigation";
 import QuestionForm, {
   QuestionFormData,
   Option,
-} from "@/app/component/question-form";
+} from "@/app/components/question-form";
 
 type Question = {
   id: string;

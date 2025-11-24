@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 import { Course } from "@prisma/client";
-import CourseCard from "./component/course-card";
+import CourseCard from "./components/course-card";
 import prisma from "@/prisma/client";
 
 export default async function Home() {

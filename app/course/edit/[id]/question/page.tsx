@@ -1,6 +1,6 @@
 "use client";
 
-import QuestionForm, { QuestionFormData } from "@/app/component/question-form";
+import QuestionForm, { QuestionFormData } from "@/app/components/question-form";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createQuestion } from "./actions";
@@ -53,4 +53,3 @@ export default function Page() {
     </div>
   );
 }
-
