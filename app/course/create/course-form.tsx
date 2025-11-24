@@ -46,9 +46,9 @@ export default function CourseForm() {
 
       if (result?.error) {
         setServerError(result.error);
-      } else {
+      } else if (result?.course?.id) {
         reset();
-        router.push("/");
+        router.push(`/course/edit/${result.course.id}`);
       }
     } catch (error) {
       console.error("Error creating course:", error);
