@@ -1,8 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import CourseList from "./course-list";
+import CourseList from "@/app/components/course/course-list";
 import prisma from "@/prisma/client";
-
 
 export default async function CoursePage() {
   const courses = await prisma.course.findMany();

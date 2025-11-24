@@ -1,6 +1,8 @@
 "use client";
 
-import QuestionForm, { QuestionFormData } from "@/app/components/question-form";
+import QuestionForm, {
+  QuestionFormData,
+} from "@/app/components/course/question-form";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createQuestion } from "./actions";

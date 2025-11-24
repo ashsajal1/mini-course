@@ -8,9 +8,9 @@ import {
   Type,
   Trophy,
 } from "lucide-react";
-import ModuleContent from "./module-content";
 import { ContentWithRelations } from "./page";
 import { completeModule } from "./actions";
+import ModuleContent from "@/app/components/course/module-content";
 import { toast } from "sonner";
 
 export default function LearnModuleView({

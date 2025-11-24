@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { getSlide, updateSlide } from "./actions";
 import { notFound, useParams, useRouter } from "next/navigation";
-import SlideForm, { SlideFormData } from "@/app/components/slide-form";
+import SlideForm, { SlideFormData } from "@/app/components/course/slide-form";
 
 type Slide = {
   id: string;

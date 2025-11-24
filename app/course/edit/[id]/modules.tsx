@@ -5,11 +5,14 @@ import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import type { Module } from "@prisma/client";
 import { deleteModule, deleteSlide, deleteQuestion } from "./actions";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import CreateModuleDialog from "./create-module-dialog";
+import CreateModuleDialog from "@/app/components/course/create-module-dialog";
+import dynamic from "next/dynamic";
 
-const DeleteDialog = dynamic(() => import("./delete-dialog"), { ssr: false });
+const DeleteDialog = dynamic(
+  () => import("@/app/components/course/delete-dialog"),
+  { ssr: false }
+);
 
 type DeleteType = "module" | "slide" | "question";
 

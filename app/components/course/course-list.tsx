@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { Search, Filter, X } from "lucide-react";
 import { Course } from "@prisma/client";
-import CourseCard from "../components/course-card";
+import CourseCard from "@/app/components/course/course-card";
 
 const difficultyOptions = ["Beginner", "Intermediate", "Advanced"] as const;
 
