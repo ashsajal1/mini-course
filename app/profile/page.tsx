@@ -2,9 +2,9 @@ import { currentUser } from "@clerk/nextjs/server";
 import prisma from "@/prisma/client";
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import { CourseProgressSection } from "./course-progress-section";
-import { CreatedCoursesSection } from "./created-courses-section";
-import { LogoutButton } from "./logout-button";
+import { CourseProgressSection } from "../components/profile/course-progress-section";
+import { CreatedCoursesSection } from "../components/profile/created-courses-section";
+import { LogoutButton } from "../components/auth/logout-button";
 
 export default async function ProfilePage() {
   const user = await currentUser();

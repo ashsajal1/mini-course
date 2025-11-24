@@ -1,6 +1,6 @@
 import Slide from "./slide";
 import Question from "./question";
-import { ContentWithRelations } from "./page";
+import { ContentWithRelations } from "@/app/course/learn/[courseId]/[moduleId]/page";
 
 export default function ModuleContent({
   content,

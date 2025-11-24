@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import SlideForm, { SlideFormData } from "@/app/component/slide-form";
+import SlideForm, { SlideFormData } from "@/app/components/course/slide-form";
 import { createSlide } from "./actions";
 
 export default function CreateSlidePage() {

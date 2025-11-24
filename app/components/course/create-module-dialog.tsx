@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createModule } from "./actions";
+import { createModule } from "@/app/course/edit/[id]/actions";
 import { useRouter } from "next/navigation";
 
 interface CreateModuleDialogProps {

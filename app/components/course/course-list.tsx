@@ -3,13 +3,15 @@
 import { useState, useMemo } from "react";
 import { Search, Filter, X } from "lucide-react";
 import { Course } from "@prisma/client";
-import CourseCard from "../component/course-card";
+import CourseCard from "@/app/components/course/course-card";
 
 const difficultyOptions = ["Beginner", "Intermediate", "Advanced"] as const;
 
 export default function CourseList({ courses }: { courses: Course[] }) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
+  const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>(
+    []
+  );
   const [showFilters, setShowFilters] = useState(false);
 
   const filteredCourses = useMemo(() => {
@@ -42,7 +44,8 @@ export default function CourseList({ courses }: { courses: Course[] }) {
     setSelectedDifficulties([]);
   };
 
-  const hasActiveFilters = searchQuery !== "" || selectedDifficulties.length > 0;
+  const hasActiveFilters =
+    searchQuery !== "" || selectedDifficulties.length > 0;
 
   return (
     <div className="space-y-6">
@@ -74,10 +77,7 @@ export default function CourseList({ courses }: { courses: Course[] }) {
             )}
           </button>
           {hasActiveFilters && (
-            <button 
-              onClick={clearFilters}
-              className="btn btn-ghost"
-            >
+            <button onClick={clearFilters} className="btn btn-ghost">
               Clear all
             </button>
           )}
@@ -90,7 +90,7 @@ export default function CourseList({ courses }: { courses: Course[] }) {
           {selectedDifficulties.map((difficulty) => (
             <span key={difficulty} className="badge badge-primary gap-2">
               {difficulty}
-              <button 
+              <button
                 onClick={() => toggleDifficulty(difficulty)}
                 className="btn btn-ghost btn-xs p-0 h-4 min-h-4"
                 aria-label={`Remove ${difficulty} filter`}

@@ -4,13 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { ModeToggle } from "./mode-toggle";
-import {
-  SignedOut,
-  SignInButton,
-  SignedIn,
-  UserAvatar,
-} from "@clerk/nextjs";
+import { ModeToggle } from "../ui/mode-toggle";
+import { SignedOut, SignInButton, SignedIn, UserAvatar } from "@clerk/nextjs";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
