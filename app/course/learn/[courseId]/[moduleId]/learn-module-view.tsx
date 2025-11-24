@@ -1,18 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, CheckCircle, Type } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle,
+  Type,
+  Trophy,
+} from "lucide-react";
 import ModuleContent from "./module-content";
 import { ContentWithRelations } from "./page";
+import { completeModule } from "./actions";
+import { toast } from "sonner";
 
 export default function LearnModuleView({
   moduleContent,
+  moduleId,
+  courseId,
+  isCompleted: initialIsCompleted,
 }: {
   moduleContent: ContentWithRelations[];
+  moduleId: string;
+  courseId: string;
+  isCompleted: boolean;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(initialIsCompleted);
+  const [isCompleting, setIsCompleting] = useState(false);
   const totalItems = moduleContent.length;
   const currentContent = moduleContent[currentIndex];
+  const isOnLastItem = currentIndex === totalItems - 1;
 
   const goToNext = () => {
     if (currentIndex < totalItems - 1) {
@@ -30,11 +47,42 @@ export default function LearnModuleView({
     setCurrentIndex(index);
   };
 
+  const handleCompleteModule = async () => {
+    setIsCompleting(true);
+    try {
+      const result = await completeModule(moduleId, courseId);
+
+      if (result.success) {
+        setIsCompleted(true);
+        if (result.xpEarned && result.xpEarned > 0) {
+          toast.success(
+            `🎉 Module completed! You earned ${result.xpEarned} XP!`,
+            {
+              duration: 4000,
+            }
+          );
+        } else {
+          toast.info("Module already completed!", {
+            duration: 3000,
+          });
+        }
+      } else {
+        toast.error(result.error || "Failed to complete module", {
+          duration: 3000,
+        });
+      }
+    } catch {
+      toast.error("An error occurred. Please try again.", {
+        duration: 3000,
+      });
+    } finally {
+      setIsCompleting(false);
+    }
+  };
+
   if (totalItems === 0) {
     return (
-      <div className="text-center p-8">
-        This module has no content yet.
-      </div>
+      <div className="text-center p-8">This module has no content yet.</div>
     );
   }
 
@@ -90,18 +138,36 @@ export default function LearnModuleView({
                 {currentIndex + 1} / {totalItems}
               </span>
 
-              <button
-                type="button"
-                className={`btn btn-primary ${
-                  currentIndex === totalItems - 1 ? "invisible" : ""
-                } md:gap-2`}
-                onClick={goToNext}
-                disabled={currentIndex === totalItems - 1}
-                aria-label="Next slide"
-              >
-                <span className="hidden md:inline">Next</span>
-                <ChevronRight className="md:ml-2" />
-              </button>
+              {isOnLastItem && !isCompleted ? (
+                <button
+                  type="button"
+                  className="btn btn-success md:gap-2"
+                  onClick={handleCompleteModule}
+                  disabled={isCompleting}
+                  aria-label="Complete module"
+                >
+                  <Trophy className="w-5 h-5" />
+                  <span className="hidden md:inline">
+                    {isCompleting ? "Completing..." : "Complete Module"}
+                  </span>
+                </button>
+              ) : isOnLastItem && isCompleted ? (
+                <div className="btn btn-success btn-disabled md:gap-2">
+                  <CheckCircle className="w-5 h-5" />
+                  <span className="hidden md:inline">Completed</span>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-primary md:gap-2"
+                  onClick={goToNext}
+                  disabled={currentIndex === totalItems - 1}
+                  aria-label="Next slide"
+                >
+                  <span className="hidden md:inline">Next</span>
+                  <ChevronRight className="md:ml-2" />
+                </button>
+              )}
             </div>
           </div>
         )}

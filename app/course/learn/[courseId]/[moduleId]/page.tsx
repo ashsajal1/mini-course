@@ -2,6 +2,7 @@ import prisma from "@/prisma/client";
 import { ContentType } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 import LearnModuleView from "./learn-module-view";
+import { getUserModuleProgress } from "./actions";
 
 // This creates a type that includes the relations
 export type ContentWithRelations = Prisma.ContentGetPayload<{
@@ -25,7 +26,7 @@ export default async function Page({
 }: {
   params: Promise<{ courseId: string; moduleId: string }>;
 }) {
-  const { moduleId } = await params;
+  const { moduleId, courseId } = await params;
 
   const moduleContent = await prisma.content.findMany({
     where: {
@@ -52,9 +53,16 @@ export default async function Page({
     },
   });
 
+  const progress = await getUserModuleProgress(moduleId);
+
   return (
     <div>
-      <LearnModuleView moduleContent={moduleContent!} />
+      <LearnModuleView
+        moduleContent={moduleContent!}
+        moduleId={moduleId}
+        courseId={courseId}
+        isCompleted={progress.isCompleted}
+      />
     </div>
   );
 }
