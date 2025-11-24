@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import { CourseProgressSection } from "./course-progress-section";
 import { CreatedCoursesSection } from "./created-courses-section";
+import { LogoutButton } from "./logout-button";
 
 export default async function ProfilePage() {
   const user = await currentUser();
@@ -144,6 +145,9 @@ export default async function ProfilePage() {
                   {dbUser.xp} XP
                 </div>
               </div>
+            </div>
+            <div>
+              <LogoutButton />
             </div>
           </div>
         </div>
