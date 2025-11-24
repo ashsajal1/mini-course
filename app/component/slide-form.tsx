@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { useTheme } from "next-themes";
 import "@uiw/react-md-editor/markdown-editor.css";
 
 // Dynamically import the markdown editor to avoid SSR issues
@@ -29,6 +30,7 @@ export default function SlideForm({
 }: SlideFormProps) {
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
+  const { theme } = useTheme();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +65,7 @@ export default function SlideForm({
             Markdown supported
           </span>
         </label>
-        <div data-color-mode="light" className="dark:data-[color-mode=dark]">
+        <div data-color-mode={theme}>
           <MDEditor
             value={content}
             onChange={(value) => setContent(value || "")}
