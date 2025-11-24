@@ -9,7 +9,7 @@ import {
   SignedOut,
   SignInButton,
   SignedIn,
-  SignOutButton,
+  UserAvatar,
 } from "@clerk/nextjs";
 
 export default function Navbar() {
@@ -19,7 +19,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 80;
+      const isScrolled = window.scrollY > 0;
       if (isScrolled !== scrolled) {
         setScrolled(isScrolled);
       }
@@ -78,9 +78,9 @@ export default function Navbar() {
           </SignedOut>
 
           <SignedIn>
-            <SignOutButton>
-              <button className="btn btn-primary btn-sm">Sign Out</button>
-            </SignOutButton>
+            <Link href="/profile">
+              <UserAvatar />
+            </Link>
           </SignedIn>
         </div>
 
