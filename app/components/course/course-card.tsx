@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { Bookmark, ArrowRight } from "lucide-react";
+import { Bookmark, ArrowRight, Users } from "lucide-react";
 import Link from "next/link";
+import { getCourseEnrollmentCount } from "@/lib/enrollment-service";
 
 type CourseCardProps = {
   id: string;
@@ -10,13 +11,15 @@ type CourseCardProps = {
   thumbnail_url: string;
 };
 
-export default function CourseCard({
+export default async function CourseCard({
   id,
   title,
   description,
   difficulty,
   thumbnail_url,
 }: CourseCardProps) {
+  const enrollmentCount = await getCourseEnrollmentCount(id);
+
   return (
     <article
       key={id}
@@ -44,8 +47,12 @@ export default function CourseCard({
         <p className="text-sm text-base-content/80 line-clamp-2 mt-2">
           {description}
         </p>
+        <div className="flex items-center gap-2 mt-2 text-sm text-base-content/70">
+          <Users className="h-4 w-4" />
+          <span>{enrollmentCount} students</span>
+        </div>
         <div className="card-actions justify-end mt-4">
-          <button 
+          <button
             className="btn btn-ghost btn-sm text-base-content/70 hover:text-primary"
             aria-label="Save course"
           >
@@ -53,7 +60,7 @@ export default function CourseCard({
             <span className="sr-only">Save</span>
           </button>
           <Link href={`course/${id}`} className="btn btn-primary btn-sm">
-            Start Now
+            View Course
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Bookmark, Clock, Award } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bookmark, Clock, Award, Users } from "lucide-react";
 import prisma from "@/prisma/client";
+import { getCourseEnrollmentCount, isEnrolledInCourse, enrollInCourse } from "@/lib/enrollment-service";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function CoursePage({
   params,
@@ -19,12 +21,14 @@ export default async function CoursePage({
     },
   });
 
-  console.log(course);
-
   // If course ID doesn't match, show 404
   if (!course) {
     notFound();
   }
+
+  const enrollmentCount = await getCourseEnrollmentCount(id);
+  const isEnrolled = await isEnrolledInCourse(id);
+  const { userId: clerkId } = await auth();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -66,31 +70,10 @@ export default async function CoursePage({
           {/* Course Actions */}
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-2">
-              <div className="avatar-group -space-x-4">
-                <div className="avatar">
-                  <div className="w-10">
-                    <Image
-                      src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                      alt="Student avatar"
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                  </div>
-                </div>
-                <div className="avatar">
-                  <div className="w-10">
-                    <Image
-                      src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                      alt="Student avatar"
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                  </div>
-                </div>
+              <div className="flex items-center gap-1">
+                <Users className="h-4 w-4 text-base-content/70" />
+                <span className="text-sm">{enrollmentCount} students enrolled</span>
               </div>
-              <span className="text-sm">+20 students enrolled</span>
             </div>
             <button className="btn btn-ghost gap-2">
               <Bookmark className="h-4 w-4" />
@@ -138,23 +121,49 @@ export default async function CoursePage({
           </div>
 
           <div className="card-actions justify-end gap-2 mt-8">
-            <Link
-              href={`/course/edit/${id}`}
-              className="btn btn-outline gap-2"
-            >
-              Edit Course
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                <path d="m15 5 4 4" />
-              </svg>
-            </Link>
-            <Link
-              href={`/course/learn/${id}`}
-              className="btn btn-primary gap-2"
-            >
-              Start Learning
-              <ArrowRight className="h-4 w-4" />
-            </Link>
+            {!clerkId ? (
+              // If user is not logged in, direct them to sign in
+              <Link href="/sign-in" className="btn btn-primary gap-2">
+                Sign In to Enroll
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            ) : isEnrolled ? (
+              // If user is already enrolled, take them to the learning page
+              <Link
+                href={`/course/learn/${id}`}
+                className="btn btn-primary gap-2"
+              >
+                Continue Learning
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            ) : (
+              // If user is logged in but not enrolled, show enroll button
+              <form action={async () => {
+                'use server';
+                await enrollInCourse(id);
+              }}>
+                <button type="submit" className="btn btn-primary gap-2">
+                  Enroll in Course
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                    <path d="M14.5 2.5 19 7v5l-8 8H6v-5l8-8 4.5-4.5z" />
+                    <path d="m12 16 4-4" />
+                  </svg>
+                </button>
+              </form>
+            )}
+
+            {clerkId && (
+              <Link
+                href={`/course/edit/${id}`}
+                className="btn btn-outline gap-2"
+              >
+                Edit Course
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                  <path d="m15 5 4 4" />
+                </svg>
+              </Link>
+            )}
           </div>
         </div>
       </div>
