@@ -25,6 +25,7 @@ model Course {
   updated_at    DateTime  @updatedAt
   deleted_at    DateTime?
   modules       Module[]
+  enrollments   Enrollment[]
 }
 
 model Module {
@@ -135,10 +136,24 @@ model User {
   xp       Int       @default(0)
 
   modules_progress UserModuleProgress[]
+  enrollments      Enrollment[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
+}
+
+model Enrollment {
+  id         String   @id @default(cuid())
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  course_id  String
+  course     Course   @relation(fields: [course_id], references: [id])
+  enrolled_at DateTime @default(now())
+  completed_at DateTime?
+  is_completed Boolean @default(false)
+
+  @@unique([user_id, course_id])
 }
 
 model UserModuleProgress {
