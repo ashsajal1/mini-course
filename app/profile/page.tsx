@@ -5,6 +5,7 @@ import Image from "next/image";
 import { CourseProgressSection } from "../components/profile/course-progress-section";
 import { CreatedCoursesSection } from "../components/profile/created-courses-section";
 import { LogoutButton } from "../components/auth/logout-button";
+import { getEnrolledCourses } from "@/lib/enrollment-service";
 
 export default async function ProfilePage() {
   const user = await currentUser();
@@ -100,6 +101,9 @@ export default async function ProfilePage() {
 
   const courses = Array.from(courseProgress.values());
 
+  // Fetch enrolled courses using the new enrollment service
+  const enrolledCourses = await getEnrolledCourses();
+
   // Fetch last 10 courses created by the user
   const createdCourses = await prisma.course.findMany({
     where: {
@@ -153,7 +157,13 @@ export default async function ProfilePage() {
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="stats shadow bg-base-100">
+            <div className="stat">
+              <div className="stat-title">Courses Enrolled</div>
+              <div className="stat-value text-primary">{enrolledCourses.length}</div>
+            </div>
+          </div>
           <div className="stats shadow bg-base-100">
             <div className="stat">
               <div className="stat-title">Courses in Progress</div>
@@ -176,7 +186,44 @@ export default async function ProfilePage() {
           </div>
         </div>
 
-        {/* Course Progress List - Shown First */}
+        {/* Enrolled Courses Section */}
+        <div className="card bg-base-100 shadow-xl">
+          <div className="card-body">
+            <h2 className="card-title text-2xl mb-4">Enrolled Courses</h2>
+            {enrolledCourses.length === 0 ? (
+              <p className="text-base-content/70">You haven&apos;t enrolled in any courses yet.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {enrolledCourses.map((course) => (
+                  <div key={course.id} className="card bg-base-200">
+                    <div className="card-body">
+                      <h3 className="card-title">{course.name}</h3>
+                      <p className="text-sm text-base-content/70 line-clamp-2">{course.description}</p>
+                      <div className="card-actions justify-end mt-2">
+                        <div className="badge badge-outline">{course.difficulty}</div>
+                        {course.is_completed ? (
+                          <div className="badge badge-success">Completed</div>
+                        ) : (
+                          <div className="badge badge-warning">In Progress</div>
+                        )}
+                      </div>
+                      <div className="card-actions justify-end mt-2">
+                        <a
+                          href={`/course/learn/${course.id}`}
+                          className="btn btn-primary btn-sm"
+                        >
+                          {course.is_completed ? 'Review' : 'Continue'}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Course Progress List - Shown Second */}
         <CourseProgressSection courses={courses} />
 
         {/* Created Courses Section */}
