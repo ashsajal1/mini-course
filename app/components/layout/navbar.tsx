@@ -112,12 +112,15 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
-            <div className="px-2 py-2">
-              <div className="px-2">
-                <ModeToggle />
-              </div>
+            <div className="px-4 py-2 flex items-center justify-between">
+              <ModeToggle />
+              <SignedIn>
+                <Link href="/profile" onClick={() => setMobileMenuOpen(false)}>
+                  <UserAvatar />
+                </Link>
+              </SignedIn>
             </div>
-            <div className="px-2 pt-2">
+            <div className="px-2 pt-2 space-y-2">
               <Link
                 href="/course/create"
                 className="btn btn-primary btn-block"
@@ -125,6 +128,16 @@ export default function Navbar() {
               >
                 Create Course
               </Link>
+              <SignedOut>
+                <SignInButton>
+                  <button
+                    className="btn btn-primary btn-block"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Sign In
+                  </button>
+                </SignInButton>
+              </SignedOut>
             </div>
           </div>
         </div>
