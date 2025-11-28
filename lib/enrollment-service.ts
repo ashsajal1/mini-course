@@ -21,6 +21,20 @@ export async function enrollInCourse(courseId: string) {
     throw new Error("User not found");
   }
 
+  // Check if user is already enrolled
+  const existingEnrollment = await prisma.enrollment.findUnique({
+    where: {
+      user_id_course_id: {
+        user_id: user.id,
+        course_id: courseId,
+      },
+    },
+  });
+
+  if (existingEnrollment) {
+    return existingEnrollment;
+  }
+
   // Create the enrollment record
   const enrollment = await prisma.enrollment.create({
     data: {
