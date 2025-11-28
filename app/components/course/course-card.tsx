@@ -1,7 +1,9 @@
+"use client";
 import Image from "next/image";
 import { Bookmark, ArrowRight, Users } from "lucide-react";
 import Link from "next/link";
 import { getCourseEnrollmentCount } from "@/lib/enrollment-service";
+import { useEffect, useState } from "react";
 
 type CourseCardProps = {
   id: string;
@@ -9,16 +11,26 @@ type CourseCardProps = {
   description: string;
   difficulty: string;
   thumbnail_url: string;
+  moduleCount: number;
 };
 
-export default async function CourseCard({
+export default function CourseCard({
   id,
   title,
   description,
   difficulty,
   thumbnail_url,
+  moduleCount,
 }: CourseCardProps) {
-  const enrollmentCount = await getCourseEnrollmentCount(id);
+  const [enrollmentCount, setEnrollmentCount] = useState(0);
+
+  useEffect(() => {
+    const fetchEnrollmentCount = async () => {
+      const count = await getCourseEnrollmentCount(id);
+      setEnrollmentCount(count);
+    };
+    fetchEnrollmentCount();
+  }, [id]);
 
   return (
     <article
@@ -47,9 +59,14 @@ export default async function CourseCard({
         <p className="text-sm text-base-content/80 line-clamp-2 mt-2">
           {description}
         </p>
-        <div className="flex items-center gap-2 mt-2 text-sm text-base-content/70">
-          <Users className="h-4 w-4" />
-          <span>{enrollmentCount} students</span>
+        <div className="flex items-center justify-between mt-2">
+          <div className="flex items-center gap-2 text-sm text-base-content/70">
+            <Users className="h-4 w-4" />
+            <span>{enrollmentCount} students</span>
+          </div>
+          <div className="text-sm text-base-content/70">
+            {moduleCount} modules
+          </div>
         </div>
         <div className="card-actions justify-end mt-4">
           <button

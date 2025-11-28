@@ -1,10 +1,18 @@
 export const dynamic = "force-dynamic";
-import { Course } from "@prisma/client";
 import CourseCard from "@/app/components/course/course-card";
 import prisma from "@/prisma/client";
 
+type CourseWithModuleCount = {
+  id: string;
+  name: string;
+  description: string;
+  difficulty: string;
+  thumbnail_url: string | null;
+  module_count: bigint;
+};
+
 export default async function Home() {
-  const courses: Course[] = await prisma.$queryRaw`
+  const courses: CourseWithModuleCount[] = await prisma.$queryRaw`
   SELECT c.id,
          c.name,
          c.description,
@@ -47,7 +55,8 @@ export default async function Home() {
                 title={course.name}
                 description={course.description}
                 difficulty={course.difficulty}
-                thumbnail_url={course.thumbnail_url}
+                thumbnail_url={course.thumbnail_url!}
+                moduleCount={Number(course.module_count)}
               />
             ))}
           </section>
