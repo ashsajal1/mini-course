@@ -38,8 +38,8 @@ export function CreatedCoursesSection({ courses }: CreatedCoursesProps) {
               key={course.id}
               className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow"
             >
-              <div className="card-body flex-row gap-6 items-center">
-                <div className="relative w-32 h-20 shrink-0 rounded-lg overflow-hidden">
+              <div className="card-body flex flex-col sm:flex-row gap-6 items-center text-center sm:text-left">
+                <div className="relative w-full sm:w-32 h-48 sm:h-20 shrink-0 rounded-lg overflow-hidden">
                   <Image
                     src={course.thumbnail_url}
                     alt={course.name}
@@ -47,8 +47,10 @@ export function CreatedCoursesSection({ courses }: CreatedCoursesProps) {
                     className="object-cover"
                   />
                 </div>
-                <div className="flex-1">
-                  <h3 className="card-title text-lg">{course.name}</h3>
+                <div className="flex-1 w-full sm:w-auto">
+                  <h3 className="card-title text-lg justify-center sm:justify-start">
+                    {course.name}
+                  </h3>
                   <p className="text-sm text-base-content/60 mt-1">
                     {course._count.modules} modules • {course.difficulty}
                   </p>
@@ -56,12 +58,14 @@ export function CreatedCoursesSection({ courses }: CreatedCoursesProps) {
                     Created {new Date(course.created_at).toLocaleDateString()}
                   </p>
                 </div>
-                <Link
-                  href={`/course/edit/${course.id}`}
-                  className="btn btn-primary"
-                >
-                  Edit
-                </Link>
+                <div className="w-full sm:w-auto">
+                  <Link
+                    href={`/course/edit/${course.id}`}
+                    className="btn btn-primary w-full sm:w-auto"
+                  >
+                    Edit
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
