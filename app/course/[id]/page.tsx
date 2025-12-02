@@ -1,9 +1,20 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight, Bookmark, Clock, Award, Users } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bookmark,
+  Clock,
+  Award,
+  Users,
+} from "lucide-react";
 import prisma from "@/prisma/client";
-import { getCourseEnrollmentCount, isEnrolledInCourse, enrollInCourse } from "@/lib/enrollment-service";
+import {
+  getCourseEnrollmentCount,
+  isEnrolledInCourse,
+} from "@/lib/enrollment-service";
+import EnrollButton from "./enroll-btn";
 import { auth } from "@clerk/nextjs/server";
 
 export default async function CoursePage({
@@ -72,7 +83,9 @@ export default async function CoursePage({
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <Users className="h-4 w-4 text-base-content/70" />
-                <span className="text-sm">{enrollmentCount} students enrolled</span>
+                <span className="text-sm">
+                  {enrollmentCount} students enrolled
+                </span>
               </div>
             </div>
             <button className="btn btn-ghost gap-2">
@@ -138,18 +151,7 @@ export default async function CoursePage({
               </Link>
             ) : (
               // If user is logged in but not enrolled, show enroll button
-              <form action={async () => {
-                'use server';
-                await enrollInCourse(id);
-              }}>
-                <button type="submit" className="btn btn-primary gap-2">
-                  Enroll in Course
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-                    <path d="M14.5 2.5 19 7v5l-8 8H6v-5l8-8 4.5-4.5z" />
-                    <path d="m12 16 4-4" />
-                  </svg>
-                </button>
-              </form>
+              <EnrollButton courseId={id} />
             )}
 
             {clerkId && (
@@ -158,7 +160,18 @@ export default async function CoursePage({
                 className="btn btn-outline gap-2"
               >
                 Edit Course
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                >
                   <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                   <path d="m15 5 4 4" />
                 </svg>
