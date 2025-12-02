@@ -13,12 +13,16 @@ export async function enrollInCourse(courseId: string) {
   }
 
   // Find the user by clerk_id
-  const user = await prisma.user.findUnique({
+  let user = await prisma.user.findUnique({
     where: { clerk_id: clerkId },
   });
 
   if (!user) {
-    throw new Error("User not found");
+    user = await prisma.user.create({
+      data: {
+        clerk_id: clerkId,
+      },
+    });
   }
 
   // Check if user is already enrolled
