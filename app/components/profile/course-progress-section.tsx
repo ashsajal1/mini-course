@@ -44,8 +44,8 @@ export function CourseProgressSection({ courses }: CourseProgressProps) {
                 href={`/course/${course.id}`}
                 className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow"
               >
-                <div className="card-body flex-row gap-6 items-center">
-                  <div className="relative w-32 h-20 shrink-0 rounded-lg overflow-hidden">
+                <div className="card-body flex flex-col sm:flex-row gap-6 items-center">
+                  <div className="relative w-full sm:w-32 h-48 sm:h-20 shrink-0 rounded-lg overflow-hidden">
                     <Image
                       src={course.thumbnail_url}
                       alt={course.name}
@@ -53,7 +53,7 @@ export function CourseProgressSection({ courses }: CourseProgressProps) {
                       className="object-cover"
                     />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 w-full sm:w-auto">
                     <h3 className="card-title text-lg">{course.name}</h3>
                     <div className="mt-2 flex items-center gap-4">
                       <progress

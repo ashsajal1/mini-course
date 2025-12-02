@@ -124,11 +124,11 @@ export default async function ProfilePage() {
   });
 
   return (
-    <div className="min-h-screen bg-base-200 p-6">
+    <div className="min-h-screen bg-base-200 p-4 md:p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header Section */}
         <div className="card bg-base-100 shadow-xl">
-          <div className="card-body flex-row items-center gap-6">
+          <div className="card-body flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
             <div className="avatar">
               <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                 <Image
@@ -141,7 +141,7 @@ export default async function ProfilePage() {
             </div>
             <div className="flex-1">
               <h1 className="text-3xl font-bold">{user.fullName}</h1>
-              <div className="flex gap-2 mt-2">
+              <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
                 <div className="badge badge-primary badge-lg">
                   {dbUser.level}
                 </div>
@@ -150,27 +150,29 @@ export default async function ProfilePage() {
                 </div>
               </div>
             </div>
-            <div>
+            <div className="w-full md:w-auto">
               <LogoutButton />
             </div>
           </div>
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="stats shadow bg-base-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="stats shadow bg-base-100 w-full">
             <div className="stat">
               <div className="stat-title">Courses Enrolled</div>
-              <div className="stat-value text-primary">{enrolledCourses.length}</div>
+              <div className="stat-value text-primary">
+                {enrolledCourses.length}
+              </div>
             </div>
           </div>
-          <div className="stats shadow bg-base-100">
+          <div className="stats shadow bg-base-100 w-full">
             <div className="stat">
               <div className="stat-title">Courses in Progress</div>
               <div className="stat-value text-primary">{courses.length}</div>
             </div>
           </div>
-          <div className="stats shadow bg-base-100">
+          <div className="stats shadow bg-base-100 w-full">
             <div className="stat">
               <div className="stat-title">Modules Completed</div>
               <div className="stat-value text-secondary">
@@ -178,7 +180,7 @@ export default async function ProfilePage() {
               </div>
             </div>
           </div>
-          <div className="stats shadow bg-base-100">
+          <div className="stats shadow bg-base-100 w-full">
             <div className="stat">
               <div className="stat-title">Total XP</div>
               <div className="stat-value text-accent">{dbUser.xp}</div>
@@ -191,16 +193,22 @@ export default async function ProfilePage() {
           <div className="card-body">
             <h2 className="card-title text-2xl mb-4">Enrolled Courses</h2>
             {enrolledCourses.length === 0 ? (
-              <p className="text-base-content/70">You haven&apos;t enrolled in any courses yet.</p>
+              <p className="text-base-content/70">
+                You haven&apos;t enrolled in any courses yet.
+              </p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {enrolledCourses.map((course) => (
                   <div key={course.id} className="card bg-base-200">
                     <div className="card-body">
                       <h3 className="card-title">{course.name}</h3>
-                      <p className="text-sm text-base-content/70 line-clamp-2">{course.description}</p>
+                      <p className="text-sm text-base-content/70 line-clamp-2">
+                        {course.description}
+                      </p>
                       <div className="card-actions justify-end mt-2">
-                        <div className="badge badge-outline">{course.difficulty}</div>
+                        <div className="badge badge-outline">
+                          {course.difficulty}
+                        </div>
                         {course.is_completed ? (
                           <div className="badge badge-success">Completed</div>
                         ) : (
@@ -212,7 +220,7 @@ export default async function ProfilePage() {
                           href={`/course/learn/${course.id}`}
                           className="btn btn-primary btn-sm"
                         >
-                          {course.is_completed ? 'Review' : 'Continue'}
+                          {course.is_completed ? "Review" : "Continue"}
                         </a>
                       </div>
                     </div>
