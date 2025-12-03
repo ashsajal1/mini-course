@@ -63,96 +63,151 @@ export default function Question({ question }: QuestionProps) {
   const showFeedback = isSubmitted && isCorrect !== null;
 
   return (
-    <div className="container mx-auto p-4 ">
+    <div className="container mx-auto p-4">
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">
-          <h2 className="card-title text-2xl">
+          <h2 className="card-title text-2xl mb-4">
             {question?.content || "Untitled Question"}
           </h2>
 
-          <div className="mt-4 space-y-4">
-            <p className="text-lg">{question.content}</p>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-6">
+              <span className="badge badge-primary">MCQ</span>
+              <span className="text-base-content/70 text-sm">
+                Select the correct answer
+              </span>
+            </div>
 
-            <div className="form-control">
-              {question.options.map((option) => (
-                <label
-                  key={option.id}
-                  className="label cursor-pointer justify-start gap-3"
-                >
-                  <input
-                    type="radio"
-                    name="options"
-                    className="radio radio-primary"
-                    checked={selectedOptions.includes(option.id)}
-                    onChange={() => handleOptionChange(option.id)}
-                    disabled={isSubmitted}
-                  />
-                  <span
-                    className={`label-text ${
-                      isSubmitted && option.isCorrect
-                        ? "text-success font-medium"
-                        : ""
+            <div className="space-y-3">
+              {question.options.map((option) => {
+                const isSelected = selectedOptions.includes(option.id);
+                const isCorrectOption = option.isCorrect;
+                const showResult = isSubmitted && (isSelected || isCorrectOption);
+
+                let optionStyle = "border-base-300 hover:border-primary";
+
+                if (showResult) {
+                  if (isCorrectOption) {
+                    optionStyle = "border-success bg-success/10";
+                  } else if (isSelected && !isCorrect) {
+                    optionStyle = "border-error bg-error/10";
+                  }
+                } else if (isSelected) {
+                  optionStyle = "border-primary bg-primary/10";
+                }
+
+                return (
+                  <div
+                    key={option.id}
+                    className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 ${optionStyle} ${
+                      !isSubmitted ? "hover:shadow-md" : ""
                     }`}
+                    onClick={() => !isSubmitted && handleOptionChange(option.id)}
                   >
-                    {option.text}
-                  </span>
-                </label>
-              ))}
+                    <div className="flex items-center gap-3">
+                      <div className={`flex items-center justify-center w-6 h-6 rounded-full border-2 ${
+                        isSelected
+                          ? isCorrect && showResult
+                            ? "border-success bg-success text-white"
+                            : isSubmitted
+                              ? "border-error bg-error text-white"
+                              : "border-primary bg-primary text-white"
+                          : showResult && isCorrectOption
+                            ? "border-success bg-success text-white"
+                            : "border-base-content/30"
+                      }`}>
+                        {isSelected && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="flex-1">{option.text}</span>
+                      {showResult && isCorrectOption && (
+                        <div className="badge badge-success gap-1">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          Correct
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             {showFeedback && (
-              <div
-                className={`alert ${
-                  isCorrect ? "alert-success" : "alert-error"
-                } mt-4`}
-              >
-                {isCorrect ? (
-                  <div className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="stroke-current shrink-0 h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span>Correct! Well done!</span>
+              <div className={`mt-6 p-4 rounded-lg ${
+                isCorrect
+                  ? "bg-success/10 border border-success"
+                  : "bg-error/10 border border-error"
+              }`}>
+                <div className="flex items-start gap-3">
+                  <div className={`mt-0.5 flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full ${
+                    isCorrect ? "bg-success" : "bg-error"
+                  }`}>
+                    {isCorrect ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-white"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-white"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    )}
                   </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="stroke-current shrink-0 h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span>Incorrect. Please try again.</span>
+                  <div>
+                    <h3 className={`font-semibold ${
+                      isCorrect ? "text-success" : "text-error"
+                    }`}>
+                      {isCorrect ? "Correct! Well done!" : "Incorrect. Please try again."}
+                    </h3>
+                    {question.options[0].explanation && (
+                      <div className="mt-2 text-sm">
+                        <p className="font-medium text-base-content/80">Explanation:</p>
+                        <p className="text-base-content/70">{question.options[0].explanation}</p>
+                      </div>
+                    )}
                   </div>
-                )}
-
-                {question.options[0].explanation && (
-                  <div className="mt-2 text-sm">
-                    <p className="font-bold">Explanation:</p>
-                    <p>{question.options[0].explanation}</p>
-                  </div>
-                )}
+                </div>
               </div>
             )}
 
-            <div>
-              <button disabled={isSubmitted} onClick={handleSubmit} className="btn btn-primary">Submit</button>
+            <div className="pt-4">
+              <button
+                disabled={isSubmitted || selectedOptions.length === 0}
+                onClick={handleSubmit}
+                className={`btn w-full ${
+                  isSubmitted
+                    ? "btn-disabled"
+                    : selectedOptions.length === 0
+                      ? "btn-outline"
+                      : "btn-primary"
+                }`}
+              >
+                {isSubmitted ? "Answer Submitted" : "Submit Answer"}
+              </button>
             </div>
           </div>
         </div>

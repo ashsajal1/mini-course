@@ -75,16 +75,20 @@ export default function Slide({ slide }: { slide: SlideType }) {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">{slide?.title || 'Untitled Slide'}</h1>
+      <div className="card bg-base-100 shadow-xl">
+        <div className="card-body">
+          <h1 className="text-3xl font-bold mb-6">{slide?.title || 'Untitled Slide'}</h1>
 
-      <div className="prose dark:prose-invert max-w-none">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeHighlight]}
-          components={components}
-        >
-          {slide?.content || ""}
-        </ReactMarkdown>
+          <div className="prose dark:prose-invert max-w-none">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
+              components={components}
+            >
+              {slide?.content || ""}
+            </ReactMarkdown>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -87,8 +87,8 @@ export default function LearnModuleView({
   }
 
   return (
-    <div className="flex flex-col md:flex-row">
-      <aside className="w-full md:w-80 border-b md:border-b-0 md:border-r p-4">
+    <div className="flex flex-col md:flex-row min-h-screen">
+      <aside className="w-full md:w-80 border-b md:border-b-0 md:border-r bg-base-100 p-4">
         <h2 className="text-lg font-bold mb-4">Module Content</h2>
         <ul className="space-y-2">
           {moduleContent.map((content, index) => {
@@ -113,13 +113,13 @@ export default function LearnModuleView({
           })}
         </ul>
       </aside>
-      <main className="flex-1">
-        <div className="w-full min-h-[50vh] flex items-center justify-center">
+      <main className="flex-1 flex flex-col">
+        <div className="flex-1 p-4 md:p-6">
           {currentContent && <ModuleContent content={currentContent} />}
         </div>
 
         {totalItems > 1 && (
-          <div className="mt-8 px-4 py-4 border-t border-base-300">
+          <div className="px-4 py-4 border-t border-base-300 bg-base-100">
             <div className="flex justify-between items-center max-w-4xl mx-auto">
               <button
                 type="button"
@@ -128,9 +128,9 @@ export default function LearnModuleView({
                 } md:gap-2`}
                 onClick={goToPrev}
                 disabled={currentIndex === 0}
-                aria-label="Previous slide"
+                aria-label="Previous content"
               >
-                <ChevronLeft className="mdmr-2" />
+                <ChevronLeft className="md:mr-2" />
                 <span className="hidden md:inline">Previous</span>
               </button>
 
@@ -162,7 +162,7 @@ export default function LearnModuleView({
                   className="btn btn-primary md:gap-2"
                   onClick={goToNext}
                   disabled={currentIndex === totalItems - 1}
-                  aria-label="Next slide"
+                  aria-label="Next content"
                 >
                   <span className="hidden md:inline">Next</span>
                   <ChevronRight className="md:ml-2" />
