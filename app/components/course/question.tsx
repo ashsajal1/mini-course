@@ -21,7 +21,7 @@ export default function Question({ question }: QuestionProps) {
 
   if (!question) {
     return (
-      <div className="container mx-auto p-4 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title text-2xl">Question not found</h2>
@@ -63,96 +63,147 @@ export default function Question({ question }: QuestionProps) {
   const showFeedback = isSubmitted && isCorrect !== null;
 
   return (
-    <div className="container mx-auto p-4 ">
-      <div className="card bg-base-100 shadow-xl">
+    <div className="container mx-auto px-4 py-6 max-w-4xl">
+      <div className="card bg-base-100 shadow-xl border border-base-200">
         <div className="card-body">
-          <h2 className="card-title text-2xl">
-            {question?.content || "Untitled Question"}
-          </h2>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+            <h2 className="card-title text-2xl flex-1">
+              {question?.content || "Untitled Question"}
+            </h2>
+            <span className="badge badge-primary self-start">MCQ</span>
+          </div>
 
-          <div className="mt-4 space-y-4">
-            <p className="text-lg">{question.content}</p>
+          <div className="space-y-5">
+            <div className="space-y-4">
+              {question.options.map((option, index) => {
+                const isSelected = selectedOptions.includes(option.id);
+                const isCorrectOption = option.isCorrect;
+                const showResult = isSubmitted && (isSelected || isCorrectOption);
 
-            <div className="form-control">
-              {question.options.map((option) => (
-                <label
-                  key={option.id}
-                  className="label cursor-pointer justify-start gap-3"
-                >
-                  <input
-                    type="radio"
-                    name="options"
-                    className="radio radio-primary"
-                    checked={selectedOptions.includes(option.id)}
-                    onChange={() => handleOptionChange(option.id)}
-                    disabled={isSubmitted}
-                  />
-                  <span
-                    className={`label-text ${
-                      isSubmitted && option.isCorrect
-                        ? "text-success font-medium"
-                        : ""
+                let optionStyle = "border-base-300 hover:border-primary";
+
+                if (showResult) {
+                  if (isCorrectOption) {
+                    optionStyle = "border-success bg-success/10";
+                  } else if (isSelected && !isCorrect) {
+                    optionStyle = "border-error bg-error/10";
+                  }
+                } else if (isSelected) {
+                  optionStyle = "border-primary bg-primary/10";
+                }
+
+                return (
+                  <div
+                    key={option.id}
+                    className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${optionStyle} ${
+                      !isSubmitted ? "hover:shadow-md hover:border-primary/50" : ""
                     }`}
+                    onClick={() => !isSubmitted && handleOptionChange(option.id)}
                   >
-                    {option.text}
-                  </span>
-                </label>
-              ))}
+                    <div className="flex items-start gap-3">
+                      <div className={`flex-shrink-0 mt-0.5 flex items-center justify-center w-6 h-6 rounded-full border-2 ${
+                        isSelected
+                          ? isCorrect && showResult
+                            ? "border-success bg-success text-white"
+                            : isSubmitted
+                              ? "border-error bg-error text-white"
+                              : "border-primary bg-primary text-white"
+                          : showResult && isCorrectOption
+                            ? "border-success bg-success text-white"
+                            : "border-base-content/30"
+                      }`}>
+                        {isSelected && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="flex-1">{option.text}</span>
+                      {showResult && isCorrectOption && (
+                        <div className="badge badge-success gap-1 ml-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          Correct
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             {showFeedback && (
-              <div
-                className={`alert ${
-                  isCorrect ? "alert-success" : "alert-error"
-                } mt-4`}
-              >
-                {isCorrect ? (
-                  <div className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="stroke-current shrink-0 h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span>Correct! Well done!</span>
+              <div className={`mt-6 p-5 rounded-xl ${
+                isCorrect
+                  ? "bg-success/10 border border-success"
+                  : "bg-error/10 border border-error"
+              }`}>
+                <div className="flex flex-col sm:flex-row items-start gap-4">
+                  <div className={`flex-shrink-0 mt-0.5 flex items-center justify-center w-10 h-10 rounded-full ${
+                    isCorrect ? "bg-success" : "bg-error"
+                  }`}>
+                    {isCorrect ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-white"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-white"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    )}
                   </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="stroke-current shrink-0 h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <span>Incorrect. Please try again.</span>
+                  <div className="flex-1">
+                    <h3 className={`text-lg font-semibold ${
+                      isCorrect ? "text-success" : "text-error"
+                    }`}>
+                      {isCorrect ? "Correct! Well done!" : "Incorrect. Please try again."}
+                    </h3>
+                    {question.options[0].explanation && (
+                      <div className="mt-3 text-base-content/90">
+                        <p className="font-medium text-base-content/80 mb-1">Explanation:</p>
+                        <p>{question.options[0].explanation}</p>
+                      </div>
+                    )}
                   </div>
-                )}
-
-                {question.options[0].explanation && (
-                  <div className="mt-2 text-sm">
-                    <p className="font-bold">Explanation:</p>
-                    <p>{question.options[0].explanation}</p>
-                  </div>
-                )}
+                </div>
               </div>
             )}
 
-            <div>
-              <button disabled={isSubmitted} onClick={handleSubmit} className="btn btn-primary">Submit</button>
+            <div className="pt-4">
+              <button
+                disabled={isSubmitted || selectedOptions.length === 0}
+                onClick={handleSubmit}
+                className={`btn w-full sm:w-auto ${
+                  isSubmitted
+                    ? "btn-disabled"
+                    : selectedOptions.length === 0
+                      ? "btn-outline"
+                      : "btn-primary"
+                }`}
+              >
+                {isSubmitted ? "Answer Submitted" : "Submit Answer"}
+              </button>
             </div>
           </div>
         </div>
