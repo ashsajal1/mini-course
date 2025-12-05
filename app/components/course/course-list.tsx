@@ -5,9 +5,19 @@ import { Search, Filter, X } from "lucide-react";
 import { Course } from "@prisma/client";
 import CourseCard from "@/app/components/course/course-card";
 
+type CourseWithCount = Course & {
+  _count: {
+    modules: number;
+  };
+};
+
 const difficultyOptions = ["Beginner", "Intermediate", "Advanced"] as const;
 
-export default function CourseList({ courses }: { courses: Course[] }) {
+export default function CourseList({
+  courses,
+}: {
+  courses: CourseWithCount[];
+}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>(
     []
@@ -151,6 +161,7 @@ export default function CourseList({ courses }: { courses: Course[] }) {
               description={course.description}
               difficulty={course.difficulty}
               thumbnail_url={course.thumbnail_url}
+              moduleCount={course._count.modules}
             />
           ))}
         </section>
