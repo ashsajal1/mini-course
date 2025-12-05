@@ -55,6 +55,26 @@ export default async function Page({
     },
   });
 
+  // Fetch all modules to determine the next module
+  const courseModules = await prisma.module.findMany({
+    where: {
+      course_id: courseId,
+      deleted_at: null,
+    },
+    select: {
+      id: true,
+    },
+    orderBy: {
+      created_at: "asc",
+    },
+  });
+
+  const currentModuleIndex = courseModules.findIndex((m) => m.id === moduleId);
+  const nextModuleId =
+    currentModuleIndex !== -1 && currentModuleIndex < courseModules.length - 1
+      ? courseModules[currentModuleIndex + 1].id
+      : null;
+
   const progress = await getUserModuleProgress(moduleId);
 
   // Check if all modules in the course are completed, and mark course as completed if so
@@ -79,14 +99,16 @@ export default async function Page({
           where: {
             user_id: user.id,
             module_id: {
-              in: courseModules.map(m => m.id),
+              in: courseModules.map((m) => m.id),
             },
           },
         });
 
         // If all modules are completed, mark the course as completed
-        if (userProgress.length === courseModules.length &&
-            userProgress.every(p => p.is_completed)) {
+        if (
+          userProgress.length === courseModules.length &&
+          userProgress.every((p) => p.is_completed)
+        ) {
           try {
             await markCourseAsCompleted(courseId);
           } catch (error) {
@@ -104,6 +126,7 @@ export default async function Page({
         moduleId={moduleId}
         courseId={courseId}
         isCompleted={progress.isCompleted}
+        nextModuleId={nextModuleId}
       />
     </div>
   );
