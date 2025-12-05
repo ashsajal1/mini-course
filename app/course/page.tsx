@@ -4,7 +4,13 @@ import CourseList from "@/app/components/course/course-list";
 import prisma from "@/prisma/client";
 
 export default async function CoursePage() {
-  const courses = await prisma.course.findMany();
+  const courses = await prisma.course.findMany({
+    include: {
+      _count: {
+        select: { modules: true },
+      },
+    },
+  });
 
   return (
     <div className="min-h-screen w-full bg-base-100">
