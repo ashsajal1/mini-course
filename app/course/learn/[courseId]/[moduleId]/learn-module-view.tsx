@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   ChevronLeft,
   ChevronRight,
@@ -18,12 +19,15 @@ export default function LearnModuleView({
   moduleId,
   courseId,
   isCompleted: initialIsCompleted,
+  nextModuleId,
 }: {
   moduleContent: ContentWithRelations[];
   moduleId: string;
   courseId: string;
   isCompleted: boolean;
+  nextModuleId: string | null;
 }) {
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isCompleted, setIsCompleted] = useState(initialIsCompleted);
   const [isCompleting, setIsCompleting] = useState(false);
@@ -152,10 +156,29 @@ export default function LearnModuleView({
                   </span>
                 </button>
               ) : isOnLastItem && isCompleted ? (
-                <div className="btn btn-success btn-disabled md:gap-2">
-                  <CheckCircle className="w-5 h-5" />
-                  <span className="hidden md:inline">Completed</span>
-                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary md:gap-2"
+                  onClick={() => {
+                    if (nextModuleId) {
+                      router.push(`/course/learn/${courseId}/${nextModuleId}`);
+                    } else {
+                      router.push(`/course/learn/${courseId}`);
+                    }
+                  }}
+                >
+                  {nextModuleId ? (
+                    <>
+                      <span className="hidden md:inline">Next Module</span>
+                      <ChevronRight className="md:ml-2" />
+                    </>
+                  ) : (
+                    <>
+                      <ChevronLeft className="md:mr-2" />
+                      <span className="hidden md:inline">Back to Course</span>
+                    </>
+                  )}
+                </button>
               ) : (
                 <button
                   type="button"
