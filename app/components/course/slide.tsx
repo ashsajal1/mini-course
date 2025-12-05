@@ -42,27 +42,24 @@ export default function Slide({ slide }: { slide: SlideType }) {
         {...props}
       />
     ),
+    pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
+      <pre
+        className="group bg-base-200 dark:bg-base-300 p-4 rounded-lg overflow-x-auto my-4"
+        {...props}
+      />
+    ),
     code: (props: CodeProps) => {
-      const { className, children, inline, ...rest } = props;
-      const isInline = inline ?? false;
-      
-      if (isInline) {
-        return (
-          <code
-            className="bg-base-200 dark:bg-base-300 px-1.5 py-0.5 rounded"
-            {...rest}
-          >
-            {children}
-          </code>
-        );
-      }
-      
+      const { className, children, ...rest } = props;
+
       return (
-        <pre className="bg-base-200 dark:bg-base-300 p-4 rounded-lg overflow-x-auto my-4">
-          <code className={className} {...rest}>
-            {children}
-          </code>
-        </pre>
+        <code
+          className={`bg-base-200 dark:bg-base-300 px-1.5 py-0.5 rounded in-[.group]:bg-transparent in-[.group]:p-0 ${
+            className || ""
+          }`}
+          {...rest}
+        >
+          {children}
+        </code>
       );
     },
     blockquote: (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => (
@@ -75,7 +72,9 @@ export default function Slide({ slide }: { slide: SlideType }) {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">{slide?.title || 'Untitled Slide'}</h1>
+      <h1 className="text-3xl font-bold mb-6">
+        {slide?.title || "Untitled Slide"}
+      </h1>
 
       <div className="prose dark:prose-invert max-w-none">
         <ReactMarkdown
