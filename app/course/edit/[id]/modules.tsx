@@ -540,6 +540,7 @@ export default function Modules({
 
       {editingModule && (
         <EditModuleDialog
+          key={editingModule.id}
           isOpen={!!editingModule}
           onClose={() => setEditingModule(null)}
           moduleId={editingModule.id}

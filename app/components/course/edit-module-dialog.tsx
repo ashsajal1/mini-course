@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useTransition } from "react";
 import { updateModule } from "@/app/course/edit/[id]/actions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -19,34 +19,29 @@ export default function EditModuleDialog({
   initialTitle,
 }: EditModuleDialogProps) {
   const [title, setTitle] = useState(initialTitle);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  useEffect(() => {
-    setTitle(initialTitle);
-  }, [initialTitle, isOpen]);
-
-  const handleUpdateModule = async (e: React.FormEvent) => {
+  const handleUpdateModule = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    try {
-      setIsLoading(true);
-      const response = await updateModule(moduleId, title);
+    startTransition(async () => {
+      try {
+        const response = await updateModule(moduleId, title);
 
-      if (response.success) {
-        toast.success("Module updated successfully");
-        onClose();
-        router.refresh();
-      } else {
-        toast.error("Failed to update module");
+        if (response.success) {
+          toast.success("Module updated successfully");
+          onClose();
+          router.refresh();
+        } else {
+          toast.error("Failed to update module");
+        }
+      } catch (error) {
+        console.error("Failed to update module:", error);
+        toast.error("An error occurred");
       }
-    } catch (error) {
-      console.error("Failed to update module:", error);
-      toast.error("An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   if (!isOpen) return null;
@@ -67,7 +62,7 @@ export default function EditModuleDialog({
               placeholder="Enter module title"
               className="input input-bordered w-full"
               autoFocus
-              disabled={isLoading}
+              disabled={isPending}
             />
           </div>
           <div className="flex justify-end gap-2">
@@ -75,16 +70,16 @@ export default function EditModuleDialog({
               type="button"
               onClick={onClose}
               className="btn btn-ghost"
-              disabled={isLoading}
+              disabled={isPending}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={isLoading}
+              disabled={isPending}
             >
-              {isLoading ? "Saving..." : "Save Changes"}
+              {isPending ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
