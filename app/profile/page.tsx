@@ -6,6 +6,7 @@ import { CourseProgressSection } from "../components/profile/course-progress-sec
 import { CreatedCoursesSection } from "../components/profile/created-courses-section";
 import { LogoutButton } from "../components/auth/logout-button";
 import { getEnrolledCourses } from "@/lib/enrollment-service";
+import { SavedCoursesSection } from "../components/profile/saved-courses-section";
 
 export default async function ProfilePage() {
   const user = await currentUser();
@@ -230,6 +231,9 @@ export default async function ProfilePage() {
             )}
           </div>
         </div>
+
+        {/* Saved Courses Section */}
+        <SavedCoursesSection />
 
         {/* Course Progress List - Shown Second */}
         <CourseProgressSection courses={courses} />
