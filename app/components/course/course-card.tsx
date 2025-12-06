@@ -1,9 +1,10 @@
 "use client";
 import Image from "next/image";
-import { Bookmark, ArrowRight, Users } from "lucide-react";
+import { ArrowRight, Users } from "lucide-react";
 import Link from "next/link";
 import { getCourseEnrollmentCount } from "@/lib/enrollment-service";
 import { useEffect, useState } from "react";
+import SaveCourseButton from "./save-course-button";
 
 type CourseCardProps = {
   id: string;
@@ -49,12 +50,8 @@ export default function CourseCard({
       </figure>
       <div className="card-body p-4">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="card-title text-base text-base-content">
-            {title}
-          </h2>
-          <div className="badge badge-outline">
-            {difficulty}
-          </div>
+          <h2 className="card-title text-base text-base-content">{title}</h2>
+          <div className="badge badge-outline">{difficulty}</div>
         </div>
         <p className="text-sm text-base-content/80 line-clamp-2 mt-2">
           {description}
@@ -69,13 +66,7 @@ export default function CourseCard({
           </div>
         </div>
         <div className="card-actions justify-end mt-4">
-          <button
-            className="btn btn-ghost btn-sm text-base-content/70 hover:text-primary"
-            aria-label="Save course"
-          >
-            <Bookmark className="h-4 w-4" />
-            <span className="sr-only">Save</span>
-          </button>
+          <SaveCourseButton courseId={id} />
           <Link href={`course/${id}`} className="btn btn-primary btn-sm">
             View Course
             <ArrowRight className="h-4 w-4" />
