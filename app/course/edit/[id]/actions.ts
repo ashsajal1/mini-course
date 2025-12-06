@@ -3,10 +3,65 @@
 import { Prisma, ContentType } from "@prisma/client";
 import prisma from "@/prisma/client";
 import { revalidatePath } from "next/cache";
+import { auth } from "@clerk/nextjs/server";
+
+// Helper to verify course ownership
+async function verifyCourseOwner(courseId: string) {
+  const { userId } = await auth();
+  if (!userId) return false;
+
+  const course = await prisma.course.findUnique({
+    where: { id: courseId },
+    select: { creator: true },
+  });
+
+  return course?.creator === userId;
+}
+
+async function verifyModuleOwner(moduleId: string) {
+  const { userId } = await auth();
+  if (!userId) return false;
+
+  const courseModule = await prisma.module.findUnique({
+    where: { id: moduleId },
+    select: { course: { select: { creator: true } } },
+  });
+
+  return courseModule?.course.creator === userId;
+}
+
+async function verifySlideOwner(slideId: string) {
+  const { userId } = await auth();
+  if (!userId) return false;
+
+  const slide = await prisma.slide.findUnique({
+    where: { id: slideId },
+    select: { module: { select: { course: { select: { creator: true } } } } },
+  });
+
+  return slide?.module.course.creator === userId;
+}
+
+async function verifyQuestionOwner(questionId: string) {
+  const { userId } = await auth();
+  if (!userId) return false;
+
+  const question = await prisma.question.findUnique({
+    where: { id: questionId },
+    select: { module: { select: { course: { select: { creator: true } } } } },
+  });
+
+  return question?.module.course.creator === userId;
+}
 
 // Module Actions
 export async function createModule(courseId: string, title: string) {
   try {
+    const isOwner = await verifyCourseOwner(courseId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const newMdoule = await prisma.module.create({
       data: {
         title,
@@ -22,6 +77,11 @@ export async function createModule(courseId: string, title: string) {
 
 export async function updateQuestionContent(questionId: string, content: string) {
   try {
+    const isOwner = await verifyQuestionOwner(questionId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const question = await prisma.question.update({
       where: { id: questionId },
       data: { content },
@@ -36,6 +96,11 @@ export async function updateQuestionContent(questionId: string, content: string)
 
 export async function updateModule(moduleId: string, title: string) {
   try {
+    const isOwner = await verifyModuleOwner(moduleId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const updatedModule = await prisma.module.update({
       where: { id: moduleId },
       data: { title },
@@ -49,6 +114,11 @@ export async function updateModule(moduleId: string, title: string) {
 
 export async function deleteModule(moduleId: string) {
   try {
+    const isOwner = await verifyModuleOwner(moduleId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     // First get the module to get course_id for revalidation
     const deletedModule = await prisma.module.findUnique({
       where: { id: moduleId },
@@ -85,6 +155,11 @@ export async function createSlide(
   error?: string;
 }> {
   try {
+    const isOwner = await verifyModuleOwner(moduleId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     // First create the content item
     const contentItem = await prisma.content.create({
       data: {
@@ -130,6 +205,11 @@ export async function updateSlide(
   content: string
 ) {
   try {
+    const isOwner = await verifySlideOwner(slideId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const updatedSlide = await prisma.slide.update({
       where: { id: slideId },
       data: { title, content },
@@ -145,6 +225,11 @@ export async function updateSlide(
 
 export async function deleteSlide(slideId: string) {
   try {
+    const isOwner = await verifySlideOwner(slideId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     // First get the slide to get module_id for revalidation
     const slide = await prisma.slide.findUnique({
       where: { id: slideId },
@@ -181,6 +266,11 @@ export async function createQuestion(
   }>
 ) {
   try {
+    const isOwner = await verifyModuleOwner(moduleId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     // First create the content item
     const contentItem = await prisma.content.create({
       data: {
@@ -230,6 +320,11 @@ export async function updateQuestion(
   }[]
 ) {
   try {
+    const isOwner = await verifyQuestionOwner(questionId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     // First update the question
     const question = await prisma.question.update({
       where: { id: questionId },
@@ -261,6 +356,11 @@ export async function updateQuestion(
 
 export async function deleteQuestion(questionId: string) {
   try {
+    const isOwner = await verifyQuestionOwner(questionId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     // First get the question to get module_id for revalidation
     const question = await prisma.question.findUnique({
       where: { id: questionId },
@@ -300,6 +400,11 @@ async function getNextOrder(moduleId: string): Promise<number> {
 // Reorder content items
 export async function reorderContent(moduleId: string, contentIds: string[]) {
   try {
+    const isOwner = await verifyModuleOwner(moduleId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     await prisma.$transaction(
       contentIds.map((id, index) =>
         prisma.content.update({
