@@ -420,3 +420,26 @@ export async function reorderContent(moduleId: string, contentIds: string[]) {
     return { success: false, error: "Failed to reorder content" };
   }
 }
+
+export async function reorderModules(courseId: string, moduleIds: string[]) {
+  try {
+    const isOwner = await verifyCourseOwner(courseId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    await prisma.$transaction(
+      moduleIds.map((id, index) =>
+        prisma.module.update({
+          where: { id },
+          data: { order: index },
+        })
+      )
+    );
+
+    revalidatePath(`/course/edit/${courseId}`);
+    return { success: true };
+  } catch {
+    return { success: false, error: "Failed to reorder modules" };
+  }
+}

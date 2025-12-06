@@ -31,6 +31,7 @@ model Course {
 model Module {
   id         String    @id @default(cuid())
   title      String
+  order      Int?       @default(0)
   course_id  String
   course     Course    @relation(fields: [course_id], references: [id])
   created_at DateTime  @default(now())

@@ -48,7 +48,7 @@ export default async function ManageCourse({
           },
         },
         orderBy: {
-          created_at: "asc",
+          order: "asc",
         },
       },
     },
