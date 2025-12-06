@@ -154,7 +154,7 @@ export default async function CoursePage({
               <EnrollButton courseId={id} />
             )}
 
-            {clerkId && (
+            {clerkId === course.creator && (
               <Link
                 href={`/course/edit/${id}`}
                 className="btn btn-outline gap-2"
