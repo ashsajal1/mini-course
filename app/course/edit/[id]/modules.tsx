@@ -7,6 +7,7 @@ import {
   Plus,
   Trash2,
   GripVertical,
+  Pencil,
 } from "lucide-react";
 import type { Module } from "@prisma/client";
 import {
@@ -30,6 +31,11 @@ import { toast } from "sonner";
 
 const DeleteDialog = dynamic(
   () => import("@/app/components/course/delete-dialog"),
+  { ssr: false }
+);
+
+const EditModuleDialog = dynamic(
+  () => import("@/app/components/course/edit-module-dialog"),
   { ssr: false }
 );
 
@@ -89,6 +95,11 @@ export default function Modules({
     title: "",
     moduleId: "",
   });
+
+  const [editingModule, setEditingModule] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
 
   const router = useRouter();
 
@@ -356,6 +367,17 @@ export default function Modules({
                               </>
                             )}
                           </button>
+                          <button
+                            onClick={() =>
+                              setEditingModule({
+                                id: module.id,
+                                title: module.title,
+                              })
+                            }
+                            className="btn btn-ghost btn-sm btn-square"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
                         </div>
 
                         {/* Module Content - Shown when expanded */}
@@ -515,6 +537,16 @@ export default function Modules({
         description={`Are you sure you want to delete "${deleteState.title}"? This action cannot be undone.`}
         isLoading={false}
       />
+
+      {editingModule && (
+        <EditModuleDialog
+          key={editingModule.id}
+          isOpen={!!editingModule}
+          onClose={() => setEditingModule(null)}
+          moduleId={editingModule.id}
+          initialTitle={editingModule.title}
+        />
+      )}
     </div>
   );
 }
