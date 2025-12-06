@@ -23,27 +23,32 @@ export default async function ManageCourse({
     include: {
       modules: {
         include: {
-          slides: {
-            select: { id: true, title: true, content: true },
-          },
-          questions: {
-            select: {
-              id: true,
-              title: true,
-              content: true,
-              options: {
+          content: {
+            orderBy: { order: "asc" },
+            include: {
+              slide: {
+                select: { id: true, title: true, content: true },
+              },
+              question: {
                 select: {
                   id: true,
-                  text: true,
-                  isCorrect: true,
-                  explanation: true,
+                  title: true,
+                  content: true,
+                  options: {
+                    select: {
+                      id: true,
+                      text: true,
+                      isCorrect: true,
+                      explanation: true,
+                    },
+                  },
                 },
               },
             },
           },
         },
         orderBy: {
-          created_at: "asc",
+          order: "asc",
         },
       },
     },
@@ -71,11 +76,11 @@ export default async function ManageCourse({
 
   // Calculate stats
   const totalSlides = course.modules.reduce(
-    (sum, module) => sum + (module.slides?.length || 0),
+    (sum, module) => sum + module.content.filter((c) => c.slide).length,
     0
   );
   const totalQuestions = course.modules.reduce(
-    (sum, module) => sum + (module.questions?.length || 0),
+    (sum, module) => sum + module.content.filter((c) => c.question).length,
     0
   );
 

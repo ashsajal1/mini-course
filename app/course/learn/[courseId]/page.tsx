@@ -28,7 +28,7 @@ export default async function page({
       },
     },
     orderBy: {
-      created_at: "asc",
+      order: "asc",
     },
   });
 
