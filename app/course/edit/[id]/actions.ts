@@ -399,9 +399,11 @@ async function getNextOrder(moduleId: string): Promise<number> {
 
 // Reorder content items
 export async function reorderContent(moduleId: string, contentIds: string[]) {
+  console.log("reorderContent called", { moduleId, contentIds });
   try {
     const isOwner = await verifyModuleOwner(moduleId);
     if (!isOwner) {
+      console.log("reorderContent unauthorized");
       return { success: false, error: "Unauthorized" };
     }
 
@@ -414,17 +416,29 @@ export async function reorderContent(moduleId: string, contentIds: string[]) {
       )
     );
 
-    revalidatePath(`/course/edit/module/${moduleId}`);
+    // Get courseId for revalidation
+    const courseModule = await prisma.module.findUnique({
+      where: { id: moduleId },
+      select: { course_id: true },
+    });
+
+    console.log("reorderContent success");
+    if (courseModule) {
+      revalidatePath(`/course/edit/${courseModule.course_id}`);
+    }
     return { success: true };
-  } catch {
+  } catch (error) {
+    console.error("reorderContent error", error);
     return { success: false, error: "Failed to reorder content" };
   }
 }
 
 export async function reorderModules(courseId: string, moduleIds: string[]) {
+  console.log("reorderModules called", { courseId, moduleIds });
   try {
     const isOwner = await verifyCourseOwner(courseId);
     if (!isOwner) {
+      console.log("reorderModules unauthorized");
       return { success: false, error: "Unauthorized" };
     }
 
@@ -437,9 +451,11 @@ export async function reorderModules(courseId: string, moduleIds: string[]) {
       )
     );
 
+    console.log("reorderModules success");
     revalidatePath(`/course/edit/${courseId}`);
     return { success: true };
-  } catch {
+  } catch (error) {
+    console.error("reorderModules error", error);
     return { success: false, error: "Failed to reorder modules" };
   }
 }

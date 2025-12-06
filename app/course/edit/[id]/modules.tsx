@@ -155,6 +155,8 @@ export default function Modules({
   const onDragEnd = async (result: DropResult) => {
     const { destination, source, type } = result;
 
+    console.log("onDragEnd", { destination, source, type });
+
     if (!destination) return;
 
     if (
