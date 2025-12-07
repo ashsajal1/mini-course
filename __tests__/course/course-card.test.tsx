@@ -2,11 +2,13 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import CourseCard from "@/app/components/course/course-card";
 import * as enrollmentService from "@/lib/enrollment-service";
-import Image, { ImageProps } from "next/image";
 
-// Mock dependencies
+// Mock next/image with a simple img element
 vi.mock("next/image", () => ({
-  default: (props: ImageProps) => <Image {...props} alt={props.alt} />,
+  default: ({ src, alt, ...props }: { src: string; alt: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} {...props} />
+  ),
 }));
 
 vi.mock("@/app/components/course/save-course-button", () => ({
