@@ -8,11 +8,13 @@ import { generateSlideContent } from "@/app/course/edit/[id]/slide/ai-actions";
 interface SlideAiAssistantProps {
   onContentGenerated: (content: string) => void;
   onTitleGenerated?: (title: string) => void;
+  onGeneratingChange?: (isGenerating: boolean) => void;
 }
 
 export default function SlideAiAssistant({
   onContentGenerated,
   onTitleGenerated,
+  onGeneratingChange,
 }: SlideAiAssistantProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [prompt, setPrompt] = useState("");
@@ -24,6 +26,7 @@ export default function SlideAiAssistant({
     if (!prompt.trim()) return;
 
     setIsGenerating(true);
+    onGeneratingChange?.(true);
     setError(null);
 
     try {
@@ -43,6 +46,7 @@ export default function SlideAiAssistant({
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsGenerating(false);
+      onGeneratingChange?.(false);
     }
   };
 

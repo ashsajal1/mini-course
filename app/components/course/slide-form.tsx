@@ -31,6 +31,7 @@ export default function SlideForm({
 }: SlideFormProps) {
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
   const { theme } = useTheme();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -49,12 +50,15 @@ export default function SlideForm({
     }
   };
 
+  const isDisabled = isSubmitting || isAiGenerating;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* AI Assistant */}
       <SlideAiAssistant
         onContentGenerated={handleAiContentGenerated}
         onTitleGenerated={handleAiTitleGenerated}
+        onGeneratingChange={setIsAiGenerating}
       />
 
       {/* Title Input */}
@@ -70,7 +74,7 @@ export default function SlideForm({
           placeholder="Enter a descriptive title for this slide"
           className="input input-bordered w-full"
           required
-          disabled={isSubmitting}
+          disabled={isDisabled}
         />
       </div>
 
@@ -98,7 +102,7 @@ Use **markdown** syntax to format your content:
 - [Links](https://example.com)
 - Code blocks
 - And more!`,
-              disabled: isSubmitting,
+              disabled: isDisabled,
             }}
           />
         </div>
@@ -115,14 +119,14 @@ Use **markdown** syntax to format your content:
           type="button"
           onClick={onCancel}
           className="btn btn-ghost"
-          disabled={isSubmitting}
+          disabled={isDisabled}
         >
           Cancel
         </button>
         <button
           type="submit"
           className="btn btn-primary gap-2"
-          disabled={!content.trim() || !title.trim() || isSubmitting}
+          disabled={!content.trim() || !title.trim() || isDisabled}
         >
           {isSubmitting ? (
             <>
