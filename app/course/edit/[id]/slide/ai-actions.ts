@@ -27,16 +27,18 @@ export async function generateSlideContent(prompt: string, docs?: string) {
     const model = hasUrls ? "compound-beta" : "llama-3.3-70b-versatile";
 
     const systemPrompt = `You are an expert course content creator. Generate educational slide content in Markdown format.
-Your slides should be:
-- Clear and concise
-- Well-structured with proper headings
-- Include code examples when relevant (with proper syntax highlighting)
-- Use bullet points for key concepts
-- Engaging and easy to understand
+
+CRITICAL RULES:
+- Keep content within 100 words maximum
+- Focus on ONE core idea per slide
+- Include a brief example only if it clarifies the concept
+- Use bullet points for key concepts (max 3-4 points)
+- Be concise and direct
 
 ${hasUrls ? "When URLs are provided, fetch and analyze the content from those URLs to create accurate slides." : ""}
 
 Output ONLY the markdown content for the slide, nothing else.`;
+
 
     const userPrompt = docs
       ? `Based on the following documentation/context:\n\n${docs}\n\nCreate a slide about: ${prompt}`
