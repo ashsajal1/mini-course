@@ -22,6 +22,7 @@
     "@types/ws": "^8.18.1",
     "@uiw/react-md-editor": "^4.0.8",
     "dotenv": "^17.2.3",
+    "groq-sdk": "^0.37.0",
     "highlight.js": "^11.11.1",
     "lucide-react": "^0.548.0",
     "next": "16.0.0",
