@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Plus as PlusIcon, Trash2 } from "lucide-react";
+import QuestionAiAssistant from "./question-ai-assistant";
 
 export type Option = {
   id: string;
@@ -22,6 +23,7 @@ interface QuestionFormProps {
   isSubmitting: boolean;
   onCancel: () => void;
   submitButtonText?: string;
+  previousSlideContent?: string;
 }
 
 export default function QuestionForm({
@@ -30,10 +32,24 @@ export default function QuestionForm({
   isSubmitting,
   onCancel,
   submitButtonText = "Save",
+  previousSlideContent,
 }: QuestionFormProps) {
   const [title, setTitle] = useState(() => initialData?.title ?? "");
   const [question, setQuestion] = useState(() => initialData?.question ?? "");
-  const [options, setOptions] = useState<Option[]>(() => initialData?.options ?? []);
+  const [options, setOptions] = useState<Option[]>(
+    () => initialData?.options ?? []
+  );
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
+
+  const handleAiQuestionGenerated = (data: {
+    title: string;
+    question: string;
+    options: Option[];
+  }) => {
+    setTitle(data.title);
+    setQuestion(data.question);
+    setOptions(data.options);
+  };
 
   const addOption = () => {
     setOptions([
@@ -84,6 +100,13 @@ export default function QuestionForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* AI Assistant for MCQ Generation */}
+      <QuestionAiAssistant
+        previousSlideContent={previousSlideContent}
+        onQuestionGenerated={handleAiQuestionGenerated}
+        onGeneratingChange={setIsAiGenerating}
+      />
+
       <div className="form-control">
         <label className="label">
           <span className="label-text">Title</span>
@@ -95,7 +118,7 @@ export default function QuestionForm({
           placeholder="Enter question title"
           className="input input-bordered w-full"
           autoFocus
-          disabled={isSubmitting}
+          disabled={isSubmitting || isAiGenerating}
           required
         />
       </div>
