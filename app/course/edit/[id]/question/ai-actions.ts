@@ -39,7 +39,7 @@ export async function generateMCQFromSlide(slideContent: string) {
 CRITICAL RULES:
 - Create exactly ONE well-structured MCQ question
 - The question should test understanding of the core concept from the slide
-- Generate exactly 4 options (A, B, C, D)
+- Generate 2 to 4 options based on what's relevant to the content (don't force unnecessary options)
 - Only ONE option should be correct
 - Each option should have a brief explanation
 
@@ -48,10 +48,8 @@ OUTPUT FORMAT (JSON only, no markdown):
   "title": "Brief title describing the topic being tested",
   "question": "The question text asking about the slide content",
   "options": [
-    { "text": "Option A text", "isCorrect": false, "explanation": "Why this is wrong/right" },
-    { "text": "Option B text", "isCorrect": true, "explanation": "Why this is the correct answer" },
-    { "text": "Option C text", "isCorrect": false, "explanation": "Why this is wrong" },
-    { "text": "Option D text", "isCorrect": false, "explanation": "Why this is wrong" }
+    { "text": "Option text", "isCorrect": false, "explanation": "Why this is wrong/right" },
+    { "text": "Correct option text", "isCorrect": true, "explanation": "Why this is the correct answer" }
   ]
 }
 
