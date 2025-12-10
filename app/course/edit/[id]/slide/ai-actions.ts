@@ -63,6 +63,9 @@ Output ONLY the markdown content for the slide, nothing else.`;
       };
     }
 
+    // Remove markdown code block wrapper if present
+    content = content.replace(/^```(?:markdown|md)?\n?([\s\S]*?)```$/gm, "$1").trim();
+
     // Extract title from first heading line (# or ## or ###)
     const headingMatch = content.match(/^(#{1,3})\s+(.+)$/m);
     let title: string | undefined;
@@ -72,6 +75,7 @@ Output ONLY the markdown content for the slide, nothing else.`;
       // Remove the first heading line from content
       content = content.replace(/^#{1,3}\s+.+\n?/, "").trim();
     }
+
 
     return {
       success: true,
