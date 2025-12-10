@@ -4,6 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import "@uiw/react-md-editor/markdown-editor.css";
+import SlideAiAssistant from "./slide-ai-assistant";
 
 // Dynamically import the markdown editor to avoid SSR issues
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
@@ -38,8 +39,24 @@ export default function SlideForm({
     onSave({ title, content });
   };
 
+  const handleAiContentGenerated = (generatedContent: string) => {
+    setContent(generatedContent);
+  };
+
+  const handleAiTitleGenerated = (generatedTitle: string) => {
+    if (!title.trim()) {
+      setTitle(generatedTitle);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* AI Assistant */}
+      <SlideAiAssistant
+        onContentGenerated={handleAiContentGenerated}
+        onTitleGenerated={handleAiTitleGenerated}
+      />
+
       {/* Title Input */}
       <div className="form-control w-full">
         <label className="label">
