@@ -116,8 +116,7 @@ model Option {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  // Ensure only one correct answer per question
-  @@unique([questionId, isCorrect])
+  // Note: Only one correct answer per question should be enforced at application level
   @@index([questionId])
 }
 

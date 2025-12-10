@@ -15,6 +15,35 @@ async function getNextOrder(moduleId: string): Promise<number> {
   return (lastItem?.order || 0) + 1;
 }
 
+// Get the content of the last slide in a module (for AI question generation)
+export async function getPreviousSlideContent(moduleId: string): Promise<string | null> {
+  try {
+    // Find the last slide content item in the module
+    const lastSlideContent = await prisma.content.findFirst({
+      where: {
+        module_id: moduleId,
+        type: ContentType.SLIDE,
+      },
+      orderBy: { order: "desc" },
+      include: {
+        slide: {
+          select: { content: true, title: true },
+        },
+      },
+    });
+
+    if (lastSlideContent?.slide) {
+      const { title, content } = lastSlideContent.slide;
+      return title ? `# ${title}\n\n${content}` : content;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error fetching previous slide:", error);
+    return null;
+  }
+}
+
 export async function createQuestion(
   moduleId: string,
   title: string,

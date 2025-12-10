@@ -4,17 +4,31 @@ import QuestionForm, {
   QuestionFormData,
 } from "@/app/components/course/question-form";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { createQuestion } from "./actions";
+import { useState, useEffect } from "react";
+import { createQuestion, getPreviousSlideContent } from "./actions";
 
 export default function Page() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [previousSlideContent, setPreviousSlideContent] = useState<
+    string | null
+  >(null);
 
   const courseId = params.id as string;
   const moduleId = searchParams.get("moduleId");
+
+  // Fetch previous slide content when component mounts
+  useEffect(() => {
+    const fetchPreviousSlide = async () => {
+      if (moduleId) {
+        const content = await getPreviousSlideContent(moduleId);
+        setPreviousSlideContent(content);
+      }
+    };
+    fetchPreviousSlide();
+  }, [moduleId]);
 
   const handleSave = async (data: QuestionFormData) => {
     if (!moduleId) {
@@ -50,6 +64,7 @@ export default function Page() {
           isSubmitting={isSubmitting}
           onCancel={() => router.back()}
           submitButtonText="Create Question"
+          previousSlideContent={previousSlideContent ?? undefined}
         />
       </div>
     </div>

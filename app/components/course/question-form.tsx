@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Plus as PlusIcon, Trash2 } from "lucide-react";
+import QuestionAiAssistant from "./question-ai-assistant";
 
 export type Option = {
   id: string;
@@ -22,6 +23,7 @@ interface QuestionFormProps {
   isSubmitting: boolean;
   onCancel: () => void;
   submitButtonText?: string;
+  previousSlideContent?: string;
 }
 
 export default function QuestionForm({
@@ -30,10 +32,24 @@ export default function QuestionForm({
   isSubmitting,
   onCancel,
   submitButtonText = "Save",
+  previousSlideContent,
 }: QuestionFormProps) {
   const [title, setTitle] = useState(() => initialData?.title ?? "");
   const [question, setQuestion] = useState(() => initialData?.question ?? "");
-  const [options, setOptions] = useState<Option[]>(() => initialData?.options ?? []);
+  const [options, setOptions] = useState<Option[]>(
+    () => initialData?.options ?? []
+  );
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
+
+  const handleAiQuestionGenerated = (data: {
+    title: string;
+    question: string;
+    options: Option[];
+  }) => {
+    setTitle(data.title);
+    setQuestion(data.question);
+    setOptions(data.options);
+  };
 
   const addOption = () => {
     setOptions([
@@ -84,6 +100,14 @@ export default function QuestionForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* AI Assistant for MCQ Generation */}
+      <QuestionAiAssistant
+        previousSlideContent={previousSlideContent}
+        onQuestionGenerated={handleAiQuestionGenerated}
+        onGeneratingChange={setIsAiGenerating}
+        isSubmitting={isSubmitting}
+      />
+
       <div className="form-control">
         <label className="label">
           <span className="label-text">Title</span>
@@ -95,7 +119,7 @@ export default function QuestionForm({
           placeholder="Enter question title"
           className="input input-bordered w-full"
           autoFocus
-          disabled={isSubmitting}
+          disabled={isSubmitting || isAiGenerating}
           required
         />
       </div>
@@ -109,7 +133,7 @@ export default function QuestionForm({
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Enter your question content"
           className="textarea textarea-bordered w-full min-h-[100px]"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isAiGenerating}
           required
         />
       </div>
@@ -123,7 +147,7 @@ export default function QuestionForm({
             type="button"
             onClick={addOption}
             className="btn btn-ghost btn-sm"
-            disabled={options.length >= 5 || isSubmitting}
+            disabled={options.length >= 5 || isSubmitting || isAiGenerating}
           >
             <PlusIcon className="w-4 h-4 mr-1" />
             Add Option
@@ -139,7 +163,7 @@ export default function QuestionForm({
                   checked={option.isCorrect}
                   onChange={() => toggleCorrect(option.id)}
                   className="checkbox checkbox-primary"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isAiGenerating}
                   id={`correct-${option.id}`}
                 />
                 <label
@@ -153,7 +177,7 @@ export default function QuestionForm({
                     type="button"
                     onClick={() => removeOption(option.id)}
                     className="ml-auto text-error"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isAiGenerating}
                     aria-label={`Remove option ${index + 1}`}
                   >
                     <Trash2 className="w-4 h-4" />
@@ -168,7 +192,7 @@ export default function QuestionForm({
                 }
                 placeholder={`Option ${index + 1}`}
                 className="input input-bordered w-full mb-2"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isAiGenerating}
                 required
               />
               <input
@@ -179,7 +203,7 @@ export default function QuestionForm({
                 }
                 placeholder="Explanation (optional)"
                 className="input input-bordered w-full text-sm"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isAiGenerating}
               />
             </div>
           ))}
@@ -191,7 +215,7 @@ export default function QuestionForm({
           type="button"
           onClick={onCancel}
           className="btn btn-ghost"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isAiGenerating}
         >
           Cancel
         </button>
