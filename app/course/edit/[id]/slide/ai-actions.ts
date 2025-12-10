@@ -6,6 +6,12 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
+// Detect if the docs contain URLs
+function containsUrls(text: string): boolean {
+  const urlPattern = /https?:\/\/[^\s]+/gi;
+  return urlPattern.test(text);
+}
+
 export async function generateSlideContent(prompt: string, docs?: string) {
   if (!process.env.GROQ_API_KEY) {
     return {
@@ -15,6 +21,11 @@ export async function generateSlideContent(prompt: string, docs?: string) {
   }
 
   try {
+    const hasUrls = docs ? containsUrls(docs) : false;
+
+    // Use compound-beta for URL fetching, llama for regular text
+    const model = hasUrls ? "compound-beta" : "llama-3.3-70b-versatile";
+
     const systemPrompt = `You are an expert course content creator. Generate educational slide content in Markdown format.
 Your slides should be:
 - Clear and concise
@@ -22,6 +33,8 @@ Your slides should be:
 - Include code examples when relevant (with proper syntax highlighting)
 - Use bullet points for key concepts
 - Engaging and easy to understand
+
+${hasUrls ? "When URLs are provided, fetch and analyze the content from those URLs to create accurate slides." : ""}
 
 Output ONLY the markdown content for the slide, nothing else.`;
 
@@ -34,7 +47,7 @@ Output ONLY the markdown content for the slide, nothing else.`;
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      model: "llama-3.3-70b-versatile",
+      model,
       temperature: 0.7,
       max_tokens: 2048,
     });
@@ -51,6 +64,7 @@ Output ONLY the markdown content for the slide, nothing else.`;
     return {
       success: true,
       content,
+      model, // Return which model was used
     };
   } catch (error) {
     console.error("Error generating slide content:", error);
@@ -60,3 +74,4 @@ Output ONLY the markdown content for the slide, nothing else.`;
     };
   }
 }
+
