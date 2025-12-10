@@ -32,9 +32,9 @@ export default function SlideAiAssistant({
       if (result.success && result.content) {
         onContentGenerated(result.content);
 
-        const titleMatch = result.content.match(/^#\s+(.+)$/m);
-        if (titleMatch && onTitleGenerated) {
-          onTitleGenerated(titleMatch[1]);
+        // Use title from server action
+        if (result.title && onTitleGenerated) {
+          onTitleGenerated(result.title);
         }
       } else {
         setError(result.error || "Failed to generate content");

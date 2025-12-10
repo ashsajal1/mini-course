@@ -63,11 +63,17 @@ Output ONLY the markdown content for the slide, nothing else.`;
       };
     }
 
+    // Extract title from first heading (# Title)
+    const titleMatch = content.match(/^#\s+(.+)$/m) || content.match(/^##\s+(.+)$/m) || content.match(/^###\s+(.+)$/m);
+    const title = titleMatch ? titleMatch[1].trim() : undefined;
+
     return {
       success: true,
       content,
-      model, // Return which model was used
+      title,
+      model,
     };
+
   } catch (error) {
     console.error("Error generating slide content:", error);
     return {
