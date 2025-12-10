@@ -54,7 +54,7 @@ Output ONLY the markdown content for the slide, nothing else.`;
       max_tokens: 2048,
     });
 
-    const content = completion.choices[0]?.message?.content;
+    let content = completion.choices[0]?.message?.content;
 
     if (!content) {
       return {
@@ -63,9 +63,15 @@ Output ONLY the markdown content for the slide, nothing else.`;
       };
     }
 
-    // Extract title from first heading (# Title)
-    const titleMatch = content.match(/^#\s+(.+)$/m) || content.match(/^##\s+(.+)$/m) || content.match(/^###\s+(.+)$/m);
-    const title = titleMatch ? titleMatch[1].trim() : undefined;
+    // Extract title from first heading line (# or ## or ###)
+    const headingMatch = content.match(/^(#{1,3})\s+(.+)$/m);
+    let title: string | undefined;
+
+    if (headingMatch) {
+      title = headingMatch[2].trim();
+      // Remove the first heading line from content
+      content = content.replace(/^#{1,3}\s+.+\n?/, "").trim();
+    }
 
     return {
       success: true,
@@ -73,6 +79,7 @@ Output ONLY the markdown content for the slide, nothing else.`;
       title,
       model,
     };
+
 
   } catch (error) {
     console.error("Error generating slide content:", error);
