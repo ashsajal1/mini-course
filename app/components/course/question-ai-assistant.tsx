@@ -13,12 +13,14 @@ interface QuestionAiAssistantProps {
     options: Option[];
   }) => void;
   onGeneratingChange?: (isGenerating: boolean) => void;
+  isSubmitting?: boolean;
 }
 
 export default function QuestionAiAssistant({
   previousSlideContent,
   onQuestionGenerated,
   onGeneratingChange,
+  isSubmitting = false,
 }: QuestionAiAssistantProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -113,7 +115,7 @@ export default function QuestionAiAssistant({
           <button
             type="button"
             onClick={handleGenerate}
-            disabled={!hasSlideContent || isGenerating}
+            disabled={!hasSlideContent || isGenerating || isSubmitting}
             className="btn btn-primary btn-sm w-full gap-2"
           >
             {isGenerating ? (
