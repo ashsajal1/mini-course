@@ -3,6 +3,8 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
+import Link from "next/link";
+import { Plus, Trash2, Link as LinkIcon } from "lucide-react";
 import "@uiw/react-md-editor/markdown-editor.css";
 import SlideAiAssistant from "./slide-ai-assistant";
 
@@ -12,6 +14,7 @@ const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 export type SlideFormData = {
   title: string;
   content: string;
+  references: string[];
 };
 
 interface SlideFormProps {
@@ -31,13 +34,30 @@ export default function SlideForm({
 }: SlideFormProps) {
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
+  const [references, setReferences] = useState<string[]>(
+    initialData?.references || []
+  );
   const [isAiGenerating, setIsAiGenerating] = useState(false);
   const { theme } = useTheme();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) return;
-    onSave({ title, content });
+    onSave({ title, content, references });
+  };
+
+  const addReference = () => {
+    setReferences([...references, ""]);
+  };
+
+  const removeReference = (index: number) => {
+    setReferences(references.filter((_, i) => i !== index));
+  };
+
+  const updateReference = (index: number, value: string) => {
+    const newReferences = [...references];
+    newReferences[index] = value;
+    setReferences(newReferences);
   };
 
   const handleAiContentGenerated = (generatedContent: string) => {
@@ -111,6 +131,57 @@ Use **markdown** syntax to format your content:
             💡 Tip: Use the preview pane to see how your content will look
           </span>
         </label>
+      </div>
+
+      {/* References Section */}
+      <div className="form-control w-full">
+        <label className="label">
+          <span className="label-text font-semibold">
+            References & Resources
+          </span>
+          <span className="label-text-alt text-base-content/60">
+            Optional links or citations
+          </span>
+        </label>
+
+        <div className="space-y-3">
+          {references.map((ref, index) => (
+            <div key={index} className="flex gap-2">
+              <div className="relative flex-1">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <LinkIcon className="h-4 w-4 text-base-content/40" />
+                </div>
+                <input
+                  type="text"
+                  value={ref}
+                  onChange={(e) => updateReference(index, e.target.value)}
+                  placeholder="https://example.com or Reference Text"
+                  className="input input-bordered w-full pl-10"
+                  disabled={isDisabled}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => removeReference(index)}
+                className="btn btn-ghost btn-square text-error"
+                disabled={isDisabled}
+                title="Remove reference"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            </div>
+          ))}
+
+          <button
+            type="button"
+            onClick={addReference}
+            className="btn btn-outline btn-sm gap-2"
+            disabled={isDisabled}
+          >
+            <Plus className="w-4 h-4" />
+            Add Reference
+          </button>
+        </div>
       </div>
 
       {/* Action Buttons */}
