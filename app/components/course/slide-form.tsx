@@ -254,6 +254,52 @@ export default function SlideForm({
                   </li>
                 ))}
               </ul>
+
+              {JSON.stringify(references) !==
+                JSON.stringify(initialReferences) && (
+                <div className="mt-4 border-t pt-4">
+                  <h4 className="font-semibold mb-2">Reference Changes:</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <div className="text-xs font-bold uppercase text-base-content/50 mb-1">
+                        Previous References
+                      </div>
+                      {initialReferences.length > 0 ? (
+                        <ul className="list-disc list-inside text-sm text-base-content/70">
+                          {initialReferences.map((ref, i) => (
+                            <li key={i} className="truncate" title={ref}>
+                              {ref}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div className="text-sm text-base-content/50 italic">
+                          None
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold uppercase text-base-content/50 mb-1">
+                        New References
+                      </div>
+                      {references.length > 0 ? (
+                        <ul className="list-disc list-inside text-sm text-secondary">
+                          {references.map((ref, i) => (
+                            <li key={i} className="truncate" title={ref}>
+                              {ref}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div className="text-sm text-base-content/50 italic">
+                          None
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <p className="mt-4 text-sm text-base-content/70">
                 Are you sure you want to {submitButtonText.toLowerCase()}?
               </p>

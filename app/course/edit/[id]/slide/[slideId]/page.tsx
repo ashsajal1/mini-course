@@ -9,6 +9,7 @@ type Slide = {
   id: string;
   title: string | null;
   content: string;
+  references: string[];
 };
 
 export default function EditSlidePage() {
@@ -65,6 +66,7 @@ export default function EditSlidePage() {
   const initialData = {
     title: slideData.title || "",
     content: slideData.content,
+    references: slideData.references || [],
   };
 
   return (
