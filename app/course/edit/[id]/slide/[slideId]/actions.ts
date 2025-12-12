@@ -13,7 +13,8 @@ export async function updateSlide(
   slideId: string,
   courseId: string,
   title: string,
-  content: string
+  content: string,
+  references: string[] = []
 ) {
   try {
     await prisma.slide.update({
@@ -21,6 +22,7 @@ export async function updateSlide(
       data: {
         title,
         content,
+        references,
       },
     });
 
