@@ -75,6 +75,7 @@ model Slide {
   content    String
   module_id  String
   module     Module    @relation(fields: [module_id], references: [id])
+  references String[]
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
