@@ -42,7 +42,8 @@ export default function EditSlidePage() {
         slideId,
         courseId,
         data.title,
-        data.content
+        data.content,
+        data.references
       );
       if (response.success) {
         router.push(`/course/edit/${courseId}`);

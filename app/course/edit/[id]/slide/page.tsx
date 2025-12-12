@@ -21,7 +21,12 @@ export default function CreateSlidePage() {
     }
     setIsSubmitting(true);
     try {
-      const response = await createSlide(moduleId, data.title, data.content);
+      const response = await createSlide(
+        moduleId,
+        data.title,
+        data.content,
+        data.references
+      );
       if (response.success) {
         router.push(`/course/edit/${courseId}`);
       } else {
