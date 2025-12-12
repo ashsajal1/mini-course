@@ -148,7 +148,8 @@ type SlideWithContentItem = Prisma.SlideGetPayload<{
 export async function createSlide(
   moduleId: string,
   title: string,
-  content: string
+  content: string,
+  references: string[] = []
 ): Promise<{
   success: boolean;
   slide?: SlideWithContentItem;
@@ -176,6 +177,7 @@ export async function createSlide(
         content: content,
         module_id: moduleId,
         content_item_id: contentItem.id,
+        references,
       },
       include: {
         content_item: true,
@@ -202,7 +204,8 @@ export async function createSlide(
 export async function updateSlide(
   slideId: string,
   title: string,
-  content: string
+  content: string,
+  references: string[] = []
 ) {
   try {
     const isOwner = await verifySlideOwner(slideId);
@@ -212,7 +215,7 @@ export async function updateSlide(
 
     const updatedSlide = await prisma.slide.update({
       where: { id: slideId },
-      data: { title, content },
+      data: { title, content, references },
       include: { module: true },
     });
 
