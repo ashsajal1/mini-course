@@ -46,7 +46,7 @@ export default function EditSlidePage() {
           data.references
         );
         if (response.success) {
-          router.push(`/course/edit/${courseId}`);
+          router.refresh();
         }
       } catch (error) {
         console.error("Failed to update slide:", error);
