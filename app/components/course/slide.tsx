@@ -6,6 +6,7 @@ import "highlight.js/styles/github-dark.css";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import type { Prisma } from "@prisma/client";
+import { BookOpen } from "lucide-react";
 
 type SlideType = Prisma.SlideGetPayload<{
   include: {
@@ -85,6 +86,37 @@ export default function Slide({ slide }: { slide: SlideType }) {
           {slide?.content || ""}
         </ReactMarkdown>
       </div>
+
+      {slide?.references && slide.references.length > 0 && (
+        <div className="mt-12 border-t border-base-300 pt-8">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-primary" />
+            References & Resources
+          </h3>
+          <ul className="space-y-3">
+            {slide.references
+              .filter((ref) => ref && ref.trim())
+              .map((ref, i) => (
+                <li key={i} className="card bg-base-200 p-4 rounded-lg">
+                  <div className="prose dark:prose-invert max-w-none text-sm">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeHighlight]}
+                      components={{
+                        ...components,
+                        p: ({ node, ...props }) => (
+                          <p className="m-0" {...props} />
+                        ),
+                      }}
+                    >
+                      {ref}
+                    </ReactMarkdown>
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
