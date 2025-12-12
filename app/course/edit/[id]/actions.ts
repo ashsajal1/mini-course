@@ -459,3 +459,22 @@ export async function reorderModules(courseId: string, moduleIds: string[]) {
     return { success: false, error: "Failed to reorder modules" };
   }
 }
+
+export async function updateCourseStatus(courseId: string, isPublic: boolean) {
+  try {
+    const isOwner = await verifyCourseOwner(courseId);
+    if (!isOwner) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    await prisma.course.update({
+      where: { id: courseId },
+      data: { isPublic },
+    });
+    revalidatePath(`/course/edit/${courseId}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update course status:", error);
+    return { success: false, error: "Failed to update course status" };
+  }
+}
