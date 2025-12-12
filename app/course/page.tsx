@@ -5,6 +5,9 @@ import prisma from "@/prisma/client";
 
 export default async function CoursePage() {
   const courses = await prisma.course.findMany({
+    where: {
+      OR: [{ isPublic: true }, { isPublic: null }],
+    },
     include: {
       _count: {
         select: { modules: true },
