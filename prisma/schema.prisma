@@ -21,6 +21,7 @@ model Course {
   description   String
   difficulty    String
   thumbnail_url String
+  isPublic      Boolean?
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
   deleted_at    DateTime?

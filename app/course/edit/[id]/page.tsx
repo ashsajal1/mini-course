@@ -1,5 +1,6 @@
 import prisma from "@/prisma/client";
 import Modules from "./modules";
+import CourseStatusToggle from "./course-status-toggle";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -166,6 +167,12 @@ export default async function ManageCourse({
                 </div>
               </div>
             </div>
+
+            {/* Status Toggle */}
+            <CourseStatusToggle
+              courseId={course.id}
+              isPublic={course.isPublic}
+            />
 
             {/* Stats Cards */}
             <div className="card bg-base-100 shadow-xl">
