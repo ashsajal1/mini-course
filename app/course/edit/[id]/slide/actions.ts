@@ -22,7 +22,8 @@ type SlideWithContentItem = Prisma.SlideGetPayload<{
 export async function createSlide(
   moduleId: string,
   title: string,
-  content: string
+  content: string,
+  references: string[] = []
 ): Promise<{
   success: boolean;
   slide?: SlideWithContentItem;
@@ -52,6 +53,7 @@ export async function createSlide(
       data: {
         title: title,
         content: content,
+        references,
         module_id: moduleId,
         content_item_id: contentItem.id,
       },
