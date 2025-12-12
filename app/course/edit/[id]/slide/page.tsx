@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import SlideForm, { SlideFormData } from "@/app/components/course/slide-form";
 import { createSlide } from "./actions";
 
 export default function CreateSlidePage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -19,24 +19,24 @@ export default function CreateSlidePage() {
       console.error("Module ID is missing");
       return;
     }
-    setIsSubmitting(true);
-    try {
-      const response = await createSlide(
-        moduleId,
-        data.title,
-        data.content,
-        data.references
-      );
-      if (response.success) {
-        router.push(`/course/edit/${courseId}`);
-      } else {
-        console.error(response.error);
+
+    startTransition(async () => {
+      try {
+        const response = await createSlide(
+          moduleId,
+          data.title,
+          data.content,
+          data.references
+        );
+        if (response.success) {
+          router.push(`/course/edit/${courseId}`);
+        } else {
+          console.error(response.error);
+        }
+      } catch (error) {
+        console.error("Failed to create slide:", error);
       }
-    } catch (error) {
-      console.error("Failed to create slide:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    });
   };
 
   return (
@@ -47,7 +47,7 @@ export default function CreateSlidePage() {
         </div>
         <SlideForm
           onSave={handleSave}
-          isSubmitting={isSubmitting}
+          isSubmitting={isPending}
           onCancel={() => router.back()}
           submitButtonText="Create Slide"
         />

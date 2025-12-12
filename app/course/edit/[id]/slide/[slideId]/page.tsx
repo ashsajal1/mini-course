@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { getSlide, updateSlide } from "./actions";
 import { notFound, useParams, useRouter } from "next/navigation";
 import SlideForm, { SlideFormData } from "@/app/components/course/slide-form";
@@ -13,7 +13,7 @@ type Slide = {
 
 export default function EditSlidePage() {
   const [slideData, setSlideData] = useState<Slide | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(true);
 
   const params = useParams();
@@ -36,23 +36,22 @@ export default function EditSlidePage() {
   }, [slideId]);
 
   const handleSave = async (data: SlideFormData) => {
-    setIsSubmitting(true);
-    try {
-      const response = await updateSlide(
-        slideId,
-        courseId,
-        data.title,
-        data.content,
-        data.references
-      );
-      if (response.success) {
-        router.push(`/course/edit/${courseId}`);
+    startTransition(async () => {
+      try {
+        const response = await updateSlide(
+          slideId,
+          courseId,
+          data.title,
+          data.content,
+          data.references
+        );
+        if (response.success) {
+          router.push(`/course/edit/${courseId}`);
+        }
+      } catch (error) {
+        console.error("Failed to update slide:", error);
       }
-    } catch (error) {
-      console.error("Failed to update slide:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    });
   };
 
   if (isLoading) {
@@ -77,7 +76,7 @@ export default function EditSlidePage() {
         <SlideForm
           initialData={initialData}
           onSave={handleSave}
-          isSubmitting={isSubmitting}
+          isSubmitting={isPending}
           onCancel={() => router.back()}
           submitButtonText="Update Slide"
         />
