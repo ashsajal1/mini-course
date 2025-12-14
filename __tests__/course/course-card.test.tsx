@@ -26,6 +26,7 @@ describe("CourseCard Component", () => {
     title: "Test Course",
     description: "This is a test course description",
     difficulty: "Beginner",
+    lang: "en",
     thumbnail_url: "/test-image.jpg",
     moduleCount: 5,
   };
@@ -80,5 +81,46 @@ describe("CourseCard Component", () => {
     const image = screen.getByRole("img");
     // In the component: src={thumbnail_url || "/next.svg"}
     expect(image).toHaveAttribute("src", "/next.svg");
+  });
+
+  it("displays language badge correctly", () => {
+    vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(0);
+
+    render(<CourseCard {...mockCourse} />);
+
+    const languageBadge = screen.getByText("EN");
+    expect(languageBadge).toBeInTheDocument();
+    expect(languageBadge.closest(".badge")).toHaveClass("badge-info");
+  });
+
+  it("displays different languages correctly", () => {
+    vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(0);
+    
+    const spanishCourse = { ...mockCourse, lang: "es" };
+    render(<CourseCard {...spanishCourse} />);
+
+    expect(screen.getByText("ES")).toBeInTheDocument();
+  });
+
+  it("handles undefined language gracefully", () => {
+    vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(0);
+    
+    const courseWithoutLang = { ...mockCourse };
+    delete (courseWithoutLang as any).lang;
+    render(<CourseCard {...courseWithoutLang} />);
+
+    // Should fallback to "EN" when lang is undefined
+    expect(screen.getByText("EN")).toBeInTheDocument();
+  });
+
+  it("displays globe icon in language badge", () => {
+    vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(0);
+
+    render(<CourseCard {...mockCourse} />);
+
+    // Check for the globe icon within the language badge
+    const languageBadge = screen.getByText("EN").closest(".badge");
+    const globeIcon = languageBadge?.querySelector("svg");
+    expect(globeIcon).toBeInTheDocument();
   });
 });
