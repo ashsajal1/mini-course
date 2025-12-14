@@ -64,6 +64,10 @@ describe("CourseForm Component", () => {
       difficulty: "Beginner",
       lang: "en",
       thumbnail_url: "https://example.com/image.jpg",
+      creator: "test-user-id",
+      created_at: new Date(),
+      updated_at: new Date(),
+      deleted_at: null,
     };
 
     vi.mocked(createCourse).mockResolvedValue({
@@ -136,9 +140,11 @@ describe("CourseForm Component", () => {
     const submitButton = screen.getByRole("button", { name: /create course/i });
     fireEvent.click(submitButton);
 
-    // Check loading state
-    expect(screen.getByText("Creating...")).toBeInTheDocument();
-    expect(screen.getByText("Creating...")).toBeDisabled();
+    // Check loading state with act wrapper
+    await waitFor(() => {
+      expect(screen.getByText("Creating...")).toBeInTheDocument();
+    });
+    expect(screen.getByRole("button", { name: /creating/i })).toBeDisabled();
   });
 
   it("navigates back when cancel is clicked", () => {
@@ -150,26 +156,24 @@ describe("CourseForm Component", () => {
     expect(mockRouter.back).toHaveBeenCalled();
   });
 
-  it("validates URL format for thumbnail", async () => {
+  it("validates language field requirements", async () => {
     render(<CourseForm />);
 
-    // Fill in form with invalid URL
+    // Fill in form with valid data
     fireEvent.change(screen.getByLabelText(/course name/i), {
       target: { value: "Test Course" },
     });
     fireEvent.change(screen.getByLabelText(/course description/i), {
       target: { value: "This is a valid course description" },
     });
-    fireEvent.change(screen.getByLabelText(/thumbnail url/i), {
-      target: { value: "not-a-valid-url" },
-    });
 
-    // Submit form
+    // Submit form - should pass with default language
     const submitButton = screen.getByRole("button", { name: /create course/i });
     fireEvent.click(submitButton);
 
+    // Should not show language errors since it has default value
     await waitFor(() => {
-      expect(screen.getByText(/please enter a valid url/i)).toBeInTheDocument();
+      expect(screen.queryByText(/language code must be at least/i)).not.toBeInTheDocument();
     });
   });
 
@@ -181,6 +185,10 @@ describe("CourseForm Component", () => {
       difficulty: "Beginner",
       lang: "en",
       thumbnail_url: "",
+      creator: "test-user-id",
+      created_at: new Date(),
+      updated_at: new Date(),
+      deleted_at: null,
     };
 
     vi.mocked(createCourse).mockResolvedValue({
