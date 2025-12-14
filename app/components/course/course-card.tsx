@@ -57,7 +57,7 @@ export default function CourseCard({
             <div className="badge badge-outline">{difficulty}</div>
             <div className="badge badge-info badge-sm">
               <Globe className="h-3 w-3 mr-1" />
-              {lang.toUpperCase()}
+              {(lang || 'en').toUpperCase()}
             </div>
           </div>
         </div>
