@@ -22,12 +22,14 @@ export default function LearnModuleView({
   courseId,
   isCompleted: initialIsCompleted,
   nextModuleId,
+  isCreator,
 }: {
   moduleContent: ContentWithRelations[];
   moduleId: string;
   courseId: string;
   isCompleted: boolean;
   nextModuleId: string | null;
+  isCreator: boolean;
 }) {
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -155,7 +157,13 @@ export default function LearnModuleView({
       </aside>
       <main className="flex-1 overflow-y-auto">
         <div className="w-full min-h-[50vh] flex items-center justify-center p-4">
-          {currentContent && <ModuleContent content={currentContent} />}
+          {currentContent && (
+            <ModuleContent
+              content={currentContent}
+              isCreator={isCreator}
+              courseId={courseId}
+            />
+          )}
         </div>
 
         {totalItems > 1 && (

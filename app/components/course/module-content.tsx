@@ -4,12 +4,24 @@ import { ContentWithRelations } from "@/app/course/learn/[courseId]/[moduleId]/p
 
 export default function ModuleContent({
   content,
+  isCreator,
+  courseId,
 }: {
   content: ContentWithRelations;
+  isCreator: boolean;
+  courseId: string;
 }) {
   if (content.type === "SLIDE") {
-    return <Slide slide={content.slide!} />;
+    return (
+      <Slide slide={content.slide!} isCreator={isCreator} courseId={courseId} />
+    );
   }
 
-  return <Question question={content.question!} />;
+  return (
+    <Question
+      question={content.question!}
+      isCreator={isCreator}
+      courseId={courseId}
+    />
+  );
 }
