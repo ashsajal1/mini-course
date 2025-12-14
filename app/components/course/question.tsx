@@ -17,12 +17,14 @@ interface QuestionProps {
   question: QuestionWithOptions;
   isCreator?: boolean;
   courseId?: string;
+  onComplete?: () => void;
 }
 
 export default function Question({
   question,
   isCreator,
   courseId,
+  onComplete,
 }: QuestionProps) {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -54,6 +56,9 @@ export default function Question({
   const handleSubmit = () => {
     setIsSubmitted(true);
     console.log("Selected options:", selectedOptions);
+    if (onComplete) {
+      onComplete();
+    }
   };
 
   const isAnswerCorrect = (): boolean | null => {
