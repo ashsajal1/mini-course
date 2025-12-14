@@ -159,6 +159,7 @@ export default function LearnModuleView({
         <div className="w-full min-h-[50vh] flex items-center justify-center p-4">
           {currentContent && (
             <ModuleContent
+              key={currentContent.id}
               content={currentContent}
               isCreator={isCreator}
               courseId={courseId}
