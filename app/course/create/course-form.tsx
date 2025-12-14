@@ -3,21 +3,36 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createCourse } from "./actions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { courseFormSchema } from "./course-validation";
+import { getCategories } from "@/lib/category-service";
 
 export default function CourseForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
 
   type FormData = {
     name: string;
     description: string;
     difficulty: string;
+    category_id?: string;
     thumbnail_url?: string;
   };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await getCategories();
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const {
     register,
@@ -140,6 +155,37 @@ export default function CourseForm() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Category */}
+              <div className="form-control">
+                <label className="label" htmlFor="category_id">
+                  <span className="label-text font-semibold">
+                    Category
+                  </span>
+                </label>
+                <select
+                  id="category_id"
+                  {...register("category_id")}
+                  className={`select select-bordered w-full ${
+                    errors.category_id ? "select-error" : ""
+                  }`}
+                  disabled={isSubmitting}
+                >
+                  <option value="">Select a category (optional)</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.category_id && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">
+                      {errors.category_id.message}
+                    </span>
+                  </label>
+                )}
+              </div>
+
               {/* Difficulty */}
               <div className="form-control">
                 <label className="label" htmlFor="difficulty">
