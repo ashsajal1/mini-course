@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -16,6 +17,40 @@ import {
 } from "@/lib/enrollment-service";
 import EnrollButton from "./enroll-btn";
 import { auth } from "@clerk/nextjs/server";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const course = await prisma.course.findUnique({
+    where: { id },
+    select: { name: true, description: true, thumbnail_url: true },
+  });
+
+  if (!course) {
+    return {
+      title: "Course Not Found",
+    };
+  }
+
+  return {
+    title: course.name,
+    description: course.description,
+    openGraph: {
+      title: course.name,
+      description: course.description,
+      images: course.thumbnail_url ? [course.thumbnail_url] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: course.name,
+      description: course.description,
+      images: course.thumbnail_url ? [course.thumbnail_url] : [],
+    },
+  };
+}
 
 export default async function CoursePage({
   params,

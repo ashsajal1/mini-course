@@ -1,10 +1,41 @@
 import prisma from "@/prisma/client";
 import { ContentType } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
+import type { Metadata } from "next";
 import LearnModuleView from "./learn-module-view";
 import { getUserModuleProgress } from "./actions";
 import { markCourseAsCompleted } from "@/lib/enrollment-service";
 import { auth } from "@clerk/nextjs/server";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ courseId: string; moduleId: string }>;
+}): Promise<Metadata> {
+  const { courseId, moduleId } = await params;
+
+  const [course, module] = await Promise.all([
+    prisma.course.findUnique({
+      where: { id: courseId },
+      select: { name: true },
+    }),
+    prisma.module.findUnique({
+      where: { id: moduleId },
+      select: { title: true },
+    }),
+  ]);
+
+  if (!course || !module) {
+    return {
+      title: "Module Not Found",
+    };
+  }
+
+  return {
+    title: `${module.title} - ${course.name}`,
+    description: `Learn ${module.title} as part of the ${course.name} course.`,
+  };
+}
 
 // This creates a type that includes the relations
 export type ContentWithRelations = Prisma.ContentGetPayload<{
