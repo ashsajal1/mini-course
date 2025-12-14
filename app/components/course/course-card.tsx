@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { ArrowRight, Users } from "lucide-react";
+import { ArrowRight, Users, Globe } from "lucide-react";
 import Link from "next/link";
 import { getCourseEnrollmentCount } from "@/lib/enrollment-service";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ type CourseCardProps = {
   title: string;
   description: string;
   difficulty: string;
+  lang: string;
   thumbnail_url: string;
   moduleCount: number;
 };
@@ -20,6 +21,7 @@ export default function CourseCard({
   title,
   description,
   difficulty,
+  lang,
   thumbnail_url,
   moduleCount,
 }: CourseCardProps) {
@@ -51,7 +53,13 @@ export default function CourseCard({
       <div className="card-body p-4">
         <div className="flex items-center justify-between gap-2">
           <h2 className="card-title text-base text-base-content">{title}</h2>
-          <div className="badge badge-outline">{difficulty}</div>
+          <div className="flex items-center gap-2">
+            <div className="badge badge-outline">{difficulty}</div>
+            <div className="badge badge-info badge-sm">
+              <Globe className="h-3 w-3 mr-1" />
+              {lang.toUpperCase()}
+            </div>
+          </div>
         </div>
         <p className="text-sm text-base-content/80 line-clamp-2 mt-2">
           {description}

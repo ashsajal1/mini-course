@@ -160,6 +160,7 @@ export default function CourseList({
               title={course.name}
               description={course.description}
               difficulty={course.difficulty}
+              lang={course.lang}
               thumbnail_url={course.thumbnail_url}
               moduleCount={course._count.modules}
             />

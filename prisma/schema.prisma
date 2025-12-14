@@ -20,6 +20,7 @@ model Course {
   name          String
   description   String
   difficulty    String
+  lang          String    @default("en")
   thumbnail_url String
   isPublic      Boolean?
   created_at    DateTime  @default(now())
