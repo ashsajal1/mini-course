@@ -55,6 +55,14 @@ export default async function Page({
     },
   });
 
+  const course = await prisma.course.findUnique({
+    where: { id: courseId },
+    select: { creator: true },
+  });
+
+  const { userId } = await auth();
+  const isCreator = course?.creator === userId;
+
   // Fetch all modules to determine the next module
   const courseModules = await prisma.module.findMany({
     where: {
@@ -127,6 +135,7 @@ export default async function Page({
         courseId={courseId}
         isCompleted={progress.isCompleted}
         nextModuleId={nextModuleId}
+        isCreator={isCreator}
       />
     </div>
   );

@@ -6,7 +6,8 @@ import "highlight.js/styles/github-dark.css";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import type { Prisma } from "@prisma/client";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Edit } from "lucide-react";
+import Link from "next/link";
 
 type SlideType = Prisma.SlideGetPayload<{
   include: {
@@ -21,7 +22,15 @@ interface CodeProps extends React.HTMLAttributes<HTMLElement> {
   children?: React.ReactNode;
 }
 
-export default function Slide({ slide }: { slide: SlideType }) {
+export default function Slide({
+  slide,
+  isCreator,
+  courseId,
+}: {
+  slide: SlideType;
+  isCreator?: boolean;
+  courseId?: string;
+}) {
   const components: Components = {
     h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
       <h1 className="text-4xl font-bold my-6" {...props} />
@@ -73,9 +82,20 @@ export default function Slide({ slide }: { slide: SlideType }) {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">
-        {slide?.title || "Untitled Slide"}
-      </h1>
+      <div className="flex justify-between items-start mb-6">
+        <h1 className="text-3xl font-bold">
+          {slide?.title || "Untitled Slide"}
+        </h1>
+        {isCreator && courseId && slide && (
+          <Link
+            href={`/course/edit/${courseId}/slide/${slide.id}`}
+            className="btn btn-ghost btn-circle"
+            title="Edit Slide"
+          >
+            <Edit size={20} />
+          </Link>
+        )}
+      </div>
 
       <div className="prose dark:prose-invert max-w-none">
         <ReactMarkdown
