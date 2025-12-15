@@ -3,8 +3,10 @@ import Image from "next/image";
 import { ArrowRight, Users, Globe } from "lucide-react";
 import Link from "next/link";
 import { getCourseEnrollmentCount } from "@/lib/enrollment-service";
+import { getAverageRating } from "@/lib/rating-service";
 import { useEffect, useState } from "react";
 import SaveCourseButton from "./save-course-button";
+import StarRating from "../ui/star-rating";
 
 type CourseCardProps = {
   id: string;
@@ -26,13 +28,25 @@ export default function CourseCard({
   moduleCount,
 }: CourseCardProps) {
   const [enrollmentCount, setEnrollmentCount] = useState(0);
+  const [ratingData, setRatingData] = useState({ average: 0, count: 0 });
 
   useEffect(() => {
-    const fetchEnrollmentCount = async () => {
-      const count = await getCourseEnrollmentCount(id);
-      setEnrollmentCount(count);
+    const fetchData = async () => {
+      try {
+        const [count, rating] = await Promise.all([
+          getCourseEnrollmentCount(id),
+          getAverageRating(id),
+        ]);
+        setEnrollmentCount(count);
+        setRatingData(rating);
+      } catch (error) {
+        console.warn("Failed to fetch course data:", error);
+        // Set defaults on error
+        setEnrollmentCount(0);
+        setRatingData({ average: 0, count: 0 });
+      }
     };
-    fetchEnrollmentCount();
+    fetchData();
   }, [id]);
 
   return (
@@ -73,6 +87,14 @@ export default function CourseCard({
             {moduleCount} modules
           </div>
         </div>
+        {ratingData.count > 0 && (
+          <div className="flex items-center gap-2 mt-2">
+            <StarRating rating={ratingData.average} size={14} showValue />
+            <span className="text-xs text-base-content/60">
+              ({ratingData.count})
+            </span>
+          </div>
+        )}
         <div className="card-actions justify-end mt-4">
           <SaveCourseButton courseId={id} />
           <Link href={`course/${id}`} className="btn btn-primary btn-sm">
