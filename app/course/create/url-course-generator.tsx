@@ -13,6 +13,7 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
   const [generatedOutline, setGeneratedOutline] = useState<CourseOutline | null>(null);
+  const [estimates, setEstimates] = useState<{ totalSlides: number; totalQuestions: number; estimatedGenerationTime: string } | null>(null);
 
   const handleGenerateOutline = async () => {
     if (!url.trim()) {
@@ -23,12 +24,16 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
     setIsGenerating(true);
     setError("");
     setGeneratedOutline(null);
+    setEstimates(null);
 
     try {
       const result = await generateCourseOutline(url);
 
       if (result.success && result.outline) {
         setGeneratedOutline(result.outline);
+        // Calculate estimates for the generated outline
+        const outlineEstimates = await estimateCourseComplexity(result.outline);
+        setEstimates(outlineEstimates);
         onOutlineGenerated(result.outline);
       } else {
         setError(result.error || "Failed to generate course outline");
@@ -207,19 +212,16 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
               ))}
             </div>
 
-            {(() => {
-              const estimates = estimateCourseComplexity(generatedOutline);
-              return (
-                <div className="alert alert-info mt-4">
-                  <div className="flex items-center gap-2">
-                    <div className="text-sm">
-                      <strong>Estimated Generation:</strong> {estimates.estimatedGenerationTime} •
-                      {estimates.totalSlides} slides • {estimates.totalQuestions} questions
-                    </div>
+            {estimates && (
+              <div className="alert alert-info mt-4">
+                <div className="flex items-center gap-2">
+                  <div className="text-sm">
+                    <strong>Estimated Generation:</strong> {estimates.estimatedGenerationTime} •
+                    {estimates.totalSlides} slides • {estimates.totalQuestions} questions
                   </div>
                 </div>
-              );
-            })()}
+              </div>
+            )}
           </div>
         </div>
       )}
