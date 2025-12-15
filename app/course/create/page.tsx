@@ -13,7 +13,7 @@ export default async function CreateCoursePage() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">Create a New Course</h1>
           <p className="text-xl text-base-content/70">
-            Choose how you'd like to create your course
+             Choose how you would like to create your course
           </p>
         </div>
 
@@ -28,10 +28,10 @@ export default async function CreateCoursePage() {
                 <h2 className="card-title text-xl">Manual Creation</h2>
               </div>
 
-              <p className="text-base-content/70 mb-6">
-                Start from scratch and manually define your course structure,
-                modules, and content. Full control over every aspect.
-              </p>
+               <p className="text-base-content/70 mb-6">
+                 Start from scratch and manually define your course structure,
+                 modules, slides, and questions. Full control over every aspect.
+               </p>
 
               <div className="card-actions justify-end">
                 <Link href="/course/create/manual" className="btn btn-primary">
