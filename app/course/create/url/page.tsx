@@ -49,9 +49,14 @@ function UrlCourseCreationFlow() {
     setGenerationError(null);
 
     try {
-      const result = await createCourseFromOutline(finalOutline, (progress) => {
-        setGenerationProgress(progress);
+      // For now, just show a simple loading state
+      setGenerationProgress({
+        stage: 'creating-course',
+        progress: 50,
+        message: 'Generating your complete course with slides and questions...',
       });
+
+      const result = await createCourseFromOutline(finalOutline);
 
       if (result.success && result.course) {
         // Redirect to the course edit page

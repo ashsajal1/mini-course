@@ -55,8 +55,7 @@ export interface QuestionOption {
  * Creates a full course from an outline, including slides and questions
  */
 export async function createCourseFromOutline(
-  outline: CourseOutline,
-  onProgress?: (progress: CourseGenerationProgress) => void
+  outline: CourseOutline
 ): Promise<{ success: boolean; course?: GeneratedCourse; error?: string }> {
   "use server";
 
@@ -67,11 +66,6 @@ export async function createCourseFromOutline(
     }
 
     // Stage 1: Create course record
-    onProgress?.({
-      stage: 'creating-course',
-      progress: 10,
-      message: 'Creating course structure...'
-    });
 
     const course = await prisma.course.create({
       data: {
@@ -92,26 +86,12 @@ export async function createCourseFromOutline(
     };
 
     // Stage 2: Generate modules with content
-    onProgress?.({
-      stage: 'generating-slides',
-      progress: 20,
-      message: 'Generating course modules...',
-      totalModules: outline.modules.length,
-    });
 
     for (let i = 0; i < outline.modules.length; i++) {
       const moduleOutline = outline.modules[i];
 
-      onProgress?.({
-        stage: 'generating-slides',
-        progress: 20 + (i / outline.modules.length) * 60,
-        message: `Creating module: ${moduleOutline.title}`,
-        currentModule: i + 1,
-        totalModules: outline.modules.length,
-      });
-
       // Create module
-      const module = await prisma.module.create({
+      const newModule = await prisma.module.create({
         data: {
           title: moduleOutline.title,
           course_id: course.id,
@@ -120,9 +100,9 @@ export async function createCourseFromOutline(
       });
 
       const generatedModule: GeneratedModule = {
-        id: module.id,
-        title: module.title,
-        order: module.order ?? i + 1,
+        id: newModule.id,
+        title: newModule.title,
+        order: newModule.order ?? i + 1,
         slides: [],
         questions: [],
       };
@@ -132,13 +112,6 @@ export async function createCourseFromOutline(
       generatedModule.slides = slides;
 
       // Generate questions for this module
-      onProgress?.({
-        stage: 'generating-questions',
-        progress: 80 + (i / outline.modules.length) * 15,
-        message: `Creating questions for: ${moduleOutline.title}`,
-        currentModule: i + 1,
-        totalModules: outline.modules.length,
-      });
 
       const questions = await generateQuestionsForModule(slides, module.id, i + 1);
       generatedModule.questions = questions;
@@ -147,18 +120,7 @@ export async function createCourseFromOutline(
     }
 
     // Stage 3: Finalize
-    onProgress?.({
-      stage: 'finalizing',
-      progress: 95,
-      message: 'Finalizing course...'
-    });
-
     // Update course with completion status or any final touches
-    onProgress?.({
-      stage: 'finalizing',
-      progress: 100,
-      message: 'Course created successfully!'
-    });
 
     return { success: true, course: generatedCourse };
 
