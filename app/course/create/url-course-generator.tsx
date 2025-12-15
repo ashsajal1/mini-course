@@ -84,7 +84,7 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
             <div className="join">
               <input
                 type="url"
-                placeholder="https://docs.google.com/document/..."
+                placeholder="https://example.com/article-or-document"
                 className={`input input-bordered join-item flex-1 ${
                   error ? "input-error" : ""
                 }`}
@@ -121,22 +121,22 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
             )}
           </div>
 
-          {/* Supported Sites Info */}
-          <div className="mt-4">
-            <h3 className="font-medium mb-2">Supported Document Types:</h3>
-            <div className="flex flex-wrap gap-2">
-              {supportedSites.map((site) => (
-                <div key={site.domain} className="badge badge-outline gap-1">
-                  <ExternalLink className="h-3 w-3" />
-                  {site.name}
-                </div>
-              ))}
-              <div className="badge badge-ghost">+ More</div>
-            </div>
-            <p className="text-sm text-base-content/70 mt-2">
-              Supports Google Docs, PDFs, web articles, and educational content from major platforms.
-            </p>
-          </div>
+           {/* Supported Sites Info */}
+           <div className="mt-4">
+             <h3 className="font-medium mb-2">Supported Content Types:</h3>
+             <div className="flex flex-wrap gap-2">
+               {supportedSites.map((site) => (
+                 <div key={site.domain} className="badge badge-outline gap-1">
+                   <ExternalLink className="h-3 w-3" />
+                   {site.name}
+                 </div>
+               ))}
+               <div className="badge badge-ghost">Any Website</div>
+             </div>
+             <p className="text-sm text-base-content/70 mt-2">
+               Accepts any website URL containing educational content, articles, documentation, or web pages with valuable information.
+             </p>
+           </div>
         </div>
       </div>
 

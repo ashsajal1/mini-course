@@ -177,39 +177,14 @@ Focus on:
 }
 
 /**
- * Validates if a URL is properly formatted and supported
+ * Validates if a URL is properly formatted
  */
 function isValidUrl(url: string): boolean {
   try {
     const urlObj = new URL(url);
 
-    // Check for supported protocols
-    if (!['http:', 'https:'].includes(urlObj.protocol)) {
-      return false;
-    }
-
-    // Check for supported domains (can expand this list)
-    const supportedDomains = [
-      'docs.google.com',
-      'drive.google.com',
-      'github.com',
-      'medium.com',
-      'notion.so',
-      'readthedocs.io',
-      'developer.mozilla.org',
-      'stackoverflow.com',
-      'wikipedia.org',
-      'coursera.org',
-      'udemy.com',
-      'edX.org'
-    ];
-
-    const hostname = urlObj.hostname.toLowerCase();
-    const isSupported = supportedDomains.some(domain =>
-      hostname === domain || hostname.endsWith('.' + domain)
-    );
-
-    return isSupported;
+    // Check for supported protocols (HTTP and HTTPS)
+    return ['http:', 'https:'].includes(urlObj.protocol);
   } catch {
     return false;
   }
