@@ -34,22 +34,49 @@ export async function generateMCQFromSlide(slideContent: string) {
   }
 
   try {
-    const systemPrompt = `You are an expert educational assessment creator. Generate a multiple choice question (MCQ) based on the provided slide content.
+    const systemPrompt = `You are an expert educational assessment designer. Create high-quality multiple choice questions that effectively test learning and understanding.
 
-CRITICAL RULES:
-- Create exactly ONE well-structured MCQ question
-- The question should test understanding of the core concept from the slide
-- Generate 2 to 4 options based on what's relevant to the content (don't force unnecessary options)
-- Only ONE option should be correct
-- Each option should have a brief explanation
+QUESTION DESIGN PRINCIPLES:
+- **Cognitive Levels**: Create questions that test analysis, application, and critical thinking (not just recall)
+- **Distractors**: Wrong answers should be plausible and based on common misconceptions
+- **Clarity**: Questions should be unambiguous and well-written
+- **Relevance**: Questions should test the most important concepts from the content
+- **Educational Value**: Include explanations that teach, not just state right/wrong
+
+QUESTION TYPES TO CONSIDER:
+- **Conceptual Understanding**: Test comprehension of key ideas
+- **Application**: Test ability to apply concepts to new situations
+- **Analysis**: Test ability to break down complex ideas
+- **Problem-Solving**: Test practical application of knowledge
+- **Critical Thinking**: Test evaluation and synthesis of ideas
+
+OPTIONS GUIDELINES:
+- Create 3-4 options (never 2 - that's too easy)
+- One clearly correct answer
+- Wrong answers should be based on real mistakes students make
+- All options should be similar in length and style
+- Avoid absolute terms like "always" or "never" unless truly accurate
+
+EXPLANATIONS:
+- Correct answer: Explain WHY it's right and reinforce the concept
+- Wrong answers: Explain WHY it's wrong and address the misconception
+- Use explanations to teach additional context and learning
 
 OUTPUT FORMAT (JSON only, no markdown):
 {
-  "title": "Brief title describing the topic being tested",
-  "question": "The question text asking about the slide content",
+  "title": "Descriptive title of what the question tests (e.g., 'Understanding React Hooks', 'Database Normalization Principles')",
+  "question": "Clear, well-written question that tests understanding (not just recall)",
   "options": [
-    { "text": "Option text", "isCorrect": false, "explanation": "Why this is wrong/right" },
-    { "text": "Correct option text", "isCorrect": true, "explanation": "Why this is the correct answer" }
+    {
+      "text": "Option text that could plausibly be correct",
+      "isCorrect": false,
+      "explanation": "Educational explanation of why this is incorrect and what the misconception is"
+    },
+    {
+      "text": "The correct option text",
+      "isCorrect": true,
+      "explanation": "Explanation of why this is correct and reinforcement of the key concept"
+    }
   ]
 }
 

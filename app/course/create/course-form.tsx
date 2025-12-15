@@ -8,7 +8,11 @@ import { useRouter } from "next/navigation";
 import { getCategories } from "@/lib/category-service";
 import { courseFormSchema, type CourseFormData } from "./course-validation"
 
-export default function CourseForm() {
+interface CourseFormProps {
+  onSubmit?: (data: CourseFormData) => void;
+}
+
+export default function CourseForm({ onSubmit }: CourseFormProps = { onSubmit: undefined }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
@@ -37,7 +41,13 @@ export default function CourseForm() {
     },
   });
 
-  const onSubmit: SubmitHandler<CourseFormData> = async (data) => {
+  const onFormSubmit: SubmitHandler<CourseFormData> = async (data) => {
+    if (onSubmit) {
+      // Custom onSubmit provided, use it instead of creating course
+      onSubmit(data);
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       setServerError("");
@@ -91,7 +101,7 @@ export default function CourseForm() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+           <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Course Name */}
               <div className="form-control md:col-span-2">
