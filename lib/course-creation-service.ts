@@ -113,7 +113,7 @@ export async function createCourseFromOutline(
 
       // Generate questions for this module
 
-      const questions = await generateQuestionsForModule(slides, module.id, i + 1);
+      const questions = await generateQuestionsForModule(slides, module.id, i + 1, moduleOutline);
       generatedModule.questions = questions;
 
       generatedCourse.modules.push(generatedModule);
@@ -144,22 +144,71 @@ async function generateSlidesForModule(
   const slides: GeneratedSlide[] = [];
 
   try {
-    // Generate 2-3 slides per module based on learning objectives
-    const numSlides = Math.min(moduleOutline.learningObjectives.length + 1, 3);
+    // Generate 2-4 slides per module based on learning objectives
+    const numSlides = Math.min(moduleOutline.learningObjectives.length + 1, 4);
 
     for (let i = 0; i < numSlides; i++) {
-      let slidePrompt = `Create a slide about ${moduleOutline.title}`;
+      let slidePrompt = `Create an educational slide for the module: ${moduleOutline.title}`;
 
       if (i === 0) {
-        // Introduction slide
-        slidePrompt = `Create an introduction slide for the module: ${moduleOutline.title}. Description: ${moduleOutline.description}`;
+        // Introduction slide - Hook and overview
+        slidePrompt = `Create an engaging introduction slide for the module "${moduleOutline.title}".
+
+Module Description: ${moduleOutline.description}
+
+Learning Objectives: ${moduleOutline.learningObjectives.join(', ')}
+
+Make this slide compelling and set expectations for what students will learn. Include:
+- A thought-provoking question or statement
+- Brief overview of what will be covered
+- Why this topic matters (real-world relevance)`;
       } else if (i === numSlides - 1) {
-        // Summary slide
-        slidePrompt = `Create a summary slide for the module: ${moduleOutline.title}. Cover the key learning objectives: ${moduleOutline.learningObjectives.join(', ')}`;
+        // Summary/Conclusion slide
+        slidePrompt = `Create a comprehensive summary slide for the module "${moduleOutline.title}".
+
+Learning Objectives Covered: ${moduleOutline.learningObjectives.join(', ')}
+
+Include:
+- Key takeaways (3-4 main points)
+- Next steps or what students should do next
+- A memorable quote or key principle
+- Connection to broader course goals`;
       } else {
-        // Content slide
-        const objective = moduleOutline.learningObjectives[i - 1];
-        slidePrompt = `Create a content slide for: ${objective}`;
+        // Content slides - Deep dive into specific objectives
+        const objectiveIndex = i - 1;
+        const currentObjective = moduleOutline.learningObjectives[objectiveIndex];
+
+        if (objectiveIndex === 0) {
+          // First content slide - Core concepts
+          slidePrompt = `Create a detailed content slide explaining the core concept: "${currentObjective}"
+
+For the module "${moduleOutline.title}", focus on:
+- Clear definition/explanation
+- Key components or elements
+- Visual representation ideas (diagrams, examples)
+- Common misconceptions to avoid
+- Practical applications`;
+        } else if (objectiveIndex === 1) {
+          // Second content slide - Examples/Case studies
+          slidePrompt = `Create an examples slide for: "${currentObjective}"
+
+For the module "${moduleOutline.title}", include:
+- 2-3 concrete, real-world examples
+- Step-by-step breakdown of a process
+- Before/after comparisons
+- Success metrics or outcomes
+- Industry best practices`;
+        } else {
+          // Additional content slides - Advanced topics
+          slidePrompt = `Create an advanced concepts slide for: "${currentObjective}"
+
+For the module "${moduleOutline.title}", cover:
+- Common challenges or pitfalls
+- Advanced techniques or strategies
+- Tools/frameworks that help
+- Future trends or developments
+- Expert tips and recommendations`;
+        }
       }
 
       // Generate slide content using existing AI function
@@ -206,19 +255,51 @@ async function generateSlidesForModule(
 async function generateQuestionsForModule(
   slides: GeneratedSlide[],
   moduleId: string,
-  moduleOrder: number
+  moduleOrder: number,
+  moduleOutline: any
 ): Promise<GeneratedQuestion[]> {
   const questions: GeneratedQuestion[] = [];
 
   try {
-    // Generate 1-2 questions per module
-    const numQuestions = Math.min(slides.length, 2);
+    // Generate 2-3 questions per module for comprehensive assessment
+    const numQuestions = Math.min(Math.max(slides.length, 2), 3);
+
+    // Create comprehensive module context for better questions
+    const moduleContext = `
+Module: ${slides[0]?.title || 'Module Content'}
+All Slides Content:
+${slides.map(slide => `--- ${slide.title} ---\n${slide.content}`).join('\n\n')}
+
+Learning Objectives: ${moduleOutline.learningObjectives.join(', ')}
+    `.trim();
 
     for (let i = 0; i < numQuestions; i++) {
-      const slide = slides[i];
+      let questionType = 'conceptual';
 
-      // Generate question using existing AI function
-      const questionResult = await generateMCQFromSlide(slide.content);
+      if (i === 0) {
+        questionType = 'foundational'; // Test basic understanding
+      } else if (i === 1) {
+        questionType = 'application'; // Test ability to apply concepts
+      } else {
+        questionType = 'analysis'; // Test deeper understanding
+      }
+
+      // Create specialized prompts for different question types
+      const questionPrompt = `Based on this comprehensive module content, create a ${questionType} multiple choice question:
+
+${moduleContext}
+
+Question Type: ${questionType}
+
+Guidelines for ${questionType} questions:
+${questionType === 'foundational' ? '- Test basic definitions, terminology, and core concepts' :
+ questionType === 'application' ? '- Test ability to apply concepts to real scenarios' :
+ '- Test critical thinking, analysis, and connections between ideas'}
+
+Create a challenging but fair question that requires understanding of the material, not just memorization.`;
+
+      // Generate question using existing AI function with enhanced context
+      const questionResult = await generateMCQFromSlide(questionPrompt);
 
       if (questionResult.success && questionResult.mcq) {
         // Create content relationship first
