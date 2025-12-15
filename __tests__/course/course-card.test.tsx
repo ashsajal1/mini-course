@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import CourseCard from "@/app/components/course/course-card";
 import * as enrollmentService from "@/lib/enrollment-service";
+import * as ratingService from "@/lib/rating-service";
 
 // Mock next/image with a simple img element
 vi.mock("next/image", () => ({
@@ -20,6 +21,10 @@ vi.mock("@/lib/enrollment-service", () => ({
   getCourseEnrollmentCount: vi.fn(),
 }));
 
+vi.mock("@/lib/rating-service", () => ({
+  getAverageRating: vi.fn(),
+}));
+
 describe("CourseCard Component", () => {
   const mockCourse = {
     id: "course-123",
@@ -32,8 +37,9 @@ describe("CourseCard Component", () => {
   };
 
   it("renders course details correctly", () => {
-    // Setup return value for the async call
+    // Setup return values for the async calls
     vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(42);
+    vi.mocked(ratingService.getAverageRating).mockResolvedValue({ average: 4.5, count: 10 });
 
     render(<CourseCard {...mockCourse} />);
 
@@ -56,9 +62,8 @@ describe("CourseCard Component", () => {
   });
 
   it("fetches and displays enrollment count", async () => {
-    vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(
-      100
-    );
+    vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(100);
+    vi.mocked(ratingService.getAverageRating).mockResolvedValue({ average: 0, count: 0 });
 
     render(<CourseCard {...mockCourse} />);
 
@@ -74,6 +79,7 @@ describe("CourseCard Component", () => {
 
   it("renders with default image if thumbnail is missing", () => {
     vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(0);
+    vi.mocked(ratingService.getAverageRating).mockResolvedValue({ average: 0, count: 0 });
     const courseWithoutImage = { ...mockCourse, thumbnail_url: "" };
 
     render(<CourseCard {...courseWithoutImage} />);
@@ -85,6 +91,7 @@ describe("CourseCard Component", () => {
 
   it("displays language badge correctly", () => {
     vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(0);
+    vi.mocked(ratingService.getAverageRating).mockResolvedValue({ average: 0, count: 0 });
 
     render(<CourseCard {...mockCourse} />);
 
@@ -95,7 +102,8 @@ describe("CourseCard Component", () => {
 
   it("displays different languages correctly", () => {
     vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(0);
-    
+    vi.mocked(ratingService.getAverageRating).mockResolvedValue({ average: 0, count: 0 });
+
     const spanishCourse = { ...mockCourse, lang: "es" };
     render(<CourseCard {...spanishCourse} />);
 
@@ -104,7 +112,8 @@ describe("CourseCard Component", () => {
 
   it("handles undefined language gracefully", () => {
     vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(0);
-    
+    vi.mocked(ratingService.getAverageRating).mockResolvedValue({ average: 0, count: 0 });
+
     const courseWithoutLang = { ...mockCourse };
     delete (courseWithoutLang as any).lang;
     render(<CourseCard {...courseWithoutLang} />);
@@ -115,6 +124,7 @@ describe("CourseCard Component", () => {
 
   it("displays globe icon in language badge", () => {
     vi.mocked(enrollmentService.getCourseEnrollmentCount).mockResolvedValue(0);
+    vi.mocked(ratingService.getAverageRating).mockResolvedValue({ average: 0, count: 0 });
 
     render(<CourseCard {...mockCourse} />);
 

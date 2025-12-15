@@ -15,8 +15,11 @@ import {
   getCourseEnrollmentCount,
   isEnrolledInCourse,
 } from "@/lib/enrollment-service";
+import { getAverageRating } from "@/lib/rating-service";
 import EnrollButton from "./enroll-btn";
 import { auth } from "@clerk/nextjs/server";
+import StarRating from "@/app/components/ui/star-rating";
+import CourseRating from "./course-rating";
 
 export async function generateMetadata({
   params,
@@ -74,6 +77,12 @@ export default async function CoursePage({
 
   const enrollmentCount = await getCourseEnrollmentCount(id);
   const isEnrolled = await isEnrolledInCourse(id);
+  let ratingData = { average: 0, count: 0 };
+  try {
+    ratingData = await getAverageRating(id);
+  } catch (error) {
+    console.warn("Failed to fetch rating data:", error);
+  }
   const { userId: clerkId } = await auth();
 
   return (
@@ -167,6 +176,20 @@ export default async function CoursePage({
               ))}
             </div>
           </div>
+
+          {ratingData.count > 0 && (
+            <div className="border-t pt-6">
+              <h3 className="text-xl font-bold mb-4">Course Rating</h3>
+              <div className="flex items-center gap-2">
+                <StarRating rating={ratingData.average} size={20} showValue />
+                <span className="text-base-content/70">
+                  ({ratingData.count} review{ratingData.count !== 1 ? 's' : ''})
+                </span>
+              </div>
+            </div>
+          )}
+
+          {clerkId && <CourseRating courseId={id} />}
 
           <div className="card-actions justify-end gap-2 mt-8">
             {!clerkId ? (
