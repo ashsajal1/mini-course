@@ -89,31 +89,126 @@ export async function createCourseFromOutline(
 
     for (let i = 0; i < outline.modules.length; i++) {
       const moduleOutline = outline.modules[i];
+      const moduleOrder = i + 1;
 
       // Create module
       const newModule = await prisma.module.create({
         data: {
           title: moduleOutline.title,
           course_id: course.id,
-          order: moduleOutline.order ?? i + 1,
+          order: moduleOutline.order ?? moduleOrder,
         },
       });
 
+      const moduleId = newModule.id;
+
       const generatedModule: GeneratedModule = {
-        id: newModule.id,
+        id: moduleId,
         title: newModule.title,
-        order: newModule.order ?? i + 1,
+        order: newModule.order ?? moduleOrder,
         slides: [],
         questions: [],
       };
 
-      // Generate slides for this module
-      const slides = await generateSlidesForModule(moduleOutline, module.id, i + 1);
+      // Generate slides for this module (or use provided ones)
+      let slides: GeneratedSlide[];
+      if (moduleOutline.slides && moduleOutline.slides.length > 0) {
+        // Use provided slides
+        slides = [];
+        for (let j = 0; j < moduleOutline.slides.length; j++) {
+          const slideOutline = moduleOutline.slides[j];
+
+          // Create content relationship first
+          const contentItem = await prisma.content.create({
+            data: {
+              type: 'SLIDE',
+              order: (moduleOrder - 1) * 10 + j + 1,
+              module_id: moduleId,
+            },
+          });
+
+          // Create slide in database
+          const slide = await prisma.slide.create({
+            data: {
+              title: slideOutline.title,
+              content: slideOutline.content,
+              module_id: moduleId,
+              content_item_id: contentItem.id,
+            },
+          });
+
+          slides.push({
+            id: slide.id,
+            title: slide.title ?? `Slide ${j + 1}`,
+            content: slide.content,
+            order: contentItem.order,
+          });
+        }
+      } else {
+        // Generate slides using AI
+        slides = await generateSlidesForModule(moduleOutline, moduleId, moduleOrder);
+      }
       generatedModule.slides = slides;
 
-      // Generate questions for this module
+      // Generate questions for this module (or use provided ones)
+      let questions: GeneratedQuestion[];
+      if (moduleOutline.questions && moduleOutline.questions.length > 0) {
+        // Use provided questions
+        questions = [];
+        for (let j = 0; j < moduleOutline.questions.length; j++) {
+          const questionOutline = moduleOutline.questions[j];
 
-      const questions = await generateQuestionsForModule(slides, module.id, i + 1, moduleOutline);
+          // Create content relationship first
+          const questionContentItem = await prisma.content.create({
+            data: {
+              type: 'QUESTION',
+              order: (moduleOrder - 1) * 10 + slides.length + j + 1,
+              module_id: moduleId,
+            },
+          });
+
+          // Create question in database
+          const questionRecord = await prisma.question.create({
+            data: {
+              title: questionOutline.title,
+              content: questionOutline.content,
+              module_id: moduleId,
+              content_item_id: questionContentItem.id,
+            },
+          });
+
+          // Create options
+          const questionOptions: QuestionOption[] = [];
+          for (const optionData of questionOutline.options) {
+            const option = await prisma.option.create({
+              data: {
+                text: optionData.text,
+                isCorrect: optionData.isCorrect,
+                explanation: optionData.explanation || "",
+                questionId: questionRecord.id,
+              },
+            });
+
+            questionOptions.push({
+              id: option.id,
+              text: option.text,
+              isCorrect: option.isCorrect,
+              explanation: option.explanation ?? "",
+            });
+          }
+
+          questions.push({
+            id: questionRecord.id,
+            title: questionRecord.title ?? `Question ${j + 1}`,
+            question: questionRecord.content,
+            options: questionOptions,
+            order: questionContentItem.order,
+          });
+        }
+      } else {
+        // Generate questions using AI
+        questions = await generateQuestionsForModule(slides, moduleId, moduleOrder, moduleOutline);
+      }
       generatedModule.questions = questions;
 
       generatedCourse.modules.push(generatedModule);

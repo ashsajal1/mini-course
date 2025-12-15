@@ -6,12 +6,31 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
+export interface SlideOutline {
+  title: string;
+  content: string;
+  order: number;
+}
+
+export interface QuestionOutline {
+  title: string;
+  content: string;
+  options: {
+    text: string;
+    isCorrect: boolean;
+    explanation?: string;
+  }[];
+  order: number;
+}
+
 export interface ModuleOutline {
   title: string;
   description: string;
   learningObjectives: string[];
   estimatedDuration: string;
   order: number;
+  slides?: SlideOutline[];
+  questions?: QuestionOutline[];
 }
 
 export interface CourseOutline {
