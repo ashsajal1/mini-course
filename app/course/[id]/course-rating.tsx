@@ -60,7 +60,7 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
           </div>
           {userRating.review && (
             <p className="text-sm text-base-content/80 italic">
-              "{userRating.review}"
+              &quot;{userRating.review}&quot;
             </p>
           )}
           <button
