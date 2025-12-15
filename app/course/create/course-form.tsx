@@ -14,24 +14,26 @@ export default function CourseForm() {
   const [serverError, setServerError] = useState("");
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
 
-  type FormData = {
-    name: string;
-    description: string;
-    difficulty: string;
-    thumbnail_url?: string;
-  };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const cats = await getCategories();
+      setCategories(cats);
+    };
+    fetchCategories();
+  }, []);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<CourseFormData>({
+  } = useForm({
     resolver: zodResolver(courseFormSchema),
     defaultValues: {
       difficulty: "Beginner",
       lang: "en",
       thumbnail_url: "",
+      category_id: "",
     },
   });
 

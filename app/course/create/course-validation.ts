@@ -20,32 +20,11 @@ export const courseFormSchema = z.object({
   lang: z
     .string()
     .min(2, "Language code must be at least 2 characters")
-    .max(10, "Language code must be less than 10 characters")
-    .default("en"),
+    .max(10, "Language code must be less than 10 characters"),
 
-  category_id: z.string().optional(),
+   category_id: z.string().default(""),
 
-  thumbnail_url: z
-    .string()
-    .url({ message: "Please enter a valid URL" })
-    .startsWith("https://", "URL must start with https://")
-    .refine(
-      (url) => {
-        try {
-          const { pathname } = new URL(url);
-          const extension = pathname.split(".").pop()?.toLowerCase();
-          return ["jpg", "jpeg", "png", "webp"].includes(extension || "");
-        } catch {
-          return false;
-        }
-      },
-      {
-        message: "Image must be a valid URL with .jpg, .jpeg, .png, or .webp extension",
-      }
-    )
-    .or(z.literal(""))
-    .optional()
-    .default(""),
+   thumbnail_url: z.string().default(""),
 });
 
 export type CourseFormData = z.infer<typeof courseFormSchema>;
