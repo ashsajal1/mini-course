@@ -2,7 +2,7 @@
 
 import { currentUser } from "@clerk/nextjs/server";
 import prisma from "@/prisma/client";
-import { CourseOutline } from "@/lib/course-ai-service";
+import { CourseOutline, ModuleOutline } from "@/lib/course-ai-service";
 import { generateSlideContent } from "@/app/course/edit/[id]/slide/ai-actions";
 import { generateMCQFromSlide } from "@/app/course/edit/[id]/question/ai-actions";
 
@@ -232,7 +232,7 @@ export async function createCourseFromOutline(
  * Generates slides for a module based on its outline
  */
 async function generateSlidesForModule(
-  moduleOutline: any,
+  moduleOutline: ModuleOutline,
   moduleId: string,
   moduleOrder: number
 ): Promise<GeneratedSlide[]> {
@@ -351,7 +351,7 @@ async function generateQuestionsForModule(
   slides: GeneratedSlide[],
   moduleId: string,
   moduleOrder: number,
-  moduleOutline: any
+  moduleOutline: ModuleOutline
 ): Promise<GeneratedQuestion[]> {
   const questions: GeneratedQuestion[] = [];
 
