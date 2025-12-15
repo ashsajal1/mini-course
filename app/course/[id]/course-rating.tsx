@@ -10,7 +10,7 @@ type CourseRatingProps = {
 };
 
 export default function CourseRating({ courseId }: CourseRatingProps) {
-  const [userRating, setUserRating] = useState<{ rating: number; review?: string } | null>(null);
+  const [userRating, setUserRating] = useState<{ rating: number; review?: string | null } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [newRating, setNewRating] = useState(0);
