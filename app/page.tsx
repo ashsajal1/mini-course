@@ -7,6 +7,7 @@ type CourseWithModuleCount = {
   name: string;
   description: string;
   difficulty: string;
+  lang: string;
   thumbnail_url: string | null;
   category_id: string | null;
   module_count: bigint;
@@ -18,12 +19,13 @@ export default async function Home() {
          c.name,
          c.description,
          c.difficulty,
+         c.lang,
          c.thumbnail_url,
          c.category_id,
          COUNT(m.id) AS module_count
   FROM "Course" c
   JOIN "Module" m ON m.course_id = c.id
-  GROUP BY c.id, c.name, c.description, c.difficulty, c.thumbnail_url, c.category_id
+  GROUP BY c.id, c.name, c.description, c.difficulty, c.lang, c.thumbnail_url, c.category_id
   HAVING COUNT(m.id) >= 2;
 `;
 
@@ -54,6 +56,7 @@ export default async function Home() {
               <CourseCard
                 key={course.id}
                 id={course.id}
+                lang={course.lang || "en"}
                 title={course.name}
                 description={course.description}
                 difficulty={course.difficulty}

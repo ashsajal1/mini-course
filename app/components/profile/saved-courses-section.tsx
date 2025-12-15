@@ -11,6 +11,7 @@ interface Course {
   name: string;
   description: string;
   difficulty: string;
+  lang: string;
   thumbnail_url: string;
   _count: {
     modules: number;
@@ -99,6 +100,7 @@ export function SavedCoursesSection() {
                 title={course.name}
                 description={course.description}
                 difficulty={course.difficulty || "Beginner"}
+                lang={course.lang || "en"}
                 thumbnail_url={course.thumbnail_url || ""}
                 moduleCount={course._count?.modules || 0}
               />

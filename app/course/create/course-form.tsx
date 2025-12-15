@@ -27,7 +27,7 @@ export default function CourseForm() {
     formState: { errors },
     reset,
   } = useForm<CourseFormData>({
-    resolver: zodResolver(courseFormSchema),
+    resolver: zodResolver(courseFormSchema) as any,
     defaultValues: {
       difficulty: "Beginner",
       lang: "en",
