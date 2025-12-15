@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CourseOutline, ModuleOutline } from "@/lib/course-ai-service";
+import { CourseOutline, ModuleOutline, SlideOutline, QuestionOutline } from "@/lib/course-ai-service";
 import { ArrowUp, ArrowDown, Trash2, Plus, Edit3, Save, X } from "lucide-react";
 
 interface CourseOutlineEditorProps {
@@ -18,6 +18,7 @@ export default function CourseOutlineEditor({
   const [outline, setOutline] = useState<CourseOutline>(initialOutline);
   const [editingModule, setEditingModule] = useState<number | null>(null);
   const [isEditingCourse, setIsEditingCourse] = useState(false);
+  const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     onOutlineChanged(outline);
@@ -67,11 +68,133 @@ export default function CourseOutlineEditor({
       learningObjectives: ["Learning objective 1"],
       estimatedDuration: "30 minutes",
       order: outline.modules.length + 1,
+      slides: [],
+      questions: [],
     };
 
     setOutline(prev => ({
       ...prev,
       modules: [...prev.modules, newModule],
+    }));
+  };
+
+  const toggleModuleExpansion = (index: number) => {
+    setExpandedModules(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
+
+  const addSlideToModule = (moduleIndex: number) => {
+    setOutline(prev => ({
+      ...prev,
+      modules: prev.modules.map((module, i) =>
+        i === moduleIndex
+          ? {
+              ...module,
+              slides: [
+                ...(module.slides || []),
+                {
+                  title: `Slide ${(module.slides?.length || 0) + 1}`,
+                  content: "Slide content here...",
+                  order: (module.slides?.length || 0) + 1,
+                },
+              ],
+            }
+          : module
+      ),
+    }));
+  };
+
+  const updateSlideInModule = (moduleIndex: number, slideIndex: number, updates: Partial<SlideOutline>) => {
+    setOutline(prev => ({
+      ...prev,
+      modules: prev.modules.map((module, i) =>
+        i === moduleIndex
+          ? {
+              ...module,
+              slides: module.slides?.map((slide, j) =>
+                j === slideIndex ? { ...slide, ...updates } : slide
+              ),
+            }
+          : module
+      ),
+    }));
+  };
+
+  const removeSlideFromModule = (moduleIndex: number, slideIndex: number) => {
+    setOutline(prev => ({
+      ...prev,
+      modules: prev.modules.map((module, i) =>
+        i === moduleIndex
+          ? {
+              ...module,
+              slides: module.slides?.filter((_, j) => j !== slideIndex),
+            }
+          : module
+      ),
+    }));
+  };
+
+  const addQuestionToModule = (moduleIndex: number) => {
+    setOutline(prev => ({
+      ...prev,
+      modules: prev.modules.map((module, i) =>
+        i === moduleIndex
+          ? {
+              ...module,
+              questions: [
+                ...(module.questions || []),
+                {
+                  title: `Question ${(module.questions?.length || 0) + 1}`,
+                  content: "Question text here",
+                  options: [
+                    { text: "Option A", isCorrect: true, explanation: "Correct answer explanation" },
+                    { text: "Option B", isCorrect: false, explanation: "Why this is incorrect" },
+                    { text: "Option C", isCorrect: false, explanation: "Why this is incorrect" },
+                    { text: "Option D", isCorrect: false, explanation: "Why this is incorrect" },
+                  ],
+                  order: (module.questions?.length || 0) + 1,
+                },
+              ],
+            }
+          : module
+      ),
+    }));
+  };
+
+  const updateQuestionInModule = (moduleIndex: number, questionIndex: number, updates: Partial<QuestionOutline>) => {
+    setOutline(prev => ({
+      ...prev,
+      modules: prev.modules.map((module, i) =>
+        i === moduleIndex
+          ? {
+              ...module,
+              questions: module.questions?.map((question, j) =>
+                j === questionIndex ? { ...question, ...updates } : question
+              ),
+            }
+          : module
+      ),
+    }));
+  };
+
+  const removeQuestionFromModule = (moduleIndex: number, questionIndex: number) => {
+    setOutline(prev => ({
+      ...prev,
+      modules: prev.modules.map((module, i) =>
+        i === moduleIndex
+          ? {
+              ...module,
+              questions: module.questions?.filter((_, j) => j !== questionIndex),
+            }
+          : module
+      ),
     }));
   };
 
@@ -230,62 +353,214 @@ export default function CourseOutlineEditor({
                       onCancel={() => setEditingModule(null)}
                     />
                   ) : (
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="badge badge-primary">{module.order}</span>
-                          <h4 className="card-title text-base">{module.title}</h4>
-                          <span className="badge badge-outline">{module.estimatedDuration}</span>
+                    <div>
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="badge badge-primary">{module.order}</span>
+                            <h4 className="card-title text-base">{module.title}</h4>
+                            <span className="badge badge-outline">{module.estimatedDuration}</span>
+                            <span className="badge badge-ghost gap-1">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              {(module.slides?.length || 0)} Slides
+                            </span>
+                            <span className="badge badge-ghost gap-1">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              {(module.questions?.length || 0)} Questions
+                            </span>
+                          </div>
+
+                          <p className="text-sm text-base-content/70 mb-2">
+                            {module.description}
+                          </p>
+
+                          {module.learningObjectives.length > 0 && (
+                            <div className="space-y-1">
+                              <p className="text-xs font-medium text-base-content/60">Learning Objectives:</p>
+                              <ul className="text-xs space-y-0.5">
+                                {module.learningObjectives.map((objective, objIndex) => (
+                                  <li key={objIndex} className="flex items-start gap-1">
+                                    <span className="text-primary mt-0.5">•</span>
+                                    <span>{objective}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                         </div>
 
-                        <p className="text-sm text-base-content/70 mb-2">
-                          {module.description}
-                        </p>
+                        <div className="flex gap-1 ml-4">
+                          <button
+                            className="btn btn-ghost btn-xs"
+                            onClick={() => toggleModuleExpansion(index)}
+                          >
+                            {expandedModules.has(index) ? 'Collapse' : 'Expand'}
+                          </button>
+                          <button
+                            className="btn btn-ghost btn-xs"
+                            onClick={() => moveModule(index, Math.max(0, index - 1))}
+                            disabled={index === 0}
+                          >
+                            <ArrowUp className="h-3 w-3" />
+                          </button>
+                          <button
+                            className="btn btn-ghost btn-xs"
+                            onClick={() => moveModule(index, Math.min(outline.modules.length - 1, index + 1))}
+                            disabled={index === outline.modules.length - 1}
+                          >
+                            <ArrowDown className="h-3 w-3" />
+                          </button>
+                          <button
+                            className="btn btn-ghost btn-xs"
+                            onClick={() => setEditingModule(index)}
+                          >
+                            <Edit3 className="h-3 w-3" />
+                          </button>
+                          <button
+                            className="btn btn-error btn-xs"
+                            onClick={() => deleteModule(index)}
+                            disabled={outline.modules.length <= 1}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </div>
 
-                        {module.learningObjectives.length > 0 && (
-                          <div className="space-y-1">
-                            <p className="text-xs font-medium text-base-content/60">Learning Objectives:</p>
-                            <ul className="text-xs space-y-0.5">
-                              {module.learningObjectives.map((objective, objIndex) => (
-                                <li key={objIndex} className="flex items-start gap-1">
-                                  <span className="text-primary mt-0.5">•</span>
-                                  <span>{objective}</span>
-                                </li>
+                      {/* Expanded Content */}
+                      {expandedModules.has(index) && (
+                        <div className="mt-4 space-y-4 border-t pt-4">
+                          {/* Slides Section */}
+                          <div>
+                            <div className="flex justify-between items-center mb-2">
+                              <h5 className="font-medium">Slides</h5>
+                              <button
+                                className="btn btn-primary btn-xs"
+                                onClick={() => addSlideToModule(index)}
+                              >
+                                <Plus className="h-3 w-3" />
+                                Add Slide
+                              </button>
+                            </div>
+                            <div className="space-y-2">
+                              {module.slides?.map((slide, slideIndex) => (
+                                <div key={slideIndex} className="card card-compact bg-base-100">
+                                  <div className="card-body p-3">
+                                    <div className="flex justify-between items-start">
+                                      <div className="flex-1">
+                                        <input
+                                          type="text"
+                                          className="input input-sm input-bordered w-full mb-2"
+                                          value={slide.title}
+                                          onChange={(e) => updateSlideInModule(index, slideIndex, { title: e.target.value })}
+                                          placeholder="Slide title"
+                                        />
+                                        <textarea
+                                          className="textarea textarea-sm textarea-bordered w-full"
+                                          rows={2}
+                                          value={slide.content}
+                                          onChange={(e) => updateSlideInModule(index, slideIndex, { content: e.target.value })}
+                                          placeholder="Slide content here"
+                                        />
+                                      </div>
+                                      <button
+                                        className="btn btn-ghost btn-xs ml-2"
+                                        onClick={() => removeSlideFromModule(index, slideIndex)}
+                                      >
+                                        <Trash2 className="h-3 w-3" />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
                               ))}
-                            </ul>
+                              {(!module.slides || module.slides.length === 0) && (
+                                <p className="text-sm text-base-content/50 italic">No slides yet. Click &quot;Add Slide&quot; to get started.</p>
+                              )}
+                            </div>
                           </div>
-                        )}
-                      </div>
 
-                      <div className="flex gap-1 ml-4">
-                        <button
-                          className="btn btn-ghost btn-xs"
-                          onClick={() => moveModule(index, Math.max(0, index - 1))}
-                          disabled={index === 0}
-                        >
-                          <ArrowUp className="h-3 w-3" />
-                        </button>
-                        <button
-                          className="btn btn-ghost btn-xs"
-                          onClick={() => moveModule(index, Math.min(outline.modules.length - 1, index + 1))}
-                          disabled={index === outline.modules.length - 1}
-                        >
-                          <ArrowDown className="h-3 w-3" />
-                        </button>
-                        <button
-                          className="btn btn-ghost btn-xs"
-                          onClick={() => setEditingModule(index)}
-                        >
-                          <Edit3 className="h-3 w-3" />
-                        </button>
-                        <button
-                          className="btn btn-error btn-xs"
-                          onClick={() => deleteModule(index)}
-                          disabled={outline.modules.length <= 1}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </button>
-                      </div>
+                          {/* Questions Section */}
+                          <div>
+                            <div className="flex justify-between items-center mb-2">
+                              <h5 className="font-medium">Questions</h5>
+                              <button
+                                className="btn btn-primary btn-xs"
+                                onClick={() => addQuestionToModule(index)}
+                              >
+                                <Plus className="h-3 w-3" />
+                                Add Question
+                              </button>
+                            </div>
+                            <div className="space-y-2">
+                              {module.questions?.map((question, questionIndex) => (
+                                <div key={questionIndex} className="card card-compact bg-base-100">
+                                  <div className="card-body p-3">
+                                    <div className="flex justify-between items-start">
+                                      <div className="flex-1">
+                                        <input
+                                          type="text"
+                                          className="input input-sm input-bordered w-full mb-2"
+                                          value={question.title}
+                                          onChange={(e) => updateQuestionInModule(index, questionIndex, { title: e.target.value })}
+                                          placeholder="Question title"
+                                        />
+                                        <textarea
+                                          className="textarea textarea-sm textarea-bordered w-full mb-2"
+                                          rows={2}
+                                          value={question.content}
+                                          onChange={(e) => updateQuestionInModule(index, questionIndex, { content: e.target.value })}
+                                          placeholder="Question text"
+                                        />
+                                        <div className="space-y-1">
+                                          {question.options.map((option, optionIndex) => (
+                                            <div key={optionIndex} className="flex gap-2 items-center">
+                                              <input
+                                                type="radio"
+                                                name={`correct-${index}-${questionIndex}`}
+                                                checked={option.isCorrect}
+                                                onChange={() => {
+                                                  const newOptions = question.options.map((opt, idx) => ({
+                                                    ...opt,
+                                                    isCorrect: idx === optionIndex,
+                                                  }));
+                                                  updateQuestionInModule(index, questionIndex, { options: newOptions });
+                                                }}
+                                              />
+                                              <input
+                                                type="text"
+                                                className="input input-xs input-bordered flex-1"
+                                                value={option.text}
+                                                onChange={(e) => {
+                                                  const newOptions = [...question.options];
+                                                  newOptions[optionIndex] = { ...option, text: e.target.value };
+                                                  updateQuestionInModule(index, questionIndex, { options: newOptions });
+                                                }}
+                                                placeholder={`Option ${String.fromCharCode(65 + optionIndex)}`}
+                                              />
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                      <button
+                                        className="btn btn-ghost btn-xs ml-2"
+                                        onClick={() => removeQuestionFromModule(index, questionIndex)}
+                                      >
+                                        <Trash2 className="h-3 w-3" />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                              {(!module.questions || module.questions.length === 0) && (
+                                <p className="text-sm text-base-content/50 italic">No questions yet. Click &quot;Add Question&quot; to get started.</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -295,7 +570,7 @@ export default function CourseOutlineEditor({
 
           {outline.modules.length === 0 && (
             <div className="text-center py-8 text-base-content/60">
-              <p>No modules yet. Click "Add Module" to get started.</p>
+              <p>No modules yet. Click &quot;Add Module&quot; to get started.</p>
             </div>
           )}
         </div>
@@ -329,7 +604,11 @@ interface ModuleEditorProps {
 }
 
 function ModuleEditor({ module, onSave, onCancel }: ModuleEditorProps) {
-  const [editedModule, setEditedModule] = useState<ModuleOutline>(module);
+  const [editedModule, setEditedModule] = useState<ModuleOutline>({
+    ...module,
+    slides: module.slides || [],
+    questions: module.questions || [],
+  });
 
   const handleSave = () => {
     onSave(editedModule);
