@@ -41,6 +41,7 @@ model Course {
   deleted_at    DateTime?
   modules       Module[]
   enrollments   Enrollment[]
+  ratings       Rating[]
 }
 
 model Module {
@@ -151,6 +152,7 @@ model User {
 
   modules_progress UserModuleProgress[]
   enrollments      Enrollment[]
+  ratings          Rating[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -183,4 +185,18 @@ model UserModuleProgress {
   updated_at DateTime @updatedAt
 
   @@unique([user_id, module_id])
+}
+
+model Rating {
+  id         String   @id @default(cuid())
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id])
+  course_id  String
+  course     Course   @relation(fields: [course_id], references: [id])
+  rating     Int
+  review     String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([user_id, course_id])
 }
