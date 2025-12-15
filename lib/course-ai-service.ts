@@ -1,3 +1,5 @@
+"use server"
+
 import Groq from "groq-sdk";
 
 const groq = new Groq({
@@ -197,11 +199,7 @@ function isValidUrl(url: string): boolean {
 /**
  * Estimates course complexity and suggests generation settings
  */
-export function estimateCourseComplexity(outline: CourseOutline): {
-  totalSlides: number;
-  totalQuestions: number;
-  estimatedGenerationTime: string;
-} {
+export async function estimateCourseComplexity(outline: CourseOutline): Promise<{ totalSlides: number; totalQuestions: number; estimatedGenerationTime: string; }> {
   const moduleCount = outline.modules.length;
   const avgSlidesPerModule = outline.difficulty === 'Advanced' ? 3 : outline.difficulty === 'Intermediate' ? 2 : 1.5;
   const avgQuestionsPerModule = 2;
