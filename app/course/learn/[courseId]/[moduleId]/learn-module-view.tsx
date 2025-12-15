@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   ChevronLeft,
@@ -36,9 +36,34 @@ export default function LearnModuleView({
   const [isCompleted, setIsCompleted] = useState(initialIsCompleted);
   const [isCompleting, setIsCompleting] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [completedItemIds, setCompletedItemIds] = useState<Set<string>>(
+    new Set()
+  );
   const totalItems = moduleContent.length;
   const currentContent = moduleContent[currentIndex];
+  // Determine if the current item is completed
+  const isCurrentItemCompleted =
+    currentContent && completedItemIds.has(currentContent.id);
+
   const isOnLastItem = currentIndex === totalItems - 1;
+  const allItemsCompleted = moduleContent.every((item) =>
+    completedItemIds.has(item.id)
+  );
+
+  const handleMarkAsCompleted = (id: string) => {
+    setCompletedItemIds((prev) => {
+      const newSet = new Set(prev);
+      newSet.add(id);
+      return newSet;
+    });
+  };
+
+  // Auto-complete slides when viewed
+  useEffect(() => {
+    if (currentContent && currentContent.type === "SLIDE") {
+      handleMarkAsCompleted(currentContent.id);
+    }
+  }, [currentContent]);
 
   const goToNext = () => {
     if (currentIndex < totalItems - 1) {
@@ -163,6 +188,7 @@ export default function LearnModuleView({
               content={currentContent}
               isCreator={isCreator}
               courseId={courseId}
+              onComplete={() => handleMarkAsCompleted(currentContent.id)}
             />
           )}
         </div>
@@ -188,18 +214,20 @@ export default function LearnModuleView({
               </span>
 
               {isOnLastItem && !isCompleted ? (
-                <button
-                  type="button"
-                  className="btn btn-success md:gap-2"
-                  onClick={handleCompleteModule}
-                  disabled={isCompleting}
-                  aria-label="Complete module"
-                >
-                  <Trophy className="w-5 h-5" />
-                  <span className="hidden md:inline">
-                    {isCompleting ? "Completing..." : "Complete Module"}
-                  </span>
-                </button>
+                allItemsCompleted && (
+                  <button
+                    type="button"
+                    className="btn btn-success md:gap-2"
+                    onClick={handleCompleteModule}
+                    disabled={isCompleting}
+                    aria-label="Complete module"
+                  >
+                    <Trophy className="w-5 h-5" />
+                    <span className="hidden md:inline">
+                      {isCompleting ? "Completing..." : "Complete Module"}
+                    </span>
+                  </button>
+                )
               ) : isOnLastItem && isCompleted ? (
                 <button
                   type="button"
@@ -229,7 +257,9 @@ export default function LearnModuleView({
                   type="button"
                   className="btn btn-primary md:gap-2"
                   onClick={goToNext}
-                  disabled={currentIndex === totalItems - 1}
+                  disabled={
+                    currentIndex === totalItems - 1 || !isCurrentItemCompleted
+                  }
                   aria-label="Next slide"
                 >
                   <span className="hidden md:inline">Next</span>
