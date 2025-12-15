@@ -12,6 +12,7 @@ interface Course {
   name: string;
   description: string;
   difficulty: string;
+  lang: string;
   thumbnail_url: string;
   _count: {
     modules: number;
@@ -32,10 +33,20 @@ export default function SavedCoursesView() {
     const fetchCourses = async () => {
       try {
         setIsLoading(true);
+        // In a real app, we would have an endpoint to fetch specific courses by IDs
+        // For now, we fetch all and filter client-side as per plan
         const allCourses = await getCourses();
+        // The getCourses action returns a slightly different shape, let's cast or map it
+        // Actually getCourses returns Course[] which matches our interface mostly
+        // but we need to filter by savedCourseIds
         const savedCourses = allCourses.filter((course) =>
           savedCourseIds.includes(course.id)
         );
+
+        // Map to match CourseCard props if needed, but CourseCard expects:
+        // id, title, description, difficulty, lang, thumbnail_url, moduleCount
+        // getCourses returns: id, name, description, difficulty, lang, thumbnail_url, _count { modules }
+
         setCourses(savedCourses as unknown as Course[]);
       } catch (error) {
         console.error("Failed to fetch saved courses:", error);
@@ -79,6 +90,7 @@ export default function SavedCoursesView() {
                 title={course.name}
                 description={course.description}
                 difficulty={course.difficulty || "Beginner"}
+                lang={course.lang || "en"}
                 thumbnail_url={course.thumbnail_url || ""}
                 moduleCount={course._count?.modules || 0}
               />

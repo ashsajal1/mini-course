@@ -5,8 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createCourse } from "./actions";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { courseFormSchema } from "./course-validation";
 import { getCategories } from "@/lib/category-service";
+import { courseFormSchema, type CourseFormData } from "./course-validation"
 
 export default function CourseForm() {
   const router = useRouter();
@@ -18,36 +18,24 @@ export default function CourseForm() {
     name: string;
     description: string;
     difficulty: string;
-    category_id?: string;
     thumbnail_url?: string;
   };
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const categoriesData = await getCategories();
-        setCategories(categoriesData);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<FormData>({
+  } = useForm<CourseFormData>({
     resolver: zodResolver(courseFormSchema),
     defaultValues: {
       difficulty: "Beginner",
+      lang: "en",
       thumbnail_url: "",
     },
   });
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
+  const onSubmit: SubmitHandler<CourseFormData> = async (data) => {
     try {
       setIsSubmitting(true);
       setServerError("");
@@ -209,6 +197,41 @@ export default function CourseForm() {
                   <label className="label">
                     <span className="label-text-alt text-error">
                       {errors.difficulty.message}
+                    </span>
+                  </label>
+                )}
+              </div>
+
+              {/* Language */}
+              <div className="form-control">
+                <label className="label" htmlFor="lang">
+                  <span className="label-text font-semibold">
+                    Course Language
+                  </span>
+                </label>
+                <select
+                  id="lang"
+                  {...register("lang")}
+                  className={`select select-bordered w-full ${
+                    errors.lang ? "select-error" : ""
+                  }`}
+                  disabled={isSubmitting}
+                >
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                  <option value="fr">French</option>
+                  <option value="de">German</option>
+                  <option value="it">Italian</option>
+                  <option value="pt">Portuguese</option>
+                  <option value="zh">Chinese</option>
+                  <option value="ja">Japanese</option>
+                  <option value="ko">Korean</option>
+                  <option value="ar">Arabic</option>
+                </select>
+                {errors.lang && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">
+                      {errors.lang.message}
                     </span>
                   </label>
                 )}

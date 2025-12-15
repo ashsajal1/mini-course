@@ -12,6 +12,7 @@ type CreateCourseResponse = {
     name: string;
     description: string;
     difficulty: string;
+    lang?: string;
     thumbnail_url: string;
     creator: string;
     created_at: Date;
@@ -47,7 +48,7 @@ export async function createCourse(
       },
     });
 
-    return { success: true, course }; // This line is a fallback in case redirect doesn't work
+    return { success: true, course };
   } catch (error) {
     console.error("Error creating course:", error);
     return {

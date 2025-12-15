@@ -17,11 +17,17 @@ export const courseFormSchema = z.object({
       message: "Please select a valid difficulty level",
     }),
 
+  lang: z
+    .string()
+    .min(2, "Language code must be at least 2 characters")
+    .max(10, "Language code must be less than 10 characters")
+    .default("en"),
+
   category_id: z.string().optional(),
 
   thumbnail_url: z
     .string()
-    .url("Please enter a valid URL")
+    .url({ message: "Please enter a valid URL" })
     .startsWith("https://", "URL must start with https://")
     .refine(
       (url) => {
