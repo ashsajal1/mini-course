@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getAverageRating, getUserRatingForCourse } from "@/lib/rating-service";
+import { getUserRatingForCourse } from "@/lib/rating-service";
 import StarRating from "@/app/components/ui/star-rating";
 import { handleRating } from "./actions";
 import { Star } from "lucide-react";
@@ -10,7 +10,6 @@ type CourseRatingProps = {
 };
 
 export default function CourseRating({ courseId }: CourseRatingProps) {
-  const [ratingData, setRatingData] = useState({ average: 0, count: 0 });
   const [userRating, setUserRating] = useState<{ rating: number; review?: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -18,15 +17,11 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
   const [review, setReview] = useState("");
 
   useEffect(() => {
-    const fetchRatingData = async () => {
-      const [avgRating, userRatingData] = await Promise.all([
-        getAverageRating(courseId),
-        getUserRatingForCourse(courseId),
-      ]);
-      setRatingData(avgRating);
+    const fetchUserRating = async () => {
+      const userRatingData = await getUserRatingForCourse(courseId);
       setUserRating(userRatingData);
     };
-    fetchRatingData();
+    fetchUserRating();
   }, [courseId]);
 
   const handleSubmitRating = async () => {
@@ -36,12 +31,8 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
     try {
       const result = await handleRating(courseId, newRating, review || undefined);
       if (result.success) {
-        // Refresh data
-        const [avgRating, userRatingData] = await Promise.all([
-          getAverageRating(courseId),
-          getUserRatingForCourse(courseId),
-        ]);
-        setRatingData(avgRating);
+        // Refresh user rating data
+        const userRatingData = await getUserRatingForCourse(courseId);
         setUserRating(userRatingData);
         setShowForm(false);
         setNewRating(0);
@@ -58,21 +49,7 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
 
   return (
     <div className="mt-8 border-t pt-6">
-      <h3 className="text-xl font-bold mb-4">Course Rating</h3>
-
-      {ratingData.count > 0 && (
-        <div className="flex items-center gap-4 mb-4">
-          <div className="flex items-center gap-2">
-            <StarRating rating={ratingData.average} size={20} showValue />
-            <span className="text-lg font-semibold">
-              {ratingData.average.toFixed(1)}
-            </span>
-          </div>
-          <span className="text-base-content/70">
-            ({ratingData.count} review{ratingData.count !== 1 ? 's' : ''})
-          </span>
-        </div>
-      )}
+      <h3 className="text-xl font-bold mb-4">Rate This Course</h3>
 
       {userRating ? (
         <div className="bg-base-200 p-4 rounded-lg">
