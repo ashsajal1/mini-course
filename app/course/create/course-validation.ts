@@ -17,6 +17,8 @@ export const courseFormSchema = z.object({
       message: "Please select a valid difficulty level",
     }),
 
+  category_id: z.string().optional(),
+
   thumbnail_url: z
     .string()
     .url("Please enter a valid URL")

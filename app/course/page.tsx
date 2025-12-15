@@ -9,6 +9,7 @@ export default async function CoursePage() {
       OR: [{ isPublic: true }, { isPublic: null }],
     },
     include: {
+      category: true,
       _count: {
         select: { modules: true },
       },

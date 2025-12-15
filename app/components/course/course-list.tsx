@@ -1,14 +1,16 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Search, Filter, X } from "lucide-react";
-import { Course } from "@prisma/client";
+import { Course, Category } from "@prisma/client";
 import CourseCard from "@/app/components/course/course-card";
+import { getCategories } from "@/lib/category-service";
 
 type CourseWithCount = Course & {
   _count: {
     modules: number;
   };
+  category?: Category | null;
 };
 
 const difficultyOptions = ["Beginner", "Intermediate", "Advanced"] as const;
@@ -22,7 +24,21 @@ export default function CourseList({
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>(
     []
   );
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await getCategories();
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const filteredCourses = useMemo(() => {
     return courses.filter((course) => {
@@ -37,9 +53,14 @@ export default function CourseList({
         selectedDifficulties.length === 0 ||
         selectedDifficulties.includes(course.difficulty);
 
-      return matchesSearch && matchesDifficulty;
+      // Filter by category
+      const matchesCategory =
+        selectedCategories.length === 0 ||
+        (course.category_id && selectedCategories.includes(course.category_id));
+
+      return matchesSearch && matchesDifficulty && matchesCategory;
     });
-  }, [courses, searchQuery, selectedDifficulties]);
+  }, [courses, searchQuery, selectedDifficulties, selectedCategories]);
 
   const toggleDifficulty = (difficulty: string) => {
     setSelectedDifficulties((prev) =>
@@ -49,13 +70,22 @@ export default function CourseList({
     );
   };
 
+  const toggleCategory = (categoryId: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(categoryId)
+        ? prev.filter((c) => c !== categoryId)
+        : [...prev, categoryId]
+    );
+  };
+
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedDifficulties([]);
+    setSelectedCategories([]);
   };
 
   const hasActiveFilters =
-    searchQuery !== "" || selectedDifficulties.length > 0;
+    searchQuery !== "" || selectedDifficulties.length > 0 || selectedCategories.length > 0;
 
   return (
     <div className="space-y-6">
@@ -80,9 +110,9 @@ export default function CourseList({
           >
             <Filter className="h-4 w-4 mr-2" />
             Filter
-            {selectedDifficulties.length > 0 && (
+            {(selectedDifficulties.length > 0 || selectedCategories.length > 0) && (
               <span className="ml-2 badge badge-primary">
-                {selectedDifficulties.length}
+                {selectedDifficulties.length + selectedCategories.length}
               </span>
             )}
           </button>
@@ -109,27 +139,63 @@ export default function CourseList({
               </button>
             </span>
           ))}
+          {selectedCategories.map((categoryId) => {
+            const category = categories.find(c => c.id === categoryId);
+            return (
+              <span key={categoryId} className="badge badge-primary gap-2">
+                {category?.name || 'Unknown Category'}
+                <button
+                  onClick={() => toggleCategory(categoryId)}
+                  className="btn btn-ghost btn-xs p-0 h-4 min-h-4"
+                  aria-label={`Remove ${category?.name || 'Category'} filter`}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            );
+          })}
         </div>
       )}
 
       {/* Filter Panel */}
       {showFilters && (
-        <div className="bg-base-200 dark:bg-base-300 p-4 rounded-lg">
-          <h3 className="font-medium mb-3">Difficulty Level</h3>
-          <div className="flex flex-wrap gap-2">
-            {difficultyOptions.map((difficulty) => (
-              <button
-                key={difficulty}
-                onClick={() => toggleDifficulty(difficulty)}
-                className={`btn btn-sm ${
-                  selectedDifficulties.includes(difficulty)
-                    ? "btn-primary"
-                    : "btn-ghost"
-                }`}
-              >
-                {difficulty}
-              </button>
-            ))}
+        <div className="bg-base-200 dark:bg-base-300 p-4 rounded-lg space-y-4">
+          <div>
+            <h3 className="font-medium mb-3">Category</h3>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => toggleCategory(category.id)}
+                  className={`btn btn-sm ${
+                    selectedCategories.includes(category.id)
+                      ? "btn-primary"
+                      : "btn-ghost"
+                  }`}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <div>
+            <h3 className="font-medium mb-3">Difficulty Level</h3>
+            <div className="flex flex-wrap gap-2">
+              {difficultyOptions.map((difficulty) => (
+                <button
+                  key={difficulty}
+                  onClick={() => toggleDifficulty(difficulty)}
+                  className={`btn btn-sm ${
+                    selectedDifficulties.includes(difficulty)
+                      ? "btn-primary"
+                      : "btn-ghost"
+                  }`}
+                >
+                  {difficulty}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}

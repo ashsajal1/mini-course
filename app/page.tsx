@@ -8,6 +8,7 @@ type CourseWithModuleCount = {
   description: string;
   difficulty: string;
   thumbnail_url: string | null;
+  category_id: string | null;
   module_count: bigint;
 };
 
@@ -18,10 +19,11 @@ export default async function Home() {
          c.description,
          c.difficulty,
          c.thumbnail_url,
+         c.category_id,
          COUNT(m.id) AS module_count
   FROM "Course" c
   JOIN "Module" m ON m.course_id = c.id
-  GROUP BY c.id, c.name, c.description, c.difficulty, c.thumbnail_url
+  GROUP BY c.id, c.name, c.description, c.difficulty, c.thumbnail_url, c.category_id
   HAVING COUNT(m.id) >= 2;
 `;
 

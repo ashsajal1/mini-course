@@ -14,6 +14,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  deleted_at  DateTime?
+  
+  courses     Course[]
+}
+
 model Course {
   id            String    @id @default(cuid())
   creator       String
@@ -22,6 +33,8 @@ model Course {
   difficulty    String
   thumbnail_url String
   isPublic      Boolean?
+  category_id   String?
+  category      Category? @relation(fields: [category_id], references: [id])
   created_at    DateTime  @default(now())
   updated_at    DateTime  @updatedAt
   deleted_at    DateTime?
