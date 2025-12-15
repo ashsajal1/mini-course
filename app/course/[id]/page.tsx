@@ -19,6 +19,7 @@ import { getAverageRating } from "@/lib/rating-service";
 import EnrollButton from "./enroll-btn";
 import { auth } from "@clerk/nextjs/server";
 import StarRating from "@/app/components/ui/star-rating";
+import CourseRating from "./course-rating";
 
 export async function generateMetadata({
   params,
@@ -187,6 +188,8 @@ export default async function CoursePage({
               </div>
             </div>
           )}
+
+          {clerkId && <CourseRating courseId={id} />}
 
           <div className="card-actions justify-end gap-2 mt-8">
             {!clerkId ? (
