@@ -27,12 +27,13 @@ export default function CourseForm() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<CourseFormData>({
+  } = useForm({
     resolver: zodResolver(courseFormSchema),
     defaultValues: {
       difficulty: "Beginner",
       lang: "en",
       thumbnail_url: "",
+      category_id: "",
     },
   });
 
