@@ -7,6 +7,11 @@ import { CreatedCoursesSection } from "../components/profile/created-courses-sec
 import { LogoutButton } from "../components/auth/logout-button";
 import { getEnrolledCourses } from "@/lib/enrollment-service";
 import { SavedCoursesSection } from "../components/profile/saved-courses-section";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My Profile",
+};
 
 export default async function ProfilePage() {
   const user = await currentUser();

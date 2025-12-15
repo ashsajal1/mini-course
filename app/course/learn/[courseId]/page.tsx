@@ -1,6 +1,30 @@
 import prisma from "@/prisma/client";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ courseId: string }>;
+}): Promise<Metadata> {
+  const { courseId } = await params;
+  const course = await prisma.course.findUnique({
+    where: { id: courseId },
+    select: { name: true },
+  });
+
+  if (!course) {
+    return {
+      title: "Course Not Found",
+    };
+  }
+
+  return {
+    title: `Learning Path: ${course.name}`,
+    description: `Track your progress in ${course.name}`,
+  };
+}
 
 export default async function page({
   params,
