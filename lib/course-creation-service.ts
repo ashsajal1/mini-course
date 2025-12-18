@@ -85,9 +85,9 @@ export async function createCourseFromOutline(
       modules: [],
     };
 
-    // Stage 2: Generate modules with content
+    // Stage 2: Generate modules with content (limit to prevent payload size issues)
 
-    for (let i = 0; i < outline.modules.length; i++) {
+    for (let i = 0; i < Math.min(outline.modules.length, 10); i++) {
       const moduleOutline = outline.modules[i];
       const moduleOrder = i + 1;
 
@@ -239,8 +239,8 @@ async function generateSlidesForModule(
   const slides: GeneratedSlide[] = [];
 
   try {
-    // Generate 2-4 slides per module based on learning objectives
-    const numSlides = Math.min(moduleOutline.learningObjectives.length + 1, 4);
+    // Generate 2-3 slides per module based on learning objectives (limited to prevent large payloads)
+    const numSlides = Math.min(moduleOutline.learningObjectives.length + 1, 3);
 
     for (let i = 0; i < numSlides; i++) {
       let slidePrompt = `Create an educational slide for the module: ${moduleOutline.title}`;
@@ -356,8 +356,8 @@ async function generateQuestionsForModule(
   const questions: GeneratedQuestion[] = [];
 
   try {
-    // Generate 2-3 questions per module for comprehensive assessment
-    const numQuestions = Math.min(Math.max(slides.length, 2), 3);
+    // Generate 2 questions per module for comprehensive assessment (limited to prevent large payloads)
+    const numQuestions = Math.min(Math.max(slides.length, 2), 2);
 
     // Create comprehensive module context for better questions
     const moduleContext = `

@@ -68,49 +68,32 @@ export async function generateCourseOutline(url: string): Promise<CourseOutlineR
   }
 
   try {
-    const systemPrompt = `You are an expert course designer and educational content creator. Your task is to analyze a document URL and create a comprehensive course outline.
+    const systemPrompt = `Analyze the document URL and create a course outline.
 
-CRITICAL REQUIREMENTS:
-- Analyze the provided document content thoroughly
-- Create a structured course with logical module progression
-- Ensure learning objectives are specific and measurable
-- Estimate realistic time durations for each module
-- Generate 3-8 modules depending on document complexity
-- Difficulty should be: Beginner, Intermediate, or Advanced
-- Language should match document language (default: English)
+Requirements:
+- 3-6 modules with logical progression
+- Specific, measurable learning objectives
+- Realistic time estimates
+- Difficulty: Beginner/Intermediate/Advanced
+- Language matches document (default: English)
 
-OUTPUT FORMAT (JSON only):
+Return ONLY valid JSON:
 {
-  "title": "Clear, engaging course title",
-  "description": "Brief but comprehensive course description (2-3 sentences)",
+  "title": "Course title",
+  "description": "2-3 sentence description",
   "difficulty": "Beginner|Intermediate|Advanced",
-  "estimatedDuration": "Total course duration (e.g., '4 hours', '2 weeks')",
-  "language": "Language code (e.g., 'en', 'es', 'fr')",
+  "language": "Language code",
   "modules": [
     {
-      "title": "Module Title",
-      "description": "Module description and what students will learn",
-      "learningObjectives": [
-        "Specific learning objective 1",
-        "Specific learning objective 2",
-        "Specific learning objective 3"
-      ],
-      "estimatedDuration": "Time for this module (e.g., '30 minutes', '2 hours')",
+      "title": "Module title",
+      "description": "Module description",
+      "learningObjectives": ["Objective 1", "Objective 2"],
       "order": 1
     }
   ]
-}
+}`;
 
-Ensure the course flows logically from basic to advanced concepts.
-Return ONLY valid JSON, no additional text or formatting.`;
-
-    const userPrompt = `Please analyze the document at this URL and create a comprehensive course outline: ${url}
-
-Focus on:
-- Educational value and learning progression
-- Practical, applicable knowledge
-- Clear module boundaries
-- Realistic time estimates`;
+    const userPrompt = `Create a course outline from this document: ${url}`;
 
     const completion = await groq.chat.completions.create({
       messages: [
@@ -119,7 +102,7 @@ Focus on:
       ],
       model: "compound-beta", // Use compound-beta for URL fetching
       temperature: 0.7,
-      max_tokens: 4096,
+      max_tokens: 4096, // Reduced to prevent overly large outlines
     });
 
     const content = completion.choices[0]?.message?.content;
