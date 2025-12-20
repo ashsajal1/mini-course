@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { CourseOutline, ModuleOutline, SlideOutline, QuestionOutline } from "@/lib/course-ai-service";
-import { ArrowUp, ArrowDown, Trash2, Plus, Edit3, Save, X } from "lucide-react";
+import { ArrowUp, ArrowDown, Trash2, Plus, Edit3, Save, X, Eye } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github-dark.css";
 
 interface CourseOutlineEditorProps {
   initialOutline: CourseOutline;
@@ -19,6 +23,7 @@ export default function CourseOutlineEditor({
   const [editingModule, setEditingModule] = useState<number | null>(null);
   const [isEditingCourse, setIsEditingCourse] = useState(false);
   const [expandedModules, setExpandedModules] = useState<Set<number>>(new Set());
+  const [previewModule, setPreviewModule] = useState<number | null>(null);
 
   useEffect(() => {
     onOutlineChanged(outline);
@@ -414,12 +419,19 @@ export default function CourseOutlineEditor({
                           >
                             <ArrowDown className="h-3 w-3" />
                           </button>
-                          <button
-                            className="btn btn-ghost btn-xs"
-                            onClick={() => setEditingModule(index)}
-                          >
-                            <Edit3 className="h-3 w-3" />
-                          </button>
+                           <button
+                             className="btn btn-ghost btn-xs"
+                             onClick={() => setPreviewModule(index)}
+                             title="Preview Module"
+                           >
+                             <Eye className="h-3 w-3" />
+                           </button>
+                           <button
+                             className="btn btn-ghost btn-xs"
+                             onClick={() => setEditingModule(index)}
+                           >
+                             <Edit3 className="h-3 w-3" />
+                           </button>
                           <button
                             className="btn btn-error btn-xs"
                             onClick={() => deleteModule(index)}
@@ -584,18 +596,156 @@ export default function CourseOutlineEditor({
         >
           Reset to Original
         </button>
-        <button
-          className="btn btn-primary"
-          onClick={onProceed}
-          disabled={outline.modules.length === 0}
-        >
-          Generate Full Course
-          <ArrowUp className="h-4 w-4" />
-        </button>
-      </div>
-    </div>
-  );
-}
+         <button
+           className="btn btn-primary"
+           onClick={onProceed}
+           disabled={outline.modules.length === 0}
+         >
+           Generate Full Course
+           <ArrowUp className="h-4 w-4" />
+         </button>
+       </div>
+
+       {/* Preview Modal */}
+       {previewModule !== null && (
+         <div className="modal modal-open">
+           <div className="modal-box max-w-4xl">
+             <div className="flex items-center justify-between mb-4">
+               <h3 className="font-bold text-lg flex items-center gap-2">
+                 <Eye className="h-5 w-5" />
+                 Module Preview
+               </h3>
+               <button
+                 className="btn btn-ghost btn-sm"
+                 onClick={() => setPreviewModule(null)}
+               >
+                 <X className="h-4 w-4" />
+               </button>
+             </div>
+
+             {(() => {
+               const previewModuleData = outline.modules[previewModule];
+               if (!previewModuleData) return null;
+
+               return (
+                 <div className="space-y-6">
+                   {/* Module Header */}
+                   <div className="p-4 bg-base-100 rounded-lg border border-base-300">
+                     <h4 className="text-2xl font-bold mb-2">{previewModuleData.title}</h4>
+                     <p className="text-base-content/80 mb-3">{previewModuleData.description}</p>
+                     <div className="flex items-center gap-4 text-sm">
+                       <span className="badge badge-primary">Module {previewModuleData.order}</span>
+                       <span className="badge badge-secondary">{previewModuleData.estimatedDuration}</span>
+                     </div>
+                   </div>
+
+                   {/* Learning Objectives */}
+                   {previewModuleData.learningObjectives.length > 0 && (
+                     <div>
+                       <h5 className="font-semibold mb-3">Learning Objectives</h5>
+                       <ul className="space-y-2">
+                         {previewModuleData.learningObjectives.map((objective, idx) => (
+                           <li key={idx} className="flex items-start gap-2">
+                             <span className="text-primary mt-0.5">•</span>
+                             <span>{objective}</span>
+                           </li>
+                         ))}
+                       </ul>
+                     </div>
+                   )}
+
+                   {/* Slides Preview */}
+                   {previewModuleData.slides && previewModuleData.slides.length > 0 && (
+                     <div>
+                       <h5 className="font-semibold mb-3">Slides ({previewModuleData.slides.length})</h5>
+                       <div className="space-y-4 max-h-96 overflow-y-auto">
+                         {previewModuleData.slides.map((slide, idx) => (
+                           <div key={idx} className="p-4 bg-base-100 rounded-lg border border-base-300">
+                             <h6 className="font-medium mb-2">{slide.title || `Slide ${idx + 1}`}</h6>
+                             <div className="prose prose-sm max-w-none">
+                               <ReactMarkdown
+                                 remarkPlugins={[remarkGfm]}
+                                 rehypePlugins={[rehypeHighlight]}
+                                 components={{
+                                   h1: (props) => <h1 className="text-xl font-bold my-3" {...props} />,
+                                   h2: (props) => <h2 className="text-lg font-bold my-2" {...props} />,
+                                   h3: (props) => <h3 className="text-base font-bold my-2" {...props} />,
+                                   p: (props) => <p className="my-2" {...props} />,
+                                   ul: (props) => <ul className="my-2 ml-4 list-disc" {...props} />,
+                                   ol: (props) => <ol className="my-2 ml-4 list-decimal" {...props} />,
+                                   li: (props) => <li className="mb-1" {...props} />,
+                                   code: (props) => <code className="bg-base-200 px-1 py-0.5 rounded text-sm" {...props} />,
+                                   pre: (props) => <pre className="bg-base-200 p-3 rounded overflow-x-auto my-2" {...props} />,
+                                 }}
+                               >
+                                 {slide.content || '*No content yet*'}
+                               </ReactMarkdown>
+                             </div>
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+                   )}
+
+                   {/* Questions Preview */}
+                   {previewModuleData.questions && previewModuleData.questions.length > 0 && (
+                     <div>
+                       <h5 className="font-semibold mb-3">Questions ({previewModuleData.questions.length})</h5>
+                       <div className="space-y-4 max-h-96 overflow-y-auto">
+                         {previewModuleData.questions.map((question, idx) => (
+                           <div key={idx} className="p-4 bg-base-100 rounded-lg border border-base-300">
+                             <h6 className="font-medium mb-2">{question.title || `Question ${idx + 1}`}</h6>
+                             <p className="mb-3">{question.content}</p>
+                             <div className="space-y-2">
+                               {question.options.map((option, optIdx) => (
+                                 <div key={optIdx} className="flex items-center gap-3">
+                                   <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                                     option.isCorrect ? 'border-success bg-success' : 'border-base-content/40'
+                                   }`}>
+                                     {option.isCorrect && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                                   </div>
+                                   <span className={option.isCorrect ? 'font-medium text-success' : ''}>
+                                     {option.text}
+                                   </span>
+                                 </div>
+                               ))}
+                             </div>
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+                   )}
+
+                   {/* Empty States */}
+                   {(!previewModuleData.slides || previewModuleData.slides.length === 0) && (
+                     <div className="text-center py-8 text-base-content/60">
+                       <p>No slides yet</p>
+                     </div>
+                   )}
+
+                   {(!previewModuleData.questions || previewModuleData.questions.length === 0) && (
+                     <div className="text-center py-8 text-base-content/60">
+                       <p>No questions yet</p>
+                     </div>
+                   )}
+                 </div>
+               );
+             })()}
+
+             <div className="modal-action">
+               <button
+                 className="btn"
+                 onClick={() => setPreviewModule(null)}
+               >
+                 Close
+               </button>
+             </div>
+           </div>
+         </div>
+       )}
+     </div>
+   );
+ }
 
 interface ModuleEditorProps {
   module: ModuleOutline;
