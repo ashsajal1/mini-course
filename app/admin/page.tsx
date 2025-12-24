@@ -1,11 +1,24 @@
-export const dynamic = "force-dynamic";
+ export const dynamic = "force-dynamic";
 
-import { getAnalyticsData } from "@/lib/analytics-service";
-import { Suspense } from "react";
-import AdminDashboard from "./admin-dashboard";
+ import { getAnalyticsData } from "@/lib/analytics-service";
+ import { Suspense } from "react";
+ import AdminDashboard from "./admin-dashboard";
+ import { currentUser } from "@clerk/nextjs/server";
+ import { redirect } from "next/navigation";
 
-export default async function AdminPage() {
-  const analyticsData = await getAnalyticsData();
+ export default async function AdminPage() {
+   const user = await currentUser();
+
+   if (!user) {
+     redirect("/sign-in");
+   }
+
+   // Check if user has admin role in metadata
+   if (user.publicMetadata?.role !== "admin") {
+     redirect("/"); // Redirect non-admins to home page
+   }
+
+   const analyticsData = await getAnalyticsData();
 
   return (
     <div className="min-h-screen w-full bg-base-100">
