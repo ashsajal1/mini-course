@@ -3,28 +3,16 @@
  import { getAnalyticsData } from "@/lib/analytics-service";
  import { Suspense } from "react";
  import AdminDashboard from "./admin-dashboard";
-import { currentUser, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
  export default async function AdminPage() {
-   const user = await currentUser();
+   const { has } = await auth();
 
-   if (!user) {
-     redirect("/sign-in");
-   }
+   const canAccessAdmin = has({ permission: 'org:admin' }) ||
+                          has({ role: 'admin' });
 
-   // Check if user is admin using Clerk organizations
-   const clerk = await clerkClient();
-   const memberships = await clerk.users.getOrganizationMembershipList({ userId: user.id });
-
-   // Check if user is admin in any organization
-   const isAdmin = memberships.data?.some(
-     membership => membership.role === 'admin' ||
-                   membership.permissions?.includes('org:admin') ||
-                   membership.permissions?.includes('org:sys_admin')
-   ) || false;
-
-   if (!isAdmin) {
+   if (!canAccessAdmin) {
      redirect("/"); // Redirect non-admins to home page
    }
 

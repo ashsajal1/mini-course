@@ -1,4 +1,4 @@
-import { currentUser, clerkClient } from "@clerk/nextjs/server";
+import { currentUser, auth } from "@clerk/nextjs/server";
 import prisma from "@/prisma/client";
 import { redirect } from "next/navigation";
 import Image from "next/image";
@@ -130,14 +130,10 @@ export default async function ProfilePage() {
      },
    });
 
-   // Check admin status using Clerk organizations
-   const clerk = await clerkClient();
-   const memberships = await clerk.users.getOrganizationMembershipList({ userId: user.id });
-   const isAdmin = memberships.data?.some(
-     membership => membership.role === 'admin' ||
-                   membership.permissions?.includes('org:admin') ||
-                   membership.permissions?.includes('org:sys_admin')
-   ) || false;
+   // Check admin status using Clerk auth
+   const { has } = await auth();
+   const isAdmin = has({ permission: 'org:admin' }) ||
+                   has({ role: 'admin' });
 
   return (
     <div className="min-h-screen bg-base-200 p-4 md:p-6">
