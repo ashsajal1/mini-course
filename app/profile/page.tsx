@@ -1,4 +1,4 @@
-import { currentUser } from "@clerk/nextjs/server";
+import { currentUser, clerkClient } from "@clerk/nextjs/server";
 import prisma from "@/prisma/client";
 import { redirect } from "next/navigation";
 import Image from "next/image";
@@ -112,23 +112,32 @@ export default async function ProfilePage() {
   const enrolledCourses = await getEnrolledCourses();
 
   // Fetch last 10 courses created by the user
-  const createdCourses = await prisma.course.findMany({
-    where: {
-      creator: user.id,
-      deleted_at: null,
-    },
-    orderBy: {
-      created_at: "desc",
-    },
-    take: 10,
-    include: {
-      _count: {
-        select: {
-          modules: true,
-        },
-      },
-    },
-  });
+   const createdCourses = await prisma.course.findMany({
+     where: {
+       creator: user.id,
+       deleted_at: null,
+     },
+     orderBy: {
+       created_at: "desc",
+     },
+     take: 10,
+     include: {
+       _count: {
+         select: {
+           modules: true,
+         },
+       },
+     },
+   });
+
+   // Check admin status using Clerk organizations
+   const clerk = await clerkClient();
+   const memberships = await clerk.users.getOrganizationMembershipList({ userId: user.id });
+   const isAdmin = memberships.data?.some(
+     membership => membership.role === 'admin' ||
+                   membership.permissions?.includes('org:admin') ||
+                   membership.permissions?.includes('org:sys_admin')
+   ) || false;
 
   return (
     <div className="min-h-screen bg-base-200 p-4 md:p-6">
@@ -158,7 +167,7 @@ export default async function ProfilePage() {
               </div>
             </div>
             <div className="w-full md:w-auto flex flex-col gap-2">
-              {user.privateMetadata?.role === "admin" && (
+              {isAdmin && (
                 <Link href="/admin" className="btn btn-secondary btn-sm">
                   Admin Dashboard
                 </Link>
