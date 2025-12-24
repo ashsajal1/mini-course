@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import prisma from "@/prisma/client";
 import { redirect } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { CourseProgressSection } from "../components/profile/course-progress-section";
 import { CreatedCoursesSection } from "../components/profile/created-courses-section";
 import { LogoutButton } from "../components/auth/logout-button";
@@ -156,7 +157,12 @@ export default async function ProfilePage() {
                 </div>
               </div>
             </div>
-            <div className="w-full md:w-auto">
+            <div className="w-full md:w-auto flex flex-col gap-2">
+              {user.publicMetadata?.role === "admin" && (
+                <Link href="/admin" className="btn btn-secondary btn-sm">
+                  Admin Dashboard
+                </Link>
+              )}
               <LogoutButton />
             </div>
           </div>
