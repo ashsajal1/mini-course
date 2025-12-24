@@ -158,7 +158,7 @@ export default async function ProfilePage() {
               </div>
             </div>
             <div className="w-full md:w-auto flex flex-col gap-2">
-              {user.publicMetadata?.role === "admin" && (
+              {user.privateMetadata?.role === "admin" && (
                 <Link href="/admin" className="btn btn-secondary btn-sm">
                   Admin Dashboard
                 </Link>

@@ -13,10 +13,10 @@
      redirect("/sign-in");
    }
 
-   // Check if user has admin role in metadata
-   if (user.publicMetadata?.role !== "admin") {
-     redirect("/"); // Redirect non-admins to home page
-   }
+    // Check if user has admin role in metadata
+    if (user.privateMetadata?.role !== "admin") {
+      redirect("/"); // Redirect non-admins to home page
+    }
 
    const analyticsData = await getAnalyticsData();
 
