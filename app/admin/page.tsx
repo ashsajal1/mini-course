@@ -1,22 +1,28 @@
- export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
- import { getAnalyticsData } from "@/lib/analytics-service";
- import { Suspense } from "react";
- import AdminDashboard from "./admin-dashboard";
+import { getAnalyticsData } from "@/lib/analytics-service";
+import { Suspense } from "react";
+import AdminDashboard from "./admin-dashboard";
+import prisma from "@/prisma/client";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
- export default async function AdminPage() {
-   const { has } = await auth();
+export default async function AdminPage() {
+  const { userId } = await auth();
 
-   const canAccessAdmin = has({ permission: 'org:admin' }) ||
-                          has({ role: 'admin' });
+  if (!userId) {
+    redirect("/");
+  }
 
-   if (!canAccessAdmin) {
-     redirect("/"); // Redirect non-admins to home page
-   }
+  const user = await prisma.user.findUnique({
+    where: { clerk_id: userId },
+  });
 
-   const analyticsData = await getAnalyticsData();
+  if (!user || user.role !== "ADMIN") {
+    redirect("/"); // Redirect non-admins to home page
+  }
+
+  const analyticsData = await getAnalyticsData();
 
   return (
     <div className="min-h-screen w-full bg-base-100">
