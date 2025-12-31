@@ -1,4 +1,4 @@
-import { currentUser, auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import prisma from "@/prisma/client";
 import { redirect } from "next/navigation";
 import Image from "next/image";
@@ -112,28 +112,26 @@ export default async function ProfilePage() {
   const enrolledCourses = await getEnrolledCourses();
 
   // Fetch last 10 courses created by the user
-   const createdCourses = await prisma.course.findMany({
-     where: {
-       creator: user.id,
-       deleted_at: null,
-     },
-     orderBy: {
-       created_at: "desc",
-     },
-     take: 10,
-     include: {
-       _count: {
-         select: {
-           modules: true,
-         },
-       },
-     },
-   });
+  const createdCourses = await prisma.course.findMany({
+    where: {
+      creator: user.id,
+      deleted_at: null,
+    },
+    orderBy: {
+      created_at: "desc",
+    },
+    take: 10,
+    include: {
+      _count: {
+        select: {
+          modules: true,
+        },
+      },
+    },
+  });
 
-   // Check admin status using Clerk auth
-   const { has } = await auth();
-   const isAdmin = has({ permission: 'org:admin' }) ||
-                   has({ role: 'admin' });
+  // Check admin status
+  const isAdmin = dbUser.role === "ADMIN";
 
   return (
     <div className="min-h-screen bg-base-200 p-4 md:p-6">
