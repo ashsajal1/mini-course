@@ -9,6 +9,7 @@ const isPublicRoute = createRouteMatcher([
   "/course",
   "/course/:id",
   "/course/learn(.*)",
+  "/api/webhooks(.*)",
 ]);
 
 const isProtectedRoute = createRouteMatcher([

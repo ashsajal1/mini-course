@@ -35,6 +35,7 @@
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
     "sonner": "^2.0.7",
+    "svix": "^1.84.1",
     "ws": "^8.18.3",
     "zod": "^4.1.12",
     "zustand": "^5.0.9"

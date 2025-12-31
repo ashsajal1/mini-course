@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import prisma from "@/prisma/client";
 import { redirect } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { CourseProgressSection } from "../components/profile/course-progress-section";
 import { CreatedCoursesSection } from "../components/profile/created-courses-section";
 import { LogoutButton } from "../components/auth/logout-button";
@@ -129,6 +130,9 @@ export default async function ProfilePage() {
     },
   });
 
+  // Check admin status
+  const isAdmin = dbUser.role === "ADMIN";
+
   return (
     <div className="min-h-screen bg-base-200 p-4 md:p-6">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -156,7 +160,12 @@ export default async function ProfilePage() {
                 </div>
               </div>
             </div>
-            <div className="w-full md:w-auto">
+            <div className="w-full md:w-auto flex flex-col gap-2">
+              {isAdmin && (
+                <Link href="/admin" className="btn btn-secondary btn-sm">
+                  Admin Dashboard
+                </Link>
+              )}
               <LogoutButton />
             </div>
           </div>

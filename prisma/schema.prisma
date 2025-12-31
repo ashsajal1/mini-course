@@ -147,6 +147,7 @@ enum UserLevel {
 model User {
   id       String    @id @default(cuid())
   clerk_id String    @unique
+  role     Role      @default(USER)
   level    UserLevel @default(BEGINNER)
   xp       Int       @default(0)
 
@@ -157,6 +158,11 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model Enrollment {
