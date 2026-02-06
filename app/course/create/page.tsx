@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, FileText, Link as LinkIcon } from "lucide-react";
+import { ArrowRight, FileText, Link as LinkIcon, Upload } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export default async function CreateCoursePage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-3 gap-6">
           {/* Manual Creation Card */}
           <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
             <div className="card-body">
@@ -76,6 +76,46 @@ export default async function CreateCoursePage() {
               <div className="card-actions justify-end">
                 <Link href="/course/create/url" className="btn btn-secondary">
                   Generate from URL
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* PDF Upload Card */}
+          <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow border-2 border-accent/20">
+            <div className="card-body">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 bg-accent/10 rounded-lg">
+                  <Upload className="h-6 w-6 text-accent" />
+                </div>
+                <h2 className="card-title text-xl">Upload PDF</h2>
+                <div className="badge badge-accent badge-sm">New</div>
+              </div>
+
+              <p className="text-base-content/70 mb-6">
+                Upload a PDF file and extract content to automatically generate
+                course structure and materials.
+              </p>
+
+              <div className="space-y-2 mb-6">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-success">✓</span>
+                  <span>PDF Text Extraction</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-success">✓</span>
+                  <span>Auto-Generated Modules</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-success">✓</span>
+                  <span>Smart Content Analysis</span>
+                </div>
+              </div>
+
+              <div className="card-actions justify-end">
+                <Link href="/course/create/pdf" className="btn btn-accent">
+                  Upload PDF
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>

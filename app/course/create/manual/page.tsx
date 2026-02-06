@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import CourseForm from "../course-form";
 import CourseOutlineEditor from "../course-outline-editor";
@@ -27,10 +27,44 @@ export default function ManualCourseCreationPage() {
 
 function ManualCourseCreationFlow() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [step, setStep] = useState<'course-form' | 'outline-edit' | 'course-generation'>('course-form');
   const [outline, setOutline] = useState<CourseOutline | null>(null);
   const [generationProgress, setGenerationProgress] = useState<CourseGenerationProgress | null>(null);
   const [generationError, setGenerationError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const pdfData = searchParams.get('data');
+    if (pdfData) {
+      try {
+        const parsedData = JSON.parse(decodeURIComponent(pdfData));
+        const pdfOutline: CourseOutline = {
+          title: parsedData.structure?.title || "Course from PDF",
+          description: `Course generated from PDF with ${parsedData.structure?.modules?.length || 0} modules`,
+          difficulty: "Intermediate",
+          estimatedDuration: parsedData.structure?.estimatedDuration || "2 hours",
+          language: "English",
+          modules: parsedData.structure?.modules?.map((module: any, index: number) => ({
+            id: `module-${index + 1}`,
+            title: module.title,
+            description: module.content?.slice(0, 3)?.join(' ') || "Module content",
+            slides: [
+              {
+                id: `slide-${index + 1}-1`,
+                title: "Introduction",
+                content: module.content?.slice(0, 2)?.join('\n') || "Content from PDF",
+                type: "content" as const,
+              }
+            ],
+          })) || [],
+        };
+        setOutline(pdfOutline);
+        setStep('outline-edit');
+      } catch (error) {
+        console.error('Error parsing PDF data:', error);
+      }
+    }
+  }, [searchParams]);
 
   const handleCourseFormSubmit = (data: CourseFormData) => {
     // Create initial outline based on course data
