@@ -63,7 +63,7 @@ function ManualCourseCreationFlow() {
       title: data.name,
       description: data.description,
       difficulty: data.difficulty as "Beginner" | "Intermediate" | "Advanced",
-      estimatedDuration: "2 hours",
+      estimatedDuration: data.estimatedDuration,
       language: data.lang,
       modules: [],
     };
