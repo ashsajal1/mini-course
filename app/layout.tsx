@@ -87,22 +87,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <ThemeProvider>
-          <Providers>
-            <body
-              className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ClerkProvider>
+          <ThemeProvider>
+            <Providers>
               <Navbar />
               <main className="mt-[80px] p-4 dark:bg-base-900 dark:text-base-content dark:border-base-800">
                 {children}
               </main>
               <Footer />
-            </body>
-          </Providers>
-        </ThemeProvider>
-      </html>
-    </ClerkProvider>
+            </Providers>
+          </ThemeProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
