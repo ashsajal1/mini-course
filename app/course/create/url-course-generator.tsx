@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { generateCourseOutline, CourseOutline, estimateCourseComplexity } from "@/lib/course-ai-service";
-import { ArrowRight, Loader2, AlertCircle, CheckCircle, ExternalLink } from "lucide-react";
+import { ArrowRight, Loader2, AlertCircle, CheckCircle, Link as LinkIcon } from "lucide-react";
 
 interface UrlCourseGeneratorProps {
   onOutlineGenerated: (outline: CourseOutline) => void;
@@ -71,126 +71,107 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
   return (
     <div className="space-y-6">
       {/* URL Input Section */}
-      <div className="card bg-gradient-to-br from-base-100 to-base-200 shadow-xl border border-base-300">
-        <div className="card-body">
-          <div className="text-center mb-6">
-            <h2 className="card-title text-3xl mb-2 justify-center">
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Generate Course from Document
-              </span>
-            </h2>
-            <p className="text-base-content/70">
-              Transform any online content into a structured, interactive course
-            </p>
-          </div>
-
+      <div className="card bg-base-100 border border-base-300 shadow-lg">
+        <div className="card-body p-6 sm:p-8">
+          {/* Input Field */}
           <div className="form-control">
-            <label className="label">
-              <span className="label-text font-semibold text-lg">Document URL</span>
-              <span className="label-text-alt text-base-content/60">
-                {url && isValidUrl(url) && (
-                  <span className="flex items-center gap-1 text-success">
-                    <CheckCircle className="h-4 w-4" />
-                    Valid URL
-                  </span>
-                )}
-              </span>
-            </label>
-            <div className="relative">
-              <div className="join w-full">
-                <div className="join-item flex items-center px-4 bg-base-200 border border-base-300 rounded-l-lg">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-base-content/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                  </svg>
-                </div>
-                <input
-                  type="url"
-                  placeholder="https://example.com/article-or-document"
-                  className={`input join-item flex-1 input-lg border-x-0 ${
-                    error ? "input-error focus:input-error" :
-                    url && isValidUrl(url) ? "input-success focus:input-success" : ""
-                  } transition-all duration-200`}
-                  value={url}
-                  onChange={(e) => handleUrlChange(e.target.value)}
-                  disabled={isGenerating}
-                />
-                <button
-                  className={`btn join-item btn-lg ${
-                    isGenerating ? "btn-disabled" :
-                    url && isValidUrl(url) ? "btn-primary hover:scale-105" : "btn-ghost"
-                  } transition-all duration-200`}
-                  onClick={handleGenerateOutline}
-                  disabled={isGenerating || !url.trim() || !isValidUrl(url)}
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      <span className="hidden sm:inline">Generating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="hidden sm:inline">Generate Outline</span>
-                      <ArrowRight className="h-5 w-5" />
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {/* URL Validation Indicators */}
+            <div
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all duration-200 bg-base-100 ${
+                error
+                  ? "border-error focus-within:border-error focus-within:shadow-error/10 focus-within:shadow-lg"
+                  : url && isValidUrl(url)
+                    ? "border-success focus-within:border-success focus-within:shadow-success/10 focus-within:shadow-lg"
+                    : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
+              }`}
+            >
+              <LinkIcon
+                className={`h-5 w-5 flex-shrink-0 ${
+                  error
+                    ? "text-error"
+                    : url && isValidUrl(url)
+                      ? "text-success"
+                      : "text-base-content/30"
+                } transition-colors`}
+              />
+              <input
+                type="url"
+                placeholder="Paste a URL to any document, article, or web page..."
+                className="flex-1 bg-transparent outline-none text-base placeholder:text-base-content/30"
+                value={url}
+                onChange={(e) => handleUrlChange(e.target.value)}
+                disabled={isGenerating}
+                onKeyDown={(e) => {
+                  if (
+                    e.key === "Enter" &&
+                    url.trim() &&
+                    isValidUrl(url) &&
+                    !isGenerating
+                  ) {
+                    handleGenerateOutline();
+                  }
+                }}
+              />
               {url && (
-                <div className="mt-2 flex items-center gap-2 text-sm">
-                  {isValidUrl(url) ? (
-                    <div className="flex items-center gap-1 text-success">
-                      <CheckCircle className="h-4 w-4" />
-                      <span>Valid URL format</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1 text-warning">
-                      <AlertCircle className="h-4 w-4" />
-                      <span>Invalid URL format</span>
-                    </div>
-                  )}
-                  {url && url.length > 0 && (
-                    <div className="text-base-content/50">
-                      {url.length} characters
-                    </div>
-                  )}
-                </div>
+                <button
+                  className="btn btn-ghost btn-xs btn-circle"
+                  onClick={() => {
+                    setUrl("");
+                    setError("");
+                  }}
+                  disabled={isGenerating}
+                >
+                  ✕
+                </button>
               )}
+              <button
+                className={`btn btn-sm rounded-lg gap-1 ${
+                  isGenerating
+                    ? "btn-disabled"
+                    : url && isValidUrl(url)
+                      ? "btn-primary"
+                      : "btn-ghost"
+                }`}
+                onClick={handleGenerateOutline}
+                disabled={isGenerating || !url.trim() || !isValidUrl(url)}
+              >
+                {isGenerating ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <ArrowRight className="h-4 w-4" />
+                )}
+              </button>
             </div>
 
+            {/* Validation hint */}
+            {url && !isValidUrl(url) && (
+              <p className="mt-2 text-xs text-warning flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                Enter a valid URL starting with http:// or https://
+              </p>
+            )}
+
             {error && (
-              <div className="alert alert-error mt-4 shadow-lg">
-                <AlertCircle className="h-5 w-5" />
-                <span className="font-medium">{error}</span>
+              <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-error/10 text-error text-sm">
+                <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                {error}
               </div>
             )}
           </div>
 
-          {/* Enhanced Supported Sites Info */}
-          <div className="mt-6 p-4 bg-base-200/50 rounded-lg border border-base-300">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 bg-primary rounded-full"></div>
-              <h3 className="font-medium">Supported Content Types</h3>
-            </div>
-            <div className="flex flex-wrap gap-2 mb-3">
-              {supportedSites.map((site) => (
-                <div key={site.domain} className="badge badge-outline gap-1 hover:badge-primary transition-colors cursor-default touch-manipulation">
-                  <ExternalLink className="h-3 w-3" />
-                  <span className="hidden sm:inline">{site.name}</span>
-                  <span className="sm:hidden">{site.name.split(' ')[0]}</span>
-                </div>
-              ))}
-              <div className="badge badge-ghost hover:badge-neutral transition-colors cursor-default touch-manipulation">
-                Any Website
-              </div>
-            </div>
-            <div className="flex items-start gap-2 text-sm text-base-content/70">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mt-0.5 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <p className="leading-relaxed">Accepts any website URL containing educational content, articles, documentation, or web pages with valuable information. AI will analyze and structure the content automatically.</p>
-            </div>
+          {/* Supported Sites */}
+          <div className="flex flex-wrap items-center gap-2 mt-4">
+            <span className="text-xs text-base-content/40">Works with</span>
+            {supportedSites.map((site) => (
+              <span
+                key={site.domain}
+                className="text-xs px-2 py-0.5 rounded-md bg-base-200 text-base-content/60"
+              >
+                {site.name}
+              </span>
+            ))}
+            <span className="text-xs px-2 py-0.5 rounded-md bg-base-200 text-base-content/60">
+              Any website
+            </span>
           </div>
         </div>
       </div>
