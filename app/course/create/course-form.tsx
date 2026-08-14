@@ -22,10 +22,12 @@ import {
 
 interface CourseFormProps {
   onSubmit?: (data: CourseFormData) => void;
+  defaultValues?: Partial<CourseFormData>;
 }
 
 export default function CourseForm({
   onSubmit,
+  defaultValues,
 }: CourseFormProps = { onSubmit: undefined }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,11 +53,14 @@ export default function CourseForm({
   } = useForm({
     resolver: zodResolver(courseFormSchema),
     defaultValues: {
+      name: "",
+      description: "",
       difficulty: "Beginner",
       lang: "en",
       estimatedDuration: 0,
       thumbnail_url: "",
       category_id: "",
+      ...defaultValues,
     },
   });
 

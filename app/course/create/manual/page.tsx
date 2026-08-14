@@ -55,10 +55,15 @@ function ManualCourseCreationFlow() {
   const [generationProgress, setGenerationProgress] =
     useState<CourseGenerationProgress | null>(null);
   const [generationError, setGenerationError] = useState<string | null>(null);
+  const [savedFormData, setSavedFormData] = useState<CourseFormData | null>(
+    null
+  );
 
   const stepIndex = STEPS.findIndex((s) => s.key === step);
 
   const handleCourseFormSubmit = (data: CourseFormData) => {
+    setSavedFormData(data);
+
     const hours = Math.floor(data.estimatedDuration / 60);
     const minutes = data.estimatedDuration % 60;
     const durationStr =
@@ -187,7 +192,10 @@ function ManualCourseCreationFlow() {
       {/* Step Content */}
       <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
         {step === "course-form" && (
-          <CourseForm onSubmit={handleCourseFormSubmit} />
+          <CourseForm
+            onSubmit={handleCourseFormSubmit}
+            defaultValues={savedFormData ?? undefined}
+          />
         )}
 
         {step === "outline-edit" && outline && (
