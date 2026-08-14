@@ -6,17 +6,32 @@ import { createCourse } from "./actions";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getCategories } from "@/lib/category-service";
-import { courseFormSchema, type CourseFormData } from "./course-validation"
+import { courseFormSchema, type CourseFormData } from "./course-validation";
+import {
+  Loader2,
+  ArrowRight,
+  AlertCircle,
+  Image,
+  Tag,
+  BarChart3,
+  Globe,
+  FileText,
+  BookOpen,
+} from "lucide-react";
 
 interface CourseFormProps {
   onSubmit?: (data: CourseFormData) => void;
 }
 
-export default function CourseForm({ onSubmit }: CourseFormProps = { onSubmit: undefined }) {
+export default function CourseForm({
+  onSubmit,
+}: CourseFormProps = { onSubmit: undefined }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
-  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [categories, setCategories] = useState<
+    Array<{ id: string; name: string }>
+  >([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -31,6 +46,7 @@ export default function CourseForm({ onSubmit }: CourseFormProps = { onSubmit: u
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm({
     resolver: zodResolver(courseFormSchema),
     defaultValues: {
@@ -41,9 +57,11 @@ export default function CourseForm({ onSubmit }: CourseFormProps = { onSubmit: u
     },
   });
 
+  const descriptionValue = watch("description");
+  const nameValue = watch("name");
+
   const onFormSubmit: SubmitHandler<CourseFormData> = async (data) => {
     if (onSubmit) {
-      // Custom onSubmit provided, use it instead of creating course
       onSubmit(data);
       return;
     }
@@ -74,238 +92,214 @@ export default function CourseForm({ onSubmit }: CourseFormProps = { onSubmit: u
   };
 
   return (
-    <div className="min-h-screen bg-base-200 p-6">
-      <div className="w-full max-w-4xl mx-auto card bg-base-100 shadow-xl">
-        <div className="card-body">
-          <h1 className="text-3xl font-bold mb-2">Create New Course</h1>
-          <p className="text-base-content/70 mb-6">
-            Fill in the details below to create a new course
-          </p>
+    <div className="card bg-base-100 border border-base-300 shadow-lg">
+      <div className="card-body p-6 sm:p-8">
+        {/* Server Error */}
+        {serverError && (
+          <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-error/10 text-error text-sm mb-2">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            {serverError}
+          </div>
+        )}
 
-          {serverError && (
-            <div className="alert alert-error mb-6">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="stroke-current shrink-0 h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span>{serverError}</span>
-            </div>
-          )}
-
-           <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Course Name */}
-              <div className="form-control md:col-span-2">
-                <label className="label" htmlFor="name">
-                  <span className="label-text font-semibold">Course Name</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  {...register("name")}
-                  className={`input input-bordered w-full ${
-                    errors.name ? "input-error" : ""
-                  }`}
-                  placeholder="Introduction to Next.js"
-                  disabled={isSubmitting}
-                />
-                {errors.name && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">
-                      {errors.name.message}
-                    </span>
-                  </label>
-                )}
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="form-control">
-              <label className="label" htmlFor="description">
-                <span className="label-text font-semibold">
-                  Course Description
-                </span>
-              </label>
-              <textarea
-                id="description"
-                {...register("description")}
-                className={`textarea textarea-bordered w-full ${
-                  errors.description ? "textarea-error" : ""
-                }`}
-                rows={4}
-                placeholder="Describe what students will learn in this course..."
-                disabled={isSubmitting}
-              ></textarea>
-              {errors.description && (
-                <label className="label">
-                  <span className="label-text-alt text-error">
-                    {errors.description.message}
-                  </span>
-                </label>
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+          {/* Course Name */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <BookOpen className="h-4 w-4 text-primary" />
+              Course Name
+            </label>
+            <input
+              type="text"
+              {...register("name")}
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 ${
+                errors.name
+                  ? "border-error focus-within:border-error focus-within:shadow-error/10 focus-within:shadow-lg"
+                  : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
+              }`}
+              placeholder="e.g., Introduction to Next.js"
+              disabled={isSubmitting}
+            />
+            <div className="flex justify-between items-center">
+              {errors.name ? (
+                <p className="text-xs text-error flex items-center gap-1">
+                  <AlertCircle className="h-3 w-3" />
+                  {errors.name.message}
+                </p>
+              ) : (
+                <span />
               )}
+              <span className="text-xs text-base-content/30">
+                {nameValue?.length || 0}/100
+              </span>
             </div>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Category */}
-              <div className="form-control">
-                <label className="label" htmlFor="category_id">
-                  <span className="label-text font-semibold">
-                    Category
-                  </span>
-                </label>
-                <select
-                  id="category_id"
-                  {...register("category_id")}
-                  className={`select select-bordered w-full ${
-                    errors.category_id ? "select-error" : ""
-                  }`}
-                  disabled={isSubmitting}
-                >
-                  <option value="">Select a category (optional)</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-                {errors.category_id && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">
-                      {errors.category_id.message}
-                    </span>
-                  </label>
-                )}
-              </div>
-
-              {/* Difficulty */}
-              <div className="form-control">
-                <label className="label" htmlFor="difficulty">
-                  <span className="label-text font-semibold">
-                    Difficulty Level
-                  </span>
-                </label>
-                <select
-                  id="difficulty"
-                  {...register("difficulty")}
-                  className={`select select-bordered w-full ${
-                    errors.difficulty ? "select-error" : ""
-                  }`}
-                  disabled={isSubmitting}
-                >
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                </select>
-                {errors.difficulty && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">
-                      {errors.difficulty.message}
-                    </span>
-                  </label>
-                )}
-              </div>
-
-              {/* Language */}
-              <div className="form-control">
-                <label className="label" htmlFor="lang">
-                  <span className="label-text font-semibold">
-                    Course Language
-                  </span>
-                </label>
-                <select
-                  id="lang"
-                  {...register("lang")}
-                  className={`select select-bordered w-full ${
-                    errors.lang ? "select-error" : ""
-                  }`}
-                  disabled={isSubmitting}
-                >
-                  <option value="en">English</option>
-                  <option value="es">Spanish</option>
-                  <option value="fr">French</option>
-                  <option value="de">German</option>
-                  <option value="it">Italian</option>
-                  <option value="pt">Portuguese</option>
-                  <option value="zh">Chinese</option>
-                  <option value="ja">Japanese</option>
-                  <option value="ko">Korean</option>
-                  <option value="ar">Arabic</option>
-                </select>
-                {errors.lang && (
-                  <label className="label">
-                    <span className="label-text-alt text-error">
-                      {errors.lang.message}
-                    </span>
-                  </label>
-                )}
-              </div>
-
-              {/* Thumbnail URL */}
-              <div className="form-control">
-                <label className="label" htmlFor="thumbnail_url">
-                  <span className="label-text font-semibold">
-                    Thumbnail URL
-                  </span>
-                </label>
-                <input
-                  type="url"
-                  id="thumbnail_url"
-                  {...register("thumbnail_url")}
-                  className={`input input-bordered w-full ${
-                    errors.thumbnail_url ? "input-error" : ""
-                  }`}
-                  placeholder="https://example.com/image.jpg"
-                  disabled={isSubmitting}
-                />
-                <label className="label">
-                  <span
-                    className={`label-text-alt ${
-                      errors.thumbnail_url ? "text-error" : "text-info"
-                    }`}
-                  >
-                    {errors.thumbnail_url
-                      ? errors.thumbnail_url.message
-                      : "Enter a valid image URL (JPG, PNG)"}
-                  </span>
-                </label>
-              </div>
+          {/* Description */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <FileText className="h-4 w-4 text-primary" />
+              Description
+            </label>
+            <textarea
+              {...register("description")}
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 resize-none ${
+                errors.description
+                  ? "border-error focus-within:border-error focus-within:shadow-error/10 focus-within:shadow-lg"
+                  : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
+              }`}
+              rows={4}
+              placeholder="Describe what students will learn in this course..."
+              disabled={isSubmitting}
+            />
+            <div className="flex justify-between items-center">
+              {errors.description ? (
+                <p className="text-xs text-error flex items-center gap-1">
+                  <AlertCircle className="h-3 w-3" />
+                  {errors.description.message}
+                </p>
+              ) : (
+                <span />
+              )}
+              <span className="text-xs text-base-content/30">
+                {descriptionValue?.length || 0}/1000
+              </span>
             </div>
+          </div>
 
-            <div className="flex justify-end gap-4">
-              <button
-                type="button"
-                onClick={() => router.back()}
-                className="btn btn-ghost"
+          {/* Selects Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Category */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium">
+                <Tag className="h-4 w-4 text-primary" />
+                Category
+              </label>
+              <select
+                {...register("category_id")}
+                className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 appearance-none cursor-pointer ${
+                  errors.category_id
+                    ? "border-error focus-within:border-error"
+                    : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
+                }`}
                 disabled={isSubmitting}
               >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary gap-2"
+                <option value="">Optional</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Difficulty */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium">
+                <BarChart3 className="h-4 w-4 text-primary" />
+                Difficulty
+              </label>
+              <select
+                {...register("difficulty")}
+                className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 appearance-none cursor-pointer ${
+                  errors.difficulty
+                    ? "border-error focus-within:border-error"
+                    : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
+                }`}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? (
-                  <>
-                    <span className="loading loading-spinner"></span>
-                    Creating...
-                  </>
-                ) : (
-                  "Create Course"
-                )}
-              </button>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
             </div>
-          </form>
-        </div>
+
+            {/* Language */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium">
+                <Globe className="h-4 w-4 text-primary" />
+                Language
+              </label>
+              <select
+                {...register("lang")}
+                className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 appearance-none cursor-pointer ${
+                  errors.lang
+                    ? "border-error focus-within:border-error"
+                    : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
+                }`}
+                disabled={isSubmitting}
+              >
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="pt">Portuguese</option>
+                <option value="zh">Chinese</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">Korean</option>
+                <option value="ar">Arabic</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Thumbnail URL */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Image className="h-4 w-4 text-primary" />
+              Thumbnail URL
+              <span className="text-xs font-normal text-base-content/40">
+                (optional)
+              </span>
+            </label>
+            <input
+              type="url"
+              {...register("thumbnail_url")}
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 ${
+                errors.thumbnail_url
+                  ? "border-error focus-within:border-error focus-within:shadow-error/10 focus-within:shadow-lg"
+                  : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
+              }`}
+              placeholder="https://example.com/image.jpg"
+              disabled={isSubmitting}
+            />
+            {errors.thumbnail_url && (
+              <p className="text-xs text-error flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                {errors.thumbnail_url.message}
+              </p>
+            )}
+          </div>
+
+          {/* Actions */}
+          <div className="flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="btn btn-ghost"
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn btn-primary gap-2"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  Continue
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
