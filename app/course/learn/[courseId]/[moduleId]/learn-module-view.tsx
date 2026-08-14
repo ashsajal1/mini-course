@@ -303,23 +303,7 @@ export default function LearnModuleView({
                 {currentIndex + 1} / {totalItems}
               </span>
 
-              {isOnLastItem && !isCompleted ? (
-                allItemsCompleted ? (
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-success gap-1.5"
-                    onClick={handleCompleteModule}
-                    disabled={isCompleting}
-                  >
-                    <Trophy className="h-4 w-4" />
-                    <span>{isCompleting ? "Completing..." : "Complete"}</span>
-                  </button>
-                ) : (
-                  <span className="text-xs text-base-content/40">
-                    Complete all items
-                  </span>
-                )
-              ) : isOnLastItem && isCompleted ? (
+              {isOnLastItem && isCompleted ? (
                 <button
                   type="button"
                   className="btn btn-sm btn-primary gap-1.5"
@@ -343,6 +327,20 @@ export default function LearnModuleView({
                     </>
                   )}
                 </button>
+              ) : allItemsCompleted && !isCompleted ? (
+                <button
+                  type="button"
+                  className="btn btn-sm btn-success gap-1.5"
+                  onClick={handleCompleteModule}
+                  disabled={isCompleting}
+                >
+                  <Trophy className="h-4 w-4" />
+                  <span>{isCompleting ? "Completing..." : "Complete"}</span>
+                </button>
+              ) : isOnLastItem && !isCompleted ? (
+                <span className="text-xs text-base-content/40">
+                  Complete all items
+                </span>
               ) : (
                 <button
                   type="button"
