@@ -2,6 +2,16 @@ import prisma from "@/prisma/client";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
+import {
+  CheckCircle,
+  FileText,
+  Clock,
+  ArrowRight,
+  RotateCcw,
+  Play,
+  Trophy,
+  BookOpen,
+} from "lucide-react";
 
 export async function generateMetadata({
   params,
@@ -15,9 +25,7 @@ export async function generateMetadata({
   });
 
   if (!course) {
-    return {
-      title: "Course Not Found",
-    };
+    return { title: "Course Not Found" };
   }
 
   return {
@@ -34,11 +42,10 @@ export default async function page({
   const { courseId } = await params;
   const { userId: clerkId } = await auth();
 
-  // Fetch course modules
   const courseModules = await prisma.module.findMany({
     where: {
       course_id: courseId,
-      deleted_at: null, // Only show non-deleted modules
+      deleted_at: null,
     },
     select: {
       id: true,
@@ -46,7 +53,6 @@ export default async function page({
       course_id: true,
       created_at: true,
       updated_at: true,
-      // Get the count of slides for each module
       _count: {
         select: { slides: true },
       },
@@ -56,11 +62,11 @@ export default async function page({
     },
   });
 
-  // Fetch user progress if authenticated
   const userProgress: Map<
     string,
     { isCompleted: boolean; completedAt: Date | null }
   > = new Map();
+
   if (clerkId) {
     const user = await prisma.user.findUnique({
       where: { clerk_id: clerkId },
@@ -85,269 +91,215 @@ export default async function page({
     }
   }
 
-  // Find the first incomplete module (next module to do)
   const nextModuleId = courseModules.find(
     (module) => !userProgress.get(module.id)?.isCompleted
   )?.id;
 
+  const completedCount = courseModules.filter(
+    (m) => userProgress.get(m.id)?.isCompleted
+  ).length;
+  const totalModules = courseModules.length;
+  const progressPercent =
+    totalModules > 0 ? Math.round((completedCount / totalModules) * 100) : 0;
+  const allCompleted = completedCount === totalModules && totalModules > 0;
+
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-2">Course Learning Path</h1>
-      <p className="text-base-content/70 mb-8">
-        Follow the timeline below to track your progress through the course
-      </p>
+    <div className="min-h-[calc(100vh-80px)]">
+      <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mb-4">
+            <BookOpen className="h-7 w-7 text-primary" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
+            Course Learning Path
+          </h1>
+          <p className="text-sm text-base-content/50 max-w-md mx-auto">
+            Follow the modules below to track your progress through the course.
+          </p>
+        </div>
 
-      {/* Timeline Container */}
-      <div className="relative">
-        {courseModules.map((module, index) => {
-          const progress = userProgress.get(module.id);
-          const isCompleted = progress?.isCompleted || false;
-          const isNextModule = module.id === nextModuleId;
-          const isLast = index === courseModules.length - 1;
+        {/* Progress Card */}
+        <div className="card bg-base-100 border border-base-300 shadow-sm mb-8">
+          <div className="card-body !p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div className="space-y-0.5">
+                <h3 className="text-sm font-semibold">Your Progress</h3>
+                <p className="text-xs text-base-content/40">
+                  {completedCount} of {totalModules} modules completed
+                </p>
+              </div>
+              <div className="text-right">
+                <span className="text-2xl font-bold text-primary">
+                  {progressPercent}
+                </span>
+                <span className="text-sm text-base-content/40">%</span>
+              </div>
+            </div>
+            <div className="w-full bg-base-200 rounded-full h-2.5 overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-700 ${
+                  allCompleted
+                    ? "bg-gradient-to-r from-success to-success/80"
+                    : "bg-gradient-to-r from-primary to-secondary"
+                }`}
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            {allCompleted && (
+              <div className="flex items-center gap-2 mt-3 text-sm text-success font-medium">
+                <Trophy className="h-4 w-4" />
+                All modules completed!
+              </div>
+            )}
+          </div>
+        </div>
 
-          return (
-            <div key={module.id} className="relative pb-12">
-              {/* Timeline Line */}
-              {!isLast && (
-                <div
-                  className={`absolute left-6 top-14 w-0.5 h-full -ml-px ${
-                    isCompleted ? "bg-success" : "bg-base-300"
-                  }`}
-                />
-              )}
+        {/* Timeline */}
+        <div className="relative">
+          {courseModules.map((module, index) => {
+            const progress = userProgress.get(module.id);
+            const isCompleted = progress?.isCompleted || false;
+            const isNextModule = module.id === nextModuleId;
+            const isLast = index === courseModules.length - 1;
 
-              {/* Timeline Item */}
-              <div className="relative flex items-start gap-6">
-                {/* Timeline Marker */}
-                <div className="flex flex-col items-center shrink-0">
+            return (
+              <div key={module.id} className="relative pb-6 last:pb-0">
+                {/* Timeline Line */}
+                {!isLast && (
                   <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg z-10 ${
-                      isCompleted
-                        ? "bg-success text-success-content"
-                        : isNextModule
-                        ? "bg-primary text-primary-content ring-4 ring-primary/30 animate-pulse"
-                        : "bg-base-300 text-base-content/50"
+                    className={`absolute left-5 top-11 w-0.5 h-[calc(100%-2.75rem)] ${
+                      isCompleted ? "bg-success/40" : "bg-base-200"
+                    }`}
+                  />
+                )}
+
+                {/* Timeline Item */}
+                <div className="relative flex items-start gap-4">
+                  {/* Marker */}
+                  <div className="flex-shrink-0 z-10">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                        isCompleted
+                          ? "bg-success text-success-content"
+                          : isNextModule
+                            ? "bg-primary text-primary-content ring-4 ring-primary/20"
+                            : "bg-base-200 text-base-content/40"
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <CheckCircle className="h-5 w-5" />
+                      ) : (
+                        <span>{index + 1}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Card */}
+                  <div
+                    className={`flex-1 card border shadow-sm hover:shadow-md transition-all ${
+                      isNextModule
+                        ? "border-primary/30 bg-primary/[0.02]"
+                        : isCompleted
+                          ? "border-success/20 bg-base-100"
+                          : "border-base-200 bg-base-100"
                     }`}
                   >
-                    {isCompleted ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    ) : (
-                      index + 1
-                    )}
-                  </div>
-                </div>
-
-                {/* Module Content Card */}
-                <div
-                  className={`flex-1 card bg-base-100 shadow-lg transition-all hover:shadow-xl ${
-                    isNextModule ? "ring-2 ring-primary" : ""
-                  }`}
-                >
-                  <div className="card-body">
-                    {/* Header with badges */}
-                    <div className="flex items-start justify-between gap-4">
-                      <h2 className="card-title text-xl flex-1">
-                        {module.title}
-                      </h2>
-                      <div className="flex flex-col gap-2">
-                        {isCompleted && (
-                          <div className="badge badge-success gap-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-3 w-3"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                            Completed
+                    <div className="card-body !p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h2 className="font-semibold text-sm leading-tight truncate">
+                              {module.title}
+                            </h2>
+                            {isCompleted && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-success/10 text-success text-[10px] font-semibold uppercase tracking-wider">
+                                <CheckCircle className="h-2.5 w-2.5" />
+                                Done
+                              </span>
+                            )}
+                            {isNextModule && !isCompleted && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold uppercase tracking-wider">
+                                <Play className="h-2.5 w-2.5" />
+                                Up Next
+                              </span>
+                            )}
                           </div>
-                        )}
-                        {isNextModule && !isCompleted && (
-                          <div className="badge badge-primary gap-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-3 w-3"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 10V3L4 14h7v7l9-11h-7z"
-                              />
-                            </svg>
-                            Up Next
+
+                          <div className="flex items-center gap-3 text-xs text-base-content/40">
+                            <span className="inline-flex items-center gap-1">
+                              <FileText className="h-3 w-3" />
+                              {module._count.slides} slide
+                              {module._count.slides !== 1 ? "s" : ""}
+                            </span>
+                            <span className="inline-flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {new Date(
+                                module.updated_at
+                              ).toLocaleDateString()}
+                            </span>
+                            {isCompleted && progress?.completedAt && (
+                              <span className="inline-flex items-center gap-1 text-success">
+                                <CheckCircle className="h-3 w-3" />
+                                {new Date(
+                                  progress.completedAt
+                                ).toLocaleDateString()}
+                              </span>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    </div>
+                        </div>
 
-                    {/* Module Info */}
-                    <div className="flex flex-wrap gap-4 mt-2 text-sm text-base-content/70">
-                      <div className="flex items-center gap-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
+                        {/* Action */}
+                        <Link
+                          href={`/course/learn/${courseId}/${module.id}`}
+                          className="flex-shrink-0"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          />
-                        </svg>
-                        <span>
-                          {module._count.slides}{" "}
-                          {module._count.slides === 1 ? "slide" : "slides"}
-                        </span>
+                          <button
+                            className={`btn btn-xs gap-1 ${
+                              isNextModule
+                                ? "btn-primary"
+                                : isCompleted
+                                  ? "btn-outline btn-success"
+                                  : "btn-ghost"
+                            }`}
+                          >
+                            {isCompleted ? (
+                              <>
+                                <RotateCcw className="h-3 w-3" />
+                                <span className="hidden sm:inline">Review</span>
+                              </>
+                            ) : isNextModule ? (
+                              <>
+                                <span>Continue</span>
+                                <ArrowRight className="h-3 w-3" />
+                              </>
+                            ) : (
+                              <>
+                                <span>Start</span>
+                                <ArrowRight className="h-3 w-3" />
+                              </>
+                            )}
+                          </button>
+                        </Link>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        <span>
-                          Updated{" "}
-                          {new Date(module.updated_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Completion Date */}
-                    {isCompleted && progress?.completedAt && (
-                      <div className="flex items-center gap-2 mt-2 text-sm text-success">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        <span>
-                          Completed on{" "}
-                          {new Date(progress.completedAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Action Button */}
-                    <div className="card-actions justify-end mt-4">
-                      <Link href={`/course/learn/${courseId}/${module.id}`}>
-                        <button
-                          className={`btn ${
-                            isNextModule
-                              ? "btn-primary gap-2"
-                              : isCompleted
-                              ? "btn-outline btn-success gap-2"
-                              : "btn-ghost gap-2"
-                          }`}
-                        >
-                          {isCompleted ? (
-                            <>
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                                />
-                              </svg>
-                              Review Module
-                            </>
-                          ) : isNextModule ? (
-                            <>
-                              Continue Learning
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                                />
-                              </svg>
-                            </>
-                          ) : (
-                            <>
-                              Start Module
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                                />
-                              </svg>
-                            </>
-                          )}
-                        </button>
-                      </Link>
                     </div>
                   </div>
                 </div>
               </div>
+            );
+          })}
+        </div>
+
+        {courseModules.length === 0 && (
+          <div className="card bg-base-100 border border-base-200 border-dashed">
+            <div className="card-body items-center text-center !py-12">
+              <BookOpen className="h-10 w-10 text-base-content/15 mb-2" />
+              <p className="text-sm text-base-content/40">
+                No modules in this course yet.
+              </p>
             </div>
-          );
-        })}
+          </div>
+        )}
       </div>
     </div>
   );
