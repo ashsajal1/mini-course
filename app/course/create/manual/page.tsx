@@ -59,11 +59,20 @@ function ManualCourseCreationFlow() {
   const stepIndex = STEPS.findIndex((s) => s.key === step);
 
   const handleCourseFormSubmit = (data: CourseFormData) => {
+    const hours = Math.floor(data.estimatedDuration / 60);
+    const minutes = data.estimatedDuration % 60;
+    const durationStr =
+      hours > 0
+        ? minutes > 0
+          ? `${hours}h ${minutes}m`
+          : `${hours}h`
+        : `${minutes}m`;
+
     const initialOutline: CourseOutline = {
       title: data.name,
       description: data.description,
       difficulty: data.difficulty as "Beginner" | "Intermediate" | "Advanced",
-      estimatedDuration: "2 hours",
+      estimatedDuration: durationStr,
       language: data.lang,
       modules: [],
     };
