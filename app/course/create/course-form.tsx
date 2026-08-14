@@ -17,7 +17,6 @@ import {
   Globe,
   FileText,
   BookOpen,
-  Clock,
 } from "lucide-react";
 
 interface CourseFormProps {
@@ -53,7 +52,6 @@ export default function CourseForm({
     defaultValues: {
       difficulty: "Beginner",
       lang: "en",
-      estimatedDuration: "",
       thumbnail_url: "",
       category_id: "",
     },
@@ -170,7 +168,7 @@ export default function CourseForm({
           </div>
 
           {/* Selects Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {/* Category */}
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-medium">
@@ -181,8 +179,8 @@ export default function CourseForm({
                 {...register("category_id")}
                 className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 appearance-none cursor-pointer ${
                   errors.category_id
-                    ? "border-error focus:border-error"
-                    : "border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+                    ? "border-error focus-within:border-error"
+                    : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
                 }`}
                 disabled={isSubmitting}
               >
@@ -205,8 +203,8 @@ export default function CourseForm({
                 {...register("difficulty")}
                 className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 appearance-none cursor-pointer ${
                   errors.difficulty
-                    ? "border-error focus:border-error"
-                    : "border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+                    ? "border-error focus-within:border-error"
+                    : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
                 }`}
                 disabled={isSubmitting}
               >
@@ -226,8 +224,8 @@ export default function CourseForm({
                 {...register("lang")}
                 className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 appearance-none cursor-pointer ${
                   errors.lang
-                    ? "border-error focus:border-error"
-                    : "border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+                    ? "border-error focus-within:border-error"
+                    : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
                 }`}
                 disabled={isSubmitting}
               >
@@ -242,31 +240,6 @@ export default function CourseForm({
                 <option value="ko">Korean</option>
                 <option value="ar">Arabic</option>
               </select>
-            </div>
-
-            {/* Duration */}
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-medium">
-                <Clock className="h-4 w-4 text-primary" />
-                Estimated Duration
-              </label>
-              <input
-                type="text"
-                {...register("estimatedDuration")}
-                className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 ${
-                  errors.estimatedDuration
-                    ? "border-error focus:border-error"
-                    : "border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
-                }`}
-                placeholder="e.g., 2 hours, 45 minutes"
-                disabled={isSubmitting}
-              />
-              {errors.estimatedDuration && (
-                <p className="text-xs text-error flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" />
-                  {errors.estimatedDuration.message}
-                </p>
-              )}
             </div>
           </div>
 

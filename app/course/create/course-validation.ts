@@ -22,14 +22,9 @@ export const courseFormSchema = z.object({
     .min(2, "Language code must be at least 2 characters")
     .max(10, "Language code must be less than 10 characters"),
 
-  estimatedDuration: z
-    .string()
-    .min(1, "Duration is required")
-    .max(50, "Duration must be less than 50 characters"),
+   category_id: z.string().default(""),
 
-  category_id: z.string().default(""),
-
-  thumbnail_url: z.string().default(""),
+   thumbnail_url: z.string().default(""),
 });
 
 export type CourseFormData = z.infer<typeof courseFormSchema>;
