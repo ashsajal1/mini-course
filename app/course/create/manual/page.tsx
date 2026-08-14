@@ -158,7 +158,7 @@ function ManualCourseCreationFlow() {
       {/* Back Button */}
       {step === "outline-edit" && (
         <button
-          className="btn btn-ghost btn-sm gap-1 -mb-4"
+          className="btn btn-ghost btn-sm gap-1 mb-4"
           onClick={() => setStep("course-form")}
         >
           <ArrowLeft className="h-4 w-4" />
