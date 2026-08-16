@@ -11,6 +11,7 @@ import {
   Play,
   Trophy,
   BookOpen,
+  ArrowLeft,
 } from "lucide-react";
 
 export async function generateMetadata({
@@ -106,6 +107,15 @@ export default async function page({
   return (
     <div className="min-h-[calc(100vh-80px)]">
       <div className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
+        {/* Back to Course */}
+        <Link
+          href={`/course/${courseId}`}
+          className="inline-flex items-center gap-1.5 text-sm text-base-content/50 hover:text-primary transition-colors mb-6"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Course
+        </Link>
+
         {/* Header */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mb-4">
