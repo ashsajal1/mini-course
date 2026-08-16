@@ -8,9 +8,12 @@ interface UrlCourseGeneratorProps {
   onOutlineGenerated: (outline: CourseOutline) => void;
 }
 
+type GeneratingStep = "fetching" | "generating" | null;
+
 export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGeneratorProps) {
   const [url, setUrl] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generatingStep, setGeneratingStep] = useState<GeneratingStep>(null);
   const [error, setError] = useState("");
   const [generatedOutline, setGeneratedOutline] = useState<CourseOutline | null>(null);
   const [estimates, setEstimates] = useState<{ totalSlides: number; totalQuestions: number; estimatedGenerationTime: string } | null>(null);
@@ -22,12 +25,20 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
     }
 
     setIsGenerating(true);
+    setGeneratingStep("fetching");
     setError("");
     setGeneratedOutline(null);
     setEstimates(null);
 
     try {
+      // Simulate progress: after a short delay, show "generating" step
+      const generatingTimer = setTimeout(() => {
+        setGeneratingStep("generating");
+      }, 2000);
+
       const result = await generateCourseOutline(url);
+
+      clearTimeout(generatingTimer);
 
       if (result.success && result.outline) {
         setGeneratedOutline(result.outline);
@@ -43,6 +54,7 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
       console.error("Outline generation error:", err);
     } finally {
       setIsGenerating(false);
+      setGeneratingStep(null);
     }
   };
 
@@ -141,6 +153,31 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
                 )}
               </button>
             </div>
+
+            {/* Generating Progress */}
+            {isGenerating && generatingStep && (
+              <div className="mt-4 space-y-2">
+                <div className="flex items-center gap-3 text-sm">
+                  <div className={`flex items-center gap-2 ${generatingStep === "fetching" ? "text-primary font-medium" : "text-success"}`}>
+                    {generatingStep === "fetching" ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <CheckCircle className="h-4 w-4" />
+                    )}
+                    <span>Fetching & parsing content</span>
+                  </div>
+                  <div className="w-4 h-0.5 bg-base-300 rounded" />
+                  <div className={`flex items-center gap-2 ${generatingStep === "generating" ? "text-primary font-medium" : "text-base-content/40"}`}>
+                    {generatingStep === "generating" ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <div className="h-4 w-4 rounded-full border-2 border-base-300" />
+                    )}
+                    <span>Generating outline</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Validation hint */}
             {url && !isValidUrl(url) && (

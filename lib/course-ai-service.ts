@@ -1,6 +1,10 @@
 "use server"
 
 import Groq from "groq-sdk";
+import {
+  extractContentFromUrl,
+  summarizeForOutline,
+} from "@/lib/url-content-extractor";
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -49,7 +53,9 @@ export interface CourseOutlineResponse {
 }
 
 /**
- * Generates a course outline from a document URL
+ * Generates a course outline from a document URL.
+ * Fetches the URL content ourselves, extracts clean text,
+ * then sends it to the AI model for outline generation.
  */
 export async function generateCourseOutline(url: string): Promise<CourseOutlineResponse> {
   "use server";
@@ -68,46 +74,80 @@ export async function generateCourseOutline(url: string): Promise<CourseOutlineR
   }
 
   try {
-    const systemPrompt = `Analyze the document URL and create a course outline.
+    // Step 1: Fetch and extract content from URL
+    let extractedContent;
+    try {
+      extractedContent = await extractContentFromUrl(url);
+    } catch (fetchError) {
+      console.error("Failed to fetch URL content:", fetchError);
+      return {
+        success: false,
+        error: `Failed to fetch content from URL: ${
+          fetchError instanceof Error ? fetchError.message : "Unknown error"
+        }. Please check the URL and try again.`,
+      };
+    }
+
+    if (!extractedContent.text || extractedContent.text.trim().length < 50) {
+      return {
+        success: false,
+        error:
+          "Could not extract meaningful content from the URL. The page may be empty, require authentication, or contain only images/videos.",
+      };
+    }
+
+    // Step 2: Handle large content by summarizing key sections
+    const contentForAI = summarizeForOutline(extractedContent.text);
+
+    // Step 3: Send extracted content to AI for outline generation
+    const systemPrompt = `Analyze the following document content and create a structured course outline.
 
 Requirements:
 - 3-6 modules with logical progression
-- Specific, measurable learning objectives
-- Realistic time estimates
+- Specific, measurable learning objectives per module
+- Realistic time estimates per module
 - Difficulty: Beginner/Intermediate/Advanced
 - Language matches document (default: English)
+- Use the document's actual topics, terminology, and structure
 
-Return ONLY valid JSON:
+Return ONLY valid JSON (no markdown, no code blocks):
 {
-  "title": "Course title",
-  "description": "2-3 sentence description",
+  "title": "Course title based on document content",
+  "description": "2-3 sentence description of what this course covers",
   "difficulty": "Beginner|Intermediate|Advanced",
-  "language": "Language code",
+  "language": "en",
+  "estimatedDuration": "X hours",
   "modules": [
     {
       "title": "Module title",
-      "description": "Module description",
-      "learningObjectives": ["Objective 1", "Objective 2"],
+      "description": "What this module covers",
+      "learningObjectives": ["Specific objective 1", "Specific objective 2"],
+      "estimatedDuration": "X min",
       "order": 1
     }
   ]
 }`;
 
-    const userPrompt = `Create a course outline from this document: ${url}`;
+    const userPrompt = `Document title: ${extractedContent.title}
+
+Document content:
+${contentForAI}
+
+Create a course outline based on this content. The course should teach the material covered in the document.`;
 
     const completion = await groq.chat.completions.create({
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      model: "compound-beta", // Use compound-beta for URL fetching
+      model: "llama-3.3-70b-versatile",
       temperature: 0.7,
-      max_tokens: 4096, // Reduced to prevent overly large outlines
+      max_tokens: 4096,
     });
 
-    const content = completion.choices[0]?.message?.content;
+    const aiContent = completion.choices[0]?.message?.content;
 
-    if (!content) {
+    if (!aiContent) {
       return {
         success: false,
         error: "No content generated from AI",
@@ -118,17 +158,17 @@ Return ONLY valid JSON:
     let outlineData: CourseOutline;
     try {
       // Remove any potential markdown code block wrappers
-      const cleanedContent = content
+      const cleanedContent = aiContent
         .replace(/^```(?:json)?\n?/gm, "")
         .replace(/```$/gm, "")
         .trim();
       outlineData = JSON.parse(cleanedContent);
     } catch (parseError) {
       console.error("Failed to parse outline JSON:", parseError);
-      console.error("Raw content:", content);
+      console.error("Raw content:", aiContent);
       return {
         success: false,
-        error: "Failed to parse generated outline",
+        error: "Failed to parse generated outline. Please try again.",
       };
     }
 
