@@ -97,7 +97,7 @@ export async function generateCourseOutline(url: string): Promise<CourseOutlineR
     }
 
     // Step 2: Handle large content by summarizing key sections
-    const contentForAI = summarizeForOutline(extractedContent.text);
+    const contentForAI = await summarizeForOutline(extractedContent.text);
 
     // Step 3: Send extracted content to AI for outline generation
     const systemPrompt = `Analyze the following document content and create a structured course outline.

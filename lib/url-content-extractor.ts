@@ -186,7 +186,7 @@ function cleanText(text: string): string {
 /**
  * Chunks large content into manageable pieces for AI processing
  */
-export function chunkContent(text: string, maxChunkSize: number = MAX_CONTENT_CHARS): string[] {
+export async function chunkContent(text: string, maxChunkSize: number = MAX_CONTENT_CHARS): Promise<string[]> {
   if (text.length <= maxChunkSize) {
     return [text];
   }
@@ -216,7 +216,7 @@ export function chunkContent(text: string, maxChunkSize: number = MAX_CONTENT_CH
 /**
  * Summarizes content if it's too large by taking key sections
  */
-export function summarizeForOutline(text: string, maxLength: number = MAX_CONTENT_CHARS): string {
+export async function summarizeForOutline(text: string, maxLength: number = MAX_CONTENT_CHARS): Promise<string> {
   if (text.length <= maxLength) {
     return text;
   }
