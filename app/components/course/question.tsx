@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "@/generated/prisma";
 import { Edit } from "lucide-react";
 import Link from "next/link";
 

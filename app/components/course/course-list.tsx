@@ -2,9 +2,8 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { Search, Filter, X } from "lucide-react";
-import { Course, Category } from "@prisma/client";
+import { Course, Category } from "@/generated/prisma";
 import CourseCard from "@/app/components/course/course-card";
-import { getCategories } from "@/lib/category-service";
 
 type CourseWithCount = Course & {
   _count: {
@@ -31,7 +30,8 @@ export default function CourseList({
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const categoriesData = await getCategories();
+        const res = await fetch("/api/categories");
+        const categoriesData = await res.json();
         setCategories(categoriesData);
       } catch (error) {
         console.error("Error fetching categories:", error);

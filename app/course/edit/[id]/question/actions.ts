@@ -1,6 +1,6 @@
 "use server";
 
-import { ContentType } from "@prisma/client";
+import { ContentType } from "@/generated/prisma";
 import prisma from "@/prisma/client";
 import { revalidatePath } from "next/cache";
 
