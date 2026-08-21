@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import CourseCard from "@/app/components/course/course-card";
+import Link from "next/link";
 import prisma from "@/prisma/client";
 
 type CourseWithModuleCount = {
@@ -31,11 +32,54 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen w-full bg-base-100">
-      <div className="container mx-auto py-12 px-4 sm:px-6 md:px-8">
-        <header className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-base-content">
-            Courses
+      {/* Product Introduction Hero */}
+      <section className="bg-primary text-primary-content">
+        <div className="container mx-auto py-16 px-4 sm:px-6 md:px-8 text-center">
+          <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold uppercase tracking-wider rounded-full bg-primary-content/10">
+            Mini Course Platform
+          </span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+            Learn Something New, One Mini Course at a Time
           </h1>
+          <p className="mx-auto max-w-2xl text-base sm:text-lg opacity-90">
+            A modern, interactive e-learning platform to browse, enroll in, and
+            complete bite-sized courses. Track your progress, practice with
+            hands-on content, and build real skills at your own pace.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <a href="#courses" className="btn btn-accent text-accent-content">
+              Explore Courses
+            </a>
+            <Link href="/about" className="btn btn-outline btn-accent">
+              Learn More
+            </Link>
+          </div>
+          <dl className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
+            <div className="p-4 rounded-lg bg-primary-content/5">
+              <dt className="text-2xl font-bold">{courses.length}</dt>
+              <dd className="text-xs opacity-80">Published Courses</dd>
+            </div>
+            <div className="p-4 rounded-lg bg-primary-content/5">
+              <dt className="text-2xl font-bold">Free</dt>
+              <dd className="text-xs opacity-80">To Get Started</dd>
+            </div>
+            <div className="p-4 rounded-lg bg-primary-content/5">
+              <dt className="text-2xl font-bold">Self-paced</dt>
+              <dd className="text-xs opacity-80">Learning</dd>
+            </div>
+            <div className="p-4 rounded-lg bg-primary-content/5">
+              <dt className="text-2xl font-bold">Anywhere</dt>
+              <dd className="text-xs opacity-80">Mobile Friendly</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <div className="container mx-auto py-12 px-4 sm:px-6 md:px-8" id="courses">
+        <header className="mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-base-content">
+            Courses
+          </h2>
           <p className="mt-1 text-sm text-base-content/70">
             Browse available courses
           </p>
