@@ -9,7 +9,7 @@ import {
   GripVertical,
   Pencil,
 } from "lucide-react";
-import type { Module } from "@prisma/client";
+import type { Module } from "@/generated/prisma";
 import {
   deleteModule,
   deleteSlide,

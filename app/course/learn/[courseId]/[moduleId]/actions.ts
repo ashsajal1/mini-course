@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/prisma/client";
-import { UserLevel } from "@prisma/client";
+import { UserLevel } from "@/generated/prisma";
 import { revalidatePath } from "next/cache";
 
 const XP_PER_MODULE = 10;

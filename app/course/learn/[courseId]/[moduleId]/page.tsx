@@ -1,6 +1,6 @@
 import prisma from "@/prisma/client";
-import { ContentType } from "@prisma/client";
-import type { Prisma } from "@prisma/client";
+import { ContentType } from "@/generated/prisma";
+import type { Prisma } from "@/generated/prisma";
 import type { Metadata } from "next";
 import LearnModuleView from "./learn-module-view";
 import { getUserModuleProgress } from "./actions";
