@@ -42,19 +42,19 @@ export default function CourseStatusToggle({
   };
 
   return (
-    <div className="card bg-base-100 shadow-xl">
+    <div className="card bg-card shadow-xl">
       <div className="card-body">
-        <h3 className="font-bold text-sm text-base-content/70 uppercase tracking-wide mb-3">
+        <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-wide mb-3">
           Course Visibility
         </h3>
 
-        <div className="flex items-center justify-between p-3 bg-base-200 rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
           <div className="flex items-center gap-2">
             <div
               className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                 isPublic
                   ? "bg-success/10 text-success"
-                  : "bg-base-content/10 text-base-content/50"
+                  : "bg-base-content/10 text-foreground/50"
               }`}
             >
               {isLoading ? (
@@ -69,7 +69,7 @@ export default function CourseStatusToggle({
               <span className="text-sm font-medium">
                 {isPublic ? "Public" : "Private"}
               </span>
-              <span className="text-xs text-base-content/60">
+              <span className="text-xs text-muted-foreground">
                 {isPublic ? "Visible to everyone" : "Only visible to you"}
               </span>
             </div>

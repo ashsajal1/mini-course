@@ -17,7 +17,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-base-100">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-card">
       <div className="max-w-2xl w-full text-center">
         {/* Error Icon */}
         <div className="mx-auto w-20 h-20 flex items-center justify-center rounded-full bg-error/10 text-error mb-6">
@@ -29,11 +29,11 @@ export default function Error({
           Something went wrong!
         </h1>
         
-        <p className="text-lg text-base-content/80 mb-8">
+        <p className="text-lg text-muted-foreground mb-8">
           We apologize for the inconvenience. An unexpected error has occurred.
         </p>
 
-        <div className="bg-base-200 dark:bg-base-300 rounded-lg p-4 mb-8 text-left">
+        <div className="bg-muted dark:bg-muted rounded-lg p-4 mb-8 text-left">
           <p className="font-mono text-sm text-error">
             {error.message || 'An unknown error occurred'}
           </p>
@@ -62,8 +62,8 @@ export default function Error({
         </div>
 
         {/* Contact Support */}
-        <div className="mt-12 pt-6 border-t border-base-300">
-          <p className="text-base-content/70 mb-4">
+        <div className="mt-12 pt-6 border-t border">
+          <p className="text-muted-foreground mb-4">
             If the problem persists, please contact our support team.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
@@ -73,7 +73,7 @@ export default function Error({
             >
               Contact Support
             </a>
-            <span className="text-base-content/30 hidden sm:inline">•</span>
+            <span className="text-foreground/30 hidden sm:inline">•</span>
             <a
               href="mailto:support@minicourse.com"
               className="link link-hover text-primary flex items-center gap-1"

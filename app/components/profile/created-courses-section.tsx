@@ -19,9 +19,9 @@ export function CreatedCoursesSection({ courses }: CreatedCoursesProps) {
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">My Created Courses</h2>
       {courses.length === 0 ? (
-        <div className="card bg-base-100 shadow-xl">
+        <div className="card bg-card shadow-xl">
           <div className="card-body text-center">
-            <p className="text-lg text-base-content/70">
+            <p className="text-lg text-muted-foreground">
               You haven&apos;t created any courses yet.
             </p>
             <div className="mt-4">
@@ -36,7 +36,7 @@ export function CreatedCoursesSection({ courses }: CreatedCoursesProps) {
           {courses.map((course) => (
             <div
               key={course.id}
-              className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow"
+              className="card bg-card shadow-xl hover:shadow-2xl transition-shadow"
             >
               <div className="card-body flex flex-col sm:flex-row gap-6 items-center text-center sm:text-left">
                 <div className="relative w-full sm:w-32 h-48 sm:h-20 shrink-0 rounded-lg overflow-hidden">
@@ -51,10 +51,10 @@ export function CreatedCoursesSection({ courses }: CreatedCoursesProps) {
                   <h3 className="card-title text-lg justify-center sm:justify-start">
                     {course.name}
                   </h3>
-                  <p className="text-sm text-base-content/60 mt-1">
+                  <p className="text-sm text-muted-foreground mt-1">
                     {course._count.modules} modules • {course.difficulty}
                   </p>
-                  <p className="text-xs text-base-content/50 mt-1">
+                  <p className="text-xs text-foreground/50 mt-1">
                     Created {new Date(course.created_at).toLocaleDateString()}
                   </p>
                 </div>

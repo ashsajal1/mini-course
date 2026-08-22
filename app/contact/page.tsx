@@ -52,7 +52,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="min-h-screen bg-card">
       {/* Hero Section */}
       <section className="py-16 bg-primary text-primary-content">
         <div className="container mx-auto px-4 text-center">
@@ -64,12 +64,12 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Content */}
-      <section className="py-16 bg-base-100">
+      <section className="py-16 bg-card">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-12">
             {/* Contact Form */}
             <div className="lg:w-2/3">
-              <div className="card bg-base-200 dark:bg-base-300 shadow-xl">
+              <div className="card bg-muted dark:bg-muted shadow-xl">
                 <div className="card-body">
                   <h2 className="card-title text-2xl mb-6">Send us a Message</h2>
                   
@@ -169,7 +169,7 @@ export default function ContactPage() {
             <div className="lg:w-1/3 space-y-8">
               <div>
                 <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
-                <p className="text-base-content/80 mb-6">
+                <p className="text-muted-foreground mb-6">
                   Have questions or need assistance? Reach out to us through any of the following channels.
                 </p>
               </div>
@@ -181,8 +181,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-medium">Email Us</h3>
-                    <p className="text-base-content/70">support@minicourse.com</p>
-                    <p className="text-base-content/70">info@minicourse.com</p>
+                    <p className="text-muted-foreground">support@minicourse.com</p>
+                    <p className="text-muted-foreground">info@minicourse.com</p>
                   </div>
                 </div>
                 
@@ -192,8 +192,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-medium">Call Us</h3>
-                    <p className="text-base-content/70">+1 (555) 123-4567</p>
-                    <p className="text-base-content/70">Mon - Fri, 9:00 AM - 6:00 PM EST</p>
+                    <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                    <p className="text-muted-foreground">Mon - Fri, 9:00 AM - 6:00 PM EST</p>
                   </div>
                 </div>
                 
@@ -203,7 +203,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="font-medium">Visit Us</h3>
-                    <p className="text-base-content/70">
+                    <p className="text-muted-foreground">
                       123 Learning Street<br />
                       San Francisco, CA 94107<br />
                       United States
@@ -225,7 +225,7 @@ export default function ContactPage() {
                     <a
                       key={social.name}
                       href={`#${social.name.toLowerCase()}`}
-                      className="w-10 h-10 rounded-full bg-base-200 dark:bg-base-300 flex items-center justify-center text-lg hover:bg-primary/10 hover:text-primary transition-colors"
+                      className="w-10 h-10 rounded-full bg-muted dark:bg-muted flex items-center justify-center text-lg hover:bg-primary/10 hover:text-primary transition-colors"
                       aria-label={social.name}
                     >
                       {social.icon}
@@ -239,11 +239,11 @@ export default function ContactPage() {
       </section>
       
       {/* Map Section */}
-      <section className="bg-base-200 dark:bg-base-300 py-16">
+      <section className="bg-muted dark:bg-muted py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-8 text-center">Find Us on the Map</h2>
-          <div className="aspect-video bg-base-300 rounded-lg overflow-hidden">
-            <div className="w-full h-full flex items-center justify-center text-base-content/30">
+          <div className="aspect-video bg-muted rounded-lg overflow-hidden">
+            <div className="w-full h-full flex items-center justify-center text-foreground/30">
               <div className="text-center">
                 <MapPin className="w-12 h-12 mx-auto mb-4" />
                 <p>Map Integration</p>

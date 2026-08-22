@@ -46,13 +46,13 @@ export default function AdminDashboard({ analyticsData }: AdminDashboardProps) {
         {statsCards.map((stat) => (
           <Card key={stat.title}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-base-content/70">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 {stat.title}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-base-content/60 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {stat.description}
               </p>
             </CardContent>

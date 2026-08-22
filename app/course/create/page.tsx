@@ -27,7 +27,7 @@ export default async function CreateCoursePage() {
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
               Create a New Course
             </h1>
-            <p className="text-lg text-base-content/60 max-w-xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto">
               Choose how you would like to build your course — from scratch or
               with AI assistance.
             </p>
@@ -37,7 +37,7 @@ export default async function CreateCoursePage() {
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {/* Manual Creation Card */}
             <Link href="/course/create/manual" className="group block">
-              <div className="card bg-base-100 border border-base-300 shadow-sm hover:shadow-xl hover:border-primary/40 transition-all duration-300 h-full">
+              <div className="card bg-card border border shadow-sm hover:shadow-xl hover:border-primary/40 transition-all duration-300 h-full">
                 <div className="card-body p-8">
                   <div className="flex items-center gap-4 mb-6">
                     <div className="p-4 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
@@ -45,13 +45,13 @@ export default async function CreateCoursePage() {
                     </div>
                     <div>
                       <h2 className="card-title text-xl">Manual Creation</h2>
-                      <p className="text-sm text-base-content/50">
+                      <p className="text-sm text-foreground/50">
                         Full control
                       </p>
                     </div>
                   </div>
 
-                  <p className="text-base-content/70 mb-8 leading-relaxed">
+                  <p className="text-muted-foreground mb-8 leading-relaxed">
                     Start from scratch and build every detail yourself — define
                     modules, write slides, and craft questions exactly how you
                     want them.
@@ -65,7 +65,7 @@ export default async function CreateCoursePage() {
                     ].map((item) => (
                       <li
                         key={item}
-                        className="flex items-center gap-2.5 text-sm text-base-content/70"
+                        className="flex items-center gap-2.5 text-sm text-muted-foreground"
                       >
                         <CheckCircle className="h-4 w-4 text-primary/70 flex-shrink-0" />
                         {item}
@@ -101,13 +101,13 @@ export default async function CreateCoursePage() {
                           AI
                         </span>
                       </div>
-                      <p className="text-sm text-base-content/50">
+                      <p className="text-sm text-foreground/50">
                         AI-powered
                       </p>
                     </div>
                   </div>
 
-                  <p className="text-base-content/70 mb-8 leading-relaxed">
+                  <p className="text-muted-foreground mb-8 leading-relaxed">
                     Paste a document URL and let AI generate a complete course
                     outline with modules, slides, and questions automatically.
                   </p>
@@ -120,7 +120,7 @@ export default async function CreateCoursePage() {
                     ].map((item) => (
                       <li
                         key={item}
-                        className="flex items-center gap-2.5 text-sm text-base-content/70"
+                        className="flex items-center gap-2.5 text-sm text-muted-foreground"
                       >
                         <CheckCircle className="h-4 w-4 text-secondary/70 flex-shrink-0" />
                         {item}
@@ -141,7 +141,7 @@ export default async function CreateCoursePage() {
 
           {/* Footer hint */}
           <div className="text-center mt-12">
-            <p className="text-sm text-base-content/40">
+            <p className="text-sm text-foreground/40">
               Not sure? Try the AI option for a quick start — you can always
               edit everything afterward.
             </p>

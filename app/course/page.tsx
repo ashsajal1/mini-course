@@ -17,13 +17,13 @@ export default async function CoursePage() {
   });
 
   return (
-    <div className="min-h-screen w-full bg-base-100">
+    <div className="min-h-screen w-full bg-card">
       <div className="container mx-auto py-12 px-4 sm:px-6 md:px-8">
         <header className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-base-content">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
             Courses
           </h1>
-          <p className="mt-1 text-sm text-base-content/70">
+          <p className="mt-1 text-sm text-muted-foreground">
             Browse available courses
           </p>
         </header>

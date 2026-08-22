@@ -56,7 +56,7 @@ export default function SlideAiAssistant({
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="btn btn-ghost btn-sm w-full justify-between border border-base-300 hover:bg-base-200"
+        className="btn btn-ghost btn-sm w-full justify-between border border hover:bg-muted"
       >
         <span className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
@@ -71,12 +71,12 @@ export default function SlideAiAssistant({
 
       {/* Expandable Panel */}
       {isExpanded && (
-        <div className="mt-2 space-y-4 rounded-lg border border-base-300 bg-base-200/50 p-4">
+        <div className="mt-2 space-y-4 rounded-lg border border bg-muted/50 p-4">
           {/* Prompt Input */}
           <div>
             <label className="mb-1.5 flex items-center justify-between text-sm">
               <span className="font-medium">Slide Topic</span>
-              <span className="text-xs text-base-content/50">Required</span>
+              <span className="text-xs text-foreground/50">Required</span>
             </label>
             <textarea
               value={prompt}
@@ -95,7 +95,7 @@ export default function SlideAiAssistant({
                 <FileText className="h-3.5 w-3.5" />
                 Documentation
               </span>
-              <span className="text-xs text-base-content/50">Optional</span>
+              <span className="text-xs text-foreground/50">Optional</span>
             </label>
             <textarea
               value={docs}

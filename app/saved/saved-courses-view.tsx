@@ -63,7 +63,7 @@ export default function SavedCoursesView() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="min-h-screen bg-card">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-3 mb-8">
           <div className="p-3 bg-primary/10 rounded-xl text-primary">
@@ -71,7 +71,7 @@ export default function SavedCoursesView() {
           </div>
           <div>
             <h1 className="text-3xl font-bold">Saved Courses</h1>
-            <p className="text-base-content/70">
+            <p className="text-muted-foreground">
               Your personal collection of courses
             </p>
           </div>
@@ -97,13 +97,13 @@ export default function SavedCoursesView() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-base-200/50 rounded-2xl border border-base-200">
+          <div className="text-center py-16 bg-muted/50 rounded-2xl border border">
             <div className="max-w-md mx-auto">
-              <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Bookmark className="w-8 h-8 text-base-content/30" />
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                <Bookmark className="w-8 h-8 text-foreground/30" />
               </div>
               <h2 className="text-xl font-bold mb-2">No saved courses yet</h2>
-              <p className="text-base-content/70 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Browse our catalog and save courses you want to watch later.
               </p>
               <Link href="/" className="btn btn-primary">

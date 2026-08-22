@@ -127,7 +127,7 @@ function ManualCourseCreationFlow() {
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
           Create Course Manually
         </h1>
-        <p className="text-base-content/60 max-w-lg mx-auto">
+        <p className="text-muted-foreground max-w-lg mx-auto">
           Define your course details, build the outline, then generate the full
           course.
         </p>
@@ -147,7 +147,7 @@ function ManualCourseCreationFlow() {
                     ? "bg-primary text-primary-content shadow-md shadow-primary/25"
                     : isCompleted
                       ? "bg-primary/15 text-primary"
-                      : "bg-base-200 text-base-content/40"
+                      : "bg-muted text-foreground/40"
                 }`}
               >
                 {isCompleted ? (
@@ -160,7 +160,7 @@ function ManualCourseCreationFlow() {
               {i < STEPS.length - 1 && (
                 <div
                   className={`w-6 sm:w-10 h-0.5 rounded-full transition-colors duration-300 ${
-                    i < stepIndex ? "bg-primary" : "bg-base-200"
+                    i < stepIndex ? "bg-primary" : "bg-muted"
                   }`}
                 />
               )}
@@ -228,7 +228,7 @@ function GenerationView({
   onRetry: () => void;
 }) {
   return (
-    <div className="card bg-base-100 border border-base-300 shadow-lg">
+    <div className="card bg-card border border shadow-lg">
       <div className="card-body items-center text-center py-12 space-y-8">
         {error ? (
           <>
@@ -239,7 +239,7 @@ function GenerationView({
               <h2 className="text-2xl font-bold text-error">
                 Generation Failed
               </h2>
-              <p className="text-base-content/60 max-w-md">{error}</p>
+              <p className="text-muted-foreground max-w-md">{error}</p>
             </div>
             <button className="btn btn-primary gap-2" onClick={onRetry}>
               <RotateCcw className="h-4 w-4" />
@@ -253,7 +253,7 @@ function GenerationView({
             </div>
             <div className="space-y-2">
               <h2 className="text-2xl font-bold">Creating Your Course</h2>
-              <p className="text-base-content/60">{progress.message}</p>
+              <p className="text-muted-foreground">{progress.message}</p>
             </div>
 
             {/* Progress Bar */}
@@ -262,7 +262,7 @@ function GenerationView({
                 <span>Progress</span>
                 <span>{progress.progress}%</span>
               </div>
-              <div className="w-full bg-base-200 rounded-full h-3 overflow-hidden">
+              <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-primary to-secondary h-3 rounded-full transition-all duration-700 ease-out"
                   style={{ width: `${progress.progress}%` }}
@@ -296,12 +296,12 @@ function GenerationView({
                   className={`p-3 rounded-xl border transition-all ${
                     stage.active
                       ? "border-primary bg-primary/5 shadow-sm"
-                      : "border-base-200 bg-base-50"
+                      : "border bg-base-50"
                   }`}
                 >
                   <div
                     className={`text-xs font-medium ${
-                      stage.active ? "text-primary" : "text-base-content/40"
+                      stage.active ? "text-primary" : "text-foreground/40"
                     }`}
                   >
                     {stage.label}
@@ -310,7 +310,7 @@ function GenerationView({
               ))}
             </div>
 
-            <p className="text-xs text-base-content/40">
+            <p className="text-xs text-foreground/40">
               This may take a minute depending on course complexity.
             </p>
           </>
@@ -323,7 +323,7 @@ function GenerationView({
               <h2 className="text-2xl font-bold">
                 Initializing Course Creation
               </h2>
-              <p className="text-base-content/60">
+              <p className="text-muted-foreground">
                 Preparing to build your course...
               </p>
             </div>

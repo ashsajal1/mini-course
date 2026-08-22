@@ -83,17 +83,17 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
   return (
     <div className="space-y-6">
       {/* URL Input Section */}
-      <div className="card bg-base-100 border border-base-300 shadow-lg">
+      <div className="card bg-card border border shadow-lg">
         <div className="card-body p-6 sm:p-8">
           {/* Input Field */}
           <div className="form-control">
             <div
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all duration-200 bg-base-100 ${
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all duration-200 bg-card ${
                 error
                   ? "border-error focus-within:border-error focus-within:shadow-error/10 focus-within:shadow-lg"
                   : url && isValidUrl(url)
                     ? "border-success focus-within:border-success focus-within:shadow-success/10 focus-within:shadow-lg"
-                    : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
+                    : "border focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
               }`}
             >
               <LinkIcon
@@ -102,13 +102,13 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
                     ? "text-error"
                     : url && isValidUrl(url)
                       ? "text-success"
-                      : "text-base-content/30"
+                      : "text-foreground/30"
                 } transition-colors`}
               />
               <input
                 type="url"
                 placeholder="Paste a URL to any document, article, or web page..."
-                className="flex-1 bg-transparent outline-none text-base placeholder:text-base-content/30"
+                className="flex-1 bg-transparent outline-none text-base placeholder:text-foreground/30"
                 value={url}
                 onChange={(e) => handleUrlChange(e.target.value)}
                 disabled={isGenerating}
@@ -166,12 +166,12 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
                     )}
                     <span>Fetching & parsing content</span>
                   </div>
-                  <div className="w-4 h-0.5 bg-base-300 rounded" />
-                  <div className={`flex items-center gap-2 ${generatingStep === "generating" ? "text-primary font-medium" : "text-base-content/40"}`}>
+                  <div className="w-4 h-0.5 bg-muted rounded" />
+                  <div className={`flex items-center gap-2 ${generatingStep === "generating" ? "text-primary font-medium" : "text-foreground/40"}`}>
                     {generatingStep === "generating" ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      <div className="h-4 w-4 rounded-full border-2 border-base-300" />
+                      <div className="h-4 w-4 rounded-full border-2 border" />
                     )}
                     <span>Generating outline</span>
                   </div>
@@ -197,16 +197,16 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
 
           {/* Supported Sites */}
           <div className="flex flex-wrap items-center gap-2 mt-4">
-            <span className="text-xs text-base-content/40">Works with</span>
+            <span className="text-xs text-foreground/40">Works with</span>
             {supportedSites.map((site) => (
               <span
                 key={site.domain}
-                className="text-xs px-2 py-0.5 rounded-md bg-base-200 text-base-content/60"
+                className="text-xs px-2 py-0.5 rounded-md bg-muted text-muted-foreground"
               >
                 {site.name}
               </span>
             ))}
-            <span className="text-xs px-2 py-0.5 rounded-md bg-base-200 text-base-content/60">
+            <span className="text-xs px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
               Any website
             </span>
           </div>
@@ -223,21 +223,21 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
               </div>
               <div>
                 <h3 className="card-title text-2xl text-success">Course Outline Generated!</h3>
-                <p className="text-base-content/70">Review and customize your course structure below</p>
+                <p className="text-muted-foreground">Review and customize your course structure below</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
               <div className="lg:col-span-2">
-                <div className="p-4 bg-base-100 rounded-lg border border-base-300">
+                <div className="p-4 bg-card rounded-lg border border">
                   <h4 className="font-bold text-lg mb-2">{generatedOutline.title}</h4>
-                  <p className="text-sm text-base-content/80 leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {generatedOutline.description}
                   </p>
                 </div>
               </div>
 
-              <div className="stats stats-vertical shadow-lg bg-base-100">
+              <div className="stats stats-vertical shadow-lg bg-card">
                 <div className="stat">
                   <div className="stat-figure text-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -269,14 +269,14 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
             </div>
 
             <div className="divider divider-primary">
-              <span className="bg-base-100 px-3 py-1 rounded-full text-primary font-semibold">
+              <span className="bg-card px-3 py-1 rounded-full text-primary font-semibold">
                 Course Modules ({generatedOutline.modules.length})
               </span>
             </div>
 
             <div className="space-y-4">
               {generatedOutline.modules.map((module, index) => (
-                <div key={index} className="card card-compact bg-gradient-to-r from-base-100 to-base-200 border border-base-300 hover:shadow-md transition-all duration-200">
+                <div key={index} className="card card-compact bg-gradient-to-r from-base-100 to-base-200 border border hover:shadow-md transition-all duration-200">
                   <div className="card-body">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
@@ -288,23 +288,23 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
                             {module.title}
                           </h4>
                         </div>
-                        <p className="text-sm text-base-content/80 mt-2 leading-relaxed">
+                        <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
                           {module.description}
                         </p>
                         {module.learningObjectives.length > 0 && (
                           <div className="mt-3">
-                            <div className="text-xs font-medium text-base-content/60 mb-1">
+                            <div className="text-xs font-medium text-muted-foreground mb-1">
                               Learning Objectives:
                             </div>
                             <ul className="text-xs space-y-1">
                               {module.learningObjectives.slice(0, 3).map((objective, objIndex) => (
                                 <li key={objIndex} className="flex items-start gap-2">
                                   <div className="w-1.5 h-1.5 bg-primary rounded-full mt-1.5 flex-shrink-0"></div>
-                                  <span className="text-base-content/80">{objective}</span>
+                                  <span className="text-muted-foreground">{objective}</span>
                                 </li>
                               ))}
                               {module.learningObjectives.length > 3 && (
-                                <li className="text-base-content/60 ml-3.5">
+                                <li className="text-muted-foreground ml-3.5">
                                   +{module.learningObjectives.length - 3} more objectives
                                 </li>
                               )}
@@ -319,7 +319,7 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
                           </svg>
                           {module.estimatedDuration}
                         </div>
-                        <div className="text-xs text-base-content/50">
+                        <div className="text-xs text-foreground/50">
                           Module {module.order} of {generatedOutline.modules.length}
                         </div>
                       </div>
@@ -342,18 +342,18 @@ export default function UrlCourseGenerator({ onOutlineGenerated }: UrlCourseGene
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="text-center">
                     <div className="text-2xl font-bold text-primary mb-1">{estimates.estimatedGenerationTime}</div>
-                    <div className="text-sm text-base-content/70">Processing Time</div>
+                    <div className="text-sm text-muted-foreground">Processing Time</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-secondary mb-1">{estimates.totalSlides}</div>
-                    <div className="text-sm text-base-content/70">Slides</div>
+                    <div className="text-sm text-muted-foreground">Slides</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-accent mb-1">{estimates.totalQuestions}</div>
-                    <div className="text-sm text-base-content/70">Questions</div>
+                    <div className="text-sm text-muted-foreground">Questions</div>
                   </div>
                 </div>
-                <div className="mt-3 text-sm text-base-content/60 text-center">
+                <div className="mt-3 text-sm text-muted-foreground text-center">
                   These estimates are based on the generated outline and may vary during actual generation
                 </div>
               </div>

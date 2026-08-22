@@ -110,7 +110,7 @@ export default function SlideForm({
         <div className="form-control w-full">
           <label className="label">
             <span className="label-text font-semibold">Slide Title</span>
-            <span className="label-text-alt text-base-content/60">
+            <span className="label-text-alt text-muted-foreground">
               Required
             </span>
           </label>
@@ -129,7 +129,7 @@ export default function SlideForm({
         <div className="form-control w-full">
           <label className="label">
             <span className="label-text font-semibold">Slide Content</span>
-            <span className="label-text-alt text-base-content/60">
+            <span className="label-text-alt text-muted-foreground">
               Markdown supported
             </span>
           </label>
@@ -166,7 +166,7 @@ export default function SlideForm({
             <span className="label-text font-semibold">
               References & Resources
             </span>
-            <span className="label-text-alt text-base-content/60">
+            <span className="label-text-alt text-muted-foreground">
               Optional links or citations
             </span>
           </label>
@@ -176,7 +176,7 @@ export default function SlideForm({
               <div key={index} className="flex gap-2">
                 <div className="relative flex-1">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <LinkIcon className="h-4 w-4 text-base-content/40" />
+                    <LinkIcon className="h-4 w-4 text-foreground/40" />
                   </div>
                   <input
                     type="text"
@@ -261,11 +261,11 @@ export default function SlideForm({
                   <h4 className="font-semibold mb-2">Reference Changes:</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <div className="text-xs font-bold uppercase text-base-content/50 mb-1">
+                      <div className="text-xs font-bold uppercase text-foreground/50 mb-1">
                         Previous References
                       </div>
                       {initialReferences.length > 0 ? (
-                        <ul className="list-disc list-inside text-sm text-base-content/70">
+                        <ul className="list-disc list-inside text-sm text-muted-foreground">
                           {initialReferences.map((ref, i) => (
                             <li key={i} className="truncate" title={ref}>
                               {ref}
@@ -273,13 +273,13 @@ export default function SlideForm({
                           ))}
                         </ul>
                       ) : (
-                        <div className="text-sm text-base-content/50 italic">
+                        <div className="text-sm text-foreground/50 italic">
                           None
                         </div>
                       )}
                     </div>
                     <div>
-                      <div className="text-xs font-bold uppercase text-base-content/50 mb-1">
+                      <div className="text-xs font-bold uppercase text-foreground/50 mb-1">
                         New References
                       </div>
                       {references.length > 0 ? (
@@ -291,7 +291,7 @@ export default function SlideForm({
                           ))}
                         </ul>
                       ) : (
-                        <div className="text-sm text-base-content/50 italic">
+                        <div className="text-sm text-foreground/50 italic">
                           None
                         </div>
                       )}
@@ -300,7 +300,7 @@ export default function SlideForm({
                 </div>
               )}
 
-              <p className="mt-4 text-sm text-base-content/70">
+              <p className="mt-4 text-sm text-muted-foreground">
                 Are you sure you want to {submitButtonText.toLowerCase()}?
               </p>
             </div>

@@ -156,7 +156,7 @@ export default function QuestionForm({
 
         <div className="space-y-3">
           {options.map((option, index) => (
-            <div key={option.id} className="bg-base-200 p-3 rounded-lg">
+            <div key={option.id} className="bg-muted p-3 rounded-lg">
               <div className="flex gap-2 mb-2 items-center">
                 <input
                   type="checkbox"

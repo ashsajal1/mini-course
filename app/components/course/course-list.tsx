@@ -93,7 +93,7 @@ export default function CourseList({
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-base-content/70" />
+            <Search className="h-5 w-5 text-muted-foreground" />
           </div>
           <input
             type="text"
@@ -159,7 +159,7 @@ export default function CourseList({
 
       {/* Filter Panel */}
       {showFilters && (
-        <div className="bg-base-200 dark:bg-base-300 p-4 rounded-lg space-y-4">
+        <div className="bg-muted dark:bg-muted p-4 rounded-lg space-y-4">
           <div>
             <h3 className="font-medium mb-3">Category</h3>
             <div className="flex flex-wrap gap-2">
@@ -203,10 +203,10 @@ export default function CourseList({
       {/* Course Grid */}
       {filteredCourses.length === 0 ? (
         <div className="text-center py-12">
-          <h3 className="text-lg font-medium text-base-content mb-2">
+          <h3 className="text-lg font-medium text-foreground mb-2">
             No courses found
           </h3>
-          <p className="text-base-content/70 mb-4">
+          <p className="text-muted-foreground mb-4">
             {hasActiveFilters
               ? "Try adjusting your search or filter criteria"
               : "No courses available at the moment"}

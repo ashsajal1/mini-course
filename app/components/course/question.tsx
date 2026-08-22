@@ -32,7 +32,7 @@ export default function Question({
   if (!question) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="card bg-base-100 shadow-xl">
+        <div className="card bg-card shadow-xl">
           <div className="card-body">
             <h2 className="card-title text-2xl">Question not found</h2>
             <p>Sorry, we couldn&apos;t find the requested question.</p>
@@ -77,7 +77,7 @@ export default function Question({
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
-      <div className="card bg-base-100 shadow-xl border border-base-200">
+      <div className="card bg-card shadow-xl border border">
         <div className="card-body">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div className="flex-1">
@@ -109,7 +109,7 @@ export default function Question({
                 const showResult =
                   isSubmitted && (isSelected || isCorrectOption);
 
-                let optionStyle = "border-base-300 hover:border-primary";
+                let optionStyle = "border hover:border-primary";
 
                 if (showResult) {
                   if (isCorrectOption) {
@@ -239,8 +239,8 @@ export default function Question({
                         : "Incorrect. Please try again."}
                     </h3>
                     {question.options[0].explanation && (
-                      <div className="mt-3 text-base-content/90">
-                        <p className="font-medium text-base-content/80 mb-1">
+                      <div className="mt-3 text-foreground/90">
+                        <p className="font-medium text-muted-foreground mb-1">
                           Explanation:
                         </p>
                         <p>{question.options[0].explanation}</p>

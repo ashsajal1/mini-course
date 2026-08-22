@@ -38,7 +38,7 @@ export default function StarRating({
     <div className="flex items-center gap-1">
       {stars}
       {showValue && (
-        <span className="text-sm text-base-content/70 ml-1">
+        <span className="text-sm text-muted-foreground ml-1">
           {rating.toFixed(1)}
         </span>
       )}

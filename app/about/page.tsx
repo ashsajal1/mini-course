@@ -42,7 +42,7 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="min-h-screen bg-card">
       {/* Hero Section */}
       <section className="py-20 bg-primary text-primary-content">
         <div className="container mx-auto px-4 text-center">
@@ -63,12 +63,12 @@ export default function AboutPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-base-200 dark:bg-base-300">
+      <section className="py-16 bg-muted dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Why Choose Our Platform</h2>
             <div className="w-20 h-1 bg-primary mx-auto mb-6"></div>
-            <p className="text-lg text-base-content/80 max-w-3xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               We&apos;re committed to providing the best learning experience with cutting-edge technology
               and industry-leading instructors.
             </p>
@@ -76,13 +76,13 @@ export default function AboutPage() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+              <div key={index} className="card bg-card shadow-xl hover:shadow-2xl transition-shadow duration-300">
                 <div className="card-body items-center text-center">
                   <div className="p-4 rounded-full bg-primary/10 mb-4">
                     {feature.icon}
                   </div>
                   <h3 className="card-title text-xl mb-2">{feature.title}</h3>
-                  <p className="text-base-content/70">{feature.description}</p>
+                  <p className="text-muted-foreground">{feature.description}</p>
                 </div>
               </div>
             ))}
@@ -91,13 +91,13 @@ export default function AboutPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-base-100">
+      <section className="py-16 bg-card">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {stats.map((stat, index) => (
               <div key={index} className="p-6">
                 <div className="text-4xl font-bold text-primary mb-2">{stat.value}</div>
-                <div className="text-base-content/70">{stat.label}</div>
+                <div className="text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -105,12 +105,12 @@ export default function AboutPage() {
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-16 bg-base-200 dark:bg-base-300">
+      <section className="py-16 bg-muted dark:bg-muted">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center gap-12">
             <div className="lg:w-1/2">
               <h2 className="text-3xl font-bold mb-6">Why Learn With Us?</h2>
-              <p className="text-lg mb-8 text-base-content/80">
+              <p className="text-lg mb-8 text-muted-foreground">
                 Our platform is designed to help you achieve your learning goals with ease and efficiency.
                 Whether you&apos;re starting a new career or upgrading your skills, we&apos;ve got you covered.
               </p>
@@ -129,14 +129,14 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="lg:w-1/2">
-              <div className="bg-base-100 p-8 rounded-xl shadow-xl">
+              <div className="bg-card p-8 rounded-xl shadow-xl">
                 <h3 className="text-2xl font-bold mb-6">Our Mission</h3>
-                <p className="mb-6 text-base-content/80">
+                <p className="mb-6 text-muted-foreground">
                   To democratize education by making high-quality learning resources accessible to people
                   from all walks of life, regardless of their location or financial status.
                 </p>
                 <h3 className="text-2xl font-bold mb-6 mt-8">Our Vision</h3>
-                <p className="text-base-content/80">
+                <p className="text-muted-foreground">
                   We envision a world where anyone, anywhere can transform their life through accessible
                   education and skill development, creating opportunities for personal and professional growth.
                 </p>

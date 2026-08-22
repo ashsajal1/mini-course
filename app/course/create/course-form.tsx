@@ -99,7 +99,7 @@ export default function CourseForm({
   };
 
   return (
-    <div className="card bg-base-100 border border-base-300 shadow-lg">
+    <div className="card bg-card border border shadow-lg">
       <div className="card-body p-6 sm:p-8">
         {/* Server Error */}
         {serverError && (
@@ -119,10 +119,10 @@ export default function CourseForm({
             <input
               type="text"
               {...register("name")}
-              className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 ${
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-card outline-none transition-all duration-200 ${
                 errors.name
                   ? "border-error focus-within:border-error focus-within:shadow-error/10 focus-within:shadow-lg"
-                  : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
+                  : "border focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
               }`}
               placeholder="e.g., Introduction to Next.js"
               disabled={isSubmitting}
@@ -136,7 +136,7 @@ export default function CourseForm({
               ) : (
                 <span />
               )}
-              <span className="text-xs text-base-content/30">
+              <span className="text-xs text-foreground/30">
                 {nameValue?.length || 0}/100
               </span>
             </div>
@@ -150,10 +150,10 @@ export default function CourseForm({
             </label>
             <textarea
               {...register("description")}
-              className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 resize-none ${
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-card outline-none transition-all duration-200 resize-none ${
                 errors.description
                   ? "border-error focus-within:border-error focus-within:shadow-error/10 focus-within:shadow-lg"
-                  : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
+                  : "border focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
               }`}
               rows={4}
               placeholder="Describe what students will learn in this course..."
@@ -168,7 +168,7 @@ export default function CourseForm({
               ) : (
                 <span />
               )}
-              <span className="text-xs text-base-content/30">
+              <span className="text-xs text-foreground/30">
                 {descriptionValue?.length || 0}/1000
               </span>
             </div>
@@ -184,10 +184,10 @@ export default function CourseForm({
               </label>
               <select
                 {...register("category_id")}
-                className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 appearance-none cursor-pointer ${
+                className={`w-full px-4 py-3 rounded-xl border-2 bg-card outline-none transition-all duration-200 appearance-none cursor-pointer ${
                   errors.category_id
                     ? "border-error focus:border-error"
-                    : "border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+                    : "border focus:border-primary focus:shadow-md focus:shadow-primary/5"
                 }`}
                 disabled={isSubmitting}
               >
@@ -208,10 +208,10 @@ export default function CourseForm({
               </label>
               <select
                 {...register("difficulty")}
-                className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 appearance-none cursor-pointer ${
+                className={`w-full px-4 py-3 rounded-xl border-2 bg-card outline-none transition-all duration-200 appearance-none cursor-pointer ${
                   errors.difficulty
                     ? "border-error focus:border-error"
-                    : "border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+                    : "border focus:border-primary focus:shadow-md focus:shadow-primary/5"
                 }`}
                 disabled={isSubmitting}
               >
@@ -229,10 +229,10 @@ export default function CourseForm({
               </label>
               <select
                 {...register("lang")}
-                className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 appearance-none cursor-pointer ${
+                className={`w-full px-4 py-3 rounded-xl border-2 bg-card outline-none transition-all duration-200 appearance-none cursor-pointer ${
                   errors.lang
                     ? "border-error focus:border-error"
-                    : "border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+                    : "border focus:border-primary focus:shadow-md focus:shadow-primary/5"
                 }`}
                 disabled={isSubmitting}
               >
@@ -258,10 +258,10 @@ export default function CourseForm({
               <input
                 type="number"
                 {...register("estimatedDuration", { valueAsNumber: true })}
-                className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 ${
+                className={`w-full px-4 py-3 rounded-xl border-2 bg-card outline-none transition-all duration-200 ${
                   errors.estimatedDuration
                     ? "border-error focus:border-error"
-                    : "border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+                    : "border focus:border-primary focus:shadow-md focus:shadow-primary/5"
                 }`}
                 placeholder="e.g., 120"
                 min={1}
@@ -282,17 +282,17 @@ export default function CourseForm({
             <label className="flex items-center gap-2 text-sm font-medium">
               <Image className="h-4 w-4 text-primary" />
               Thumbnail URL
-              <span className="text-xs font-normal text-base-content/40">
+              <span className="text-xs font-normal text-foreground/40">
                 (optional)
               </span>
             </label>
             <input
               type="url"
               {...register("thumbnail_url")}
-              className={`w-full px-4 py-3 rounded-xl border-2 bg-base-100 outline-none transition-all duration-200 ${
+              className={`w-full px-4 py-3 rounded-xl border-2 bg-card outline-none transition-all duration-200 ${
                 errors.thumbnail_url
                   ? "border-error focus-within:border-error focus-within:shadow-error/10 focus-within:shadow-lg"
-                  : "border-base-300 focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
+                  : "border focus-within:border-primary focus-within:shadow-primary/10 focus-within:shadow-lg"
               }`}
               placeholder="https://example.com/image.jpg"
               disabled={isSubmitting}

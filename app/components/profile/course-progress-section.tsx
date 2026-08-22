@@ -18,9 +18,9 @@ export function CourseProgressSection({ courses }: CourseProgressProps) {
     <div className="space-y-4">
       <h2 className="text-2xl font-bold">My Learning</h2>
       {courses.length === 0 ? (
-        <div className="card bg-base-100 shadow-xl">
+        <div className="card bg-card shadow-xl">
           <div className="card-body text-center">
-            <p className="text-lg text-base-content/70">
+            <p className="text-lg text-muted-foreground">
               You haven&apos;t started any courses yet.
             </p>
             <div className="mt-4">
@@ -42,7 +42,7 @@ export function CourseProgressSection({ courses }: CourseProgressProps) {
               <Link
                 key={course.id}
                 href={`/course/${course.id}`}
-                className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow"
+                className="card bg-card shadow-xl hover:shadow-2xl transition-shadow"
               >
                 <div className="card-body flex flex-col sm:flex-row gap-6 items-center">
                   <div className="relative w-full sm:w-32 h-48 sm:h-20 shrink-0 rounded-lg overflow-hidden">
@@ -65,7 +65,7 @@ export function CourseProgressSection({ courses }: CourseProgressProps) {
                         {percentage}%
                       </span>
                     </div>
-                    <p className="text-sm text-base-content/60 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       {completedModules} / {totalModules} modules
                     </p>
                   </div>

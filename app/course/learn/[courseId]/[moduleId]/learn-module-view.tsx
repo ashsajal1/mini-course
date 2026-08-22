@@ -116,8 +116,8 @@ export default function LearnModuleView({
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
         <div className="text-center space-y-3">
-          <BookOpen className="h-12 w-12 text-base-content/20 mx-auto" />
-          <p className="text-base-content/50">This module has no content yet.</p>
+          <BookOpen className="h-12 w-12 text-foreground/20 mx-auto" />
+          <p className="text-foreground/50">This module has no content yet.</p>
         </div>
       </div>
     );
@@ -144,7 +144,7 @@ export default function LearnModuleView({
       {/* Sidebar */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 w-72 bg-base-100 border-r border-base-200
+          fixed inset-y-0 left-0 z-50 w-72 bg-card border-r border
           transform transition-transform duration-300 ease-out
           md:relative md:translate-x-0 md:flex-shrink-0
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
@@ -152,7 +152,7 @@ export default function LearnModuleView({
       >
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-base-200">
+          <div className="flex items-center justify-between px-4 py-3 border-b border">
             <h2 className="text-sm font-semibold flex items-center gap-2">
               <BookOpen className="h-4 w-4 text-primary" />
               Module Content
@@ -166,12 +166,12 @@ export default function LearnModuleView({
           </div>
 
           {/* Progress */}
-          <div className="px-4 py-3 border-b border-base-200">
-            <div className="flex items-center justify-between text-xs text-base-content/50 mb-1.5">
+          <div className="px-4 py-3 border-b border">
+            <div className="flex items-center justify-between text-xs text-foreground/50 mb-1.5">
               <span>{completedCount} of {totalItems} completed</span>
               <span>{progressPercent}%</span>
             </div>
-            <div className="w-full bg-base-200 rounded-full h-1.5 overflow-hidden">
+            <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
               <div
                 className="bg-primary h-full rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
@@ -198,7 +198,7 @@ export default function LearnModuleView({
                       className={`w-full text-left px-3 py-2.5 rounded-lg flex items-center gap-2.5 text-sm transition-all ${
                         isActive
                           ? "bg-primary/10 text-primary font-medium"
-                          : "text-base-content/70 hover:bg-base-200/50"
+                          : "text-muted-foreground hover:bg-muted/50"
                       }`}
                     >
                       <div
@@ -207,7 +207,7 @@ export default function LearnModuleView({
                             ? "bg-success/15 text-success"
                             : isActive
                               ? "bg-primary/15 text-primary"
-                              : "bg-base-200 text-base-content/40"
+                              : "bg-muted text-foreground/40"
                         }`}
                       >
                         {isDone ? (
@@ -219,13 +219,13 @@ export default function LearnModuleView({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
                           {isSlide ? (
-                            <FileText className="h-3 w-3 flex-shrink-0 text-base-content/30" />
+                            <FileText className="h-3 w-3 flex-shrink-0 text-foreground/30" />
                           ) : (
-                            <HelpCircle className="h-3 w-3 flex-shrink-0 text-base-content/30" />
+                            <HelpCircle className="h-3 w-3 flex-shrink-0 text-foreground/30" />
                           )}
                           <span className="truncate">{title}</span>
                         </div>
-                        <span className="text-[10px] text-base-content/30 uppercase tracking-wider">
+                        <span className="text-[10px] text-foreground/30 uppercase tracking-wider">
                           {isSlide ? "Slide" : "Question"}
                         </span>
                       </div>
@@ -238,7 +238,7 @@ export default function LearnModuleView({
 
           {/* Sidebar Footer */}
           {isCompleted && (
-            <div className="px-4 py-3 border-t border-base-200">
+            <div className="px-4 py-3 border-t border">
               <div className="flex items-center gap-2 text-sm text-success">
                 <CheckCircle className="h-4 w-4" />
                 <span className="font-medium">Module Completed</span>
@@ -267,7 +267,7 @@ export default function LearnModuleView({
 
         {/* Bottom Navigation */}
         {totalItems > 1 && (
-          <div className="border-t border-base-200 bg-base-100">
+          <div className="border-t border bg-card">
             {/* Progress dots */}
             <div className="flex items-center justify-center gap-1 pt-3">
               {moduleContent.map((_, index) => (
@@ -279,7 +279,7 @@ export default function LearnModuleView({
                       ? "w-6 h-1.5 bg-primary"
                       : completedItemIds.has(moduleContent[index].id)
                         ? "w-1.5 h-1.5 bg-success"
-                        : "w-1.5 h-1.5 bg-base-300 hover:bg-base-content/30"
+                        : "w-1.5 h-1.5 bg-muted hover:bg-base-content/30"
                   }`}
                 />
               ))}
@@ -299,7 +299,7 @@ export default function LearnModuleView({
                 <span className="hidden sm:inline">Previous</span>
               </button>
 
-              <span className="text-xs text-base-content/40 font-medium tabular-nums">
+              <span className="text-xs text-foreground/40 font-medium tabular-nums">
                 {currentIndex + 1} / {totalItems}
               </span>
 
@@ -338,7 +338,7 @@ export default function LearnModuleView({
                   <span>{isCompleting ? "Completing..." : "Complete"}</span>
                 </button>
               ) : isOnLastItem && !isCompleted ? (
-                <span className="text-xs text-base-content/40">
+                <span className="text-xs text-foreground/40">
                   Complete all items
                 </span>
               ) : (

@@ -30,7 +30,7 @@ export default function SaveCourseButton({
     <button
       onClick={toggleSave}
       className={`btn btn-ghost btn-sm btn-square ${className} ${
-        saved ? "text-primary" : "text-base-content/50 hover:text-primary"
+        saved ? "text-primary" : "text-foreground/50 hover:text-primary"
       }`}
       title={saved ? "Unsave course" : "Save course"}
     >
