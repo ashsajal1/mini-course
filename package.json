@@ -4,7 +4,10 @@
   "private": true,
   "pnpm": {
     "onlyBuiltDependencies": ["prisma", "@prisma/engines"],
-    "public-hoist-pattern": ["@prisma/*", "prisma"]
+    "public-hoist-pattern": ["@prisma/*", "prisma"],
+    "overrides": {
+      "@neondatabase/serverless": "0.10.2"
+    }
   },
   "scripts": {
     "postinstall": "prisma generate",
@@ -47,11 +50,6 @@
     "zod": "^4.1.12",
     "zustand": "^5.0.9"
   },
-  "pnpm": {
-    "overrides": {
-      "@neondatabase/serverless": "0.10.2"
-    }
-  },
   "devDependencies": {
     "@neondatabase/serverless": "0.10.2",
     "@tailwindcss/postcss": "^4",
@@ -65,7 +63,6 @@
     "@types/ws": "^8.18.1",
     "@vitest/coverage-v8": "^4.0.14",
     "@vitest/ui": "4.0.14",
-    "daisyui": "^5.3.10",
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
     "jsdom": "^27.2.0",
