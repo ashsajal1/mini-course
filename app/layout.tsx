@@ -95,7 +95,7 @@ export default function RootLayout({
           <ThemeProvider>
             <Providers>
               <Navbar />
-              <main className="mt-[80px] p-4 dark:bg-base-900 dark:text-base-content dark:border-base-800">
+              <main className="pt-16 min-h-[calc(100vh-4rem)] bg-background">
                 {children}
               </main>
               <Footer />

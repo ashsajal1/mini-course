@@ -1,12 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import { Mail, MapPin, Phone, Twitter, Linkedin, Facebook, Instagram, Youtube } from 'lucide-react';
+import { Mail, MapPin, Phone, Twitter, Linkedin, Facebook, Instagram, Youtube, BookOpen } from 'lucide-react';
+import { Button } from '@/app/components/ui/button';
+import { Separator } from 'radix-ui';
 
 interface FooterLink {
   name: string;
   href: string;
   icon?: React.ReactNode;
-  className?: string;
 }
 
 interface FooterSection {
@@ -16,12 +17,12 @@ interface FooterSection {
 
 const footerLinks: FooterSection[] = [
   {
-    title: 'Quick Links',
+    title: 'Product',
     links: [
-      { name: 'Home', href: '/' },
       { name: 'Courses', href: '/course' },
-      { name: 'About Us', href: '/about' },
+      { name: 'About', href: '/about' },
       { name: 'Contact', href: '/contact' },
+      { name: 'Create Course', href: '/course/create' },
     ],
   },
   {
@@ -30,85 +31,79 @@ const footerLinks: FooterSection[] = [
       { name: 'Blog', href: '/blog' },
       { name: 'FAQ', href: '/faq' },
       { name: 'Support', href: '/support' },
-      { name: 'Privacy Policy', href: '/privacy' },
+      { name: 'Privacy', href: '/privacy' },
     ],
   },
   {
-    title: 'Contact Us',
+    title: 'Contact',
     links: [
       { 
         name: 'support@minicourse.com', 
         href: 'mailto:support@minicourse.com',
-        icon: <Mail className="w-4 h-4 mr-2" />
+        icon: <Mail className="w-4 h-4" />
       },
       { 
         name: '+1 (555) 123-4567', 
         href: 'tel:+15551234567',
-        icon: <Phone className="w-4 h-4 mr-2" />
+        icon: <Phone className="w-4 h-4" />
       },
       { 
-        name: '123 Learning St, San Francisco, CA', 
+        name: 'San Francisco, CA', 
         href: 'https://maps.google.com',
-        icon: <MapPin className="w-4 h-4 mr-2 shrink-0" />,
-        className: 'flex items-start'
+        icon: <MapPin className="w-4 h-4" />,
       },
     ],
   },
 ];
 
-interface SocialLink {
-  name: string;
-  icon: React.ReactNode;
-  href: string;
-}
-
-const socialLinks: SocialLink[] = [
-  { name: 'Twitter', icon: <Twitter className="w-5 h-5" />, href: '#' },
-  { name: 'LinkedIn', icon: <Linkedin className="w-5 h-5" />, href: '#' },
-  { name: 'Facebook', icon: <Facebook className="w-5 h-5" />, href: '#' },
-  { name: 'Instagram', icon: <Instagram className="w-5 h-5" />, href: '#' },
-  { name: 'YouTube', icon: <Youtube className="w-5 h-5" />, href: '#' },
+const socialLinks = [
+  { name: 'Twitter', icon: <Twitter className="w-4 h-4" />, href: '#' },
+  { name: 'LinkedIn', icon: <Linkedin className="w-4 h-4" />, href: '#' },
+  { name: 'Facebook', icon: <Facebook className="w-4 h-4" />, href: '#' },
+  { name: 'Instagram', icon: <Instagram className="w-4 h-4" />, href: '#' },
+  { name: 'YouTube', icon: <Youtube className="w-4 h-4" />, href: '#' },
 ];
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-base-200 dark:bg-base-300 text-base-content">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          <div className="lg:col-span-1">
-            <Link href="/" className="text-2xl font-bold">
-              MiniCourse
+    <footer className="border-t bg-card text-card-foreground">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Top grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+          {/* Brand */}
+          <div className="lg:col-span-2">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <span className="text-xl font-bold tracking-tight">MiniCourse</span>
             </Link>
-            <p className="mt-4 text-base-content/70">
-              Empowering learners with quality education and practical skills for the modern world.
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground max-w-sm">
+              A modern, Radix-powered learning platform for bite-sized courses. Build skills at your own pace — mobile friendly, self-paced, and free to start.
             </p>
-            <div className="flex gap-4 mt-6">
+            <div className="flex gap-2 mt-6">
               {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  className="btn btn-ghost btn-sm p-2 hover:bg-base-300 dark:hover:bg-base-200 rounded-full"
-                  aria-label={social.name}
-                >
-                  {social.icon}
-                </a>
+                <Button key={social.name} asChild variant="ghost" size="icon" className="rounded-full border" aria-label={social.name}>
+                  <a href={social.href}>{social.icon}</a>
+                </Button>
               ))}
             </div>
           </div>
 
+          {/* Sections */}
           {footerLinks.map((section) => (
             <div key={section.title}>
-              <h3 className="text-lg font-semibold mb-4">{section.title}</h3>
-              <ul className="space-y-3">
+              <h3 className="text-sm font-semibold tracking-wider uppercase mb-4">{section.title}</h3>
+              <ul className="space-y-2.5">
                 {section.links.map((link) => (
                   <li key={link.name}>
                     <Link 
                       href={link.href}
-                      className={`flex items-center text-base-content/70 hover:text-primary transition-colors ${link.className || ''}`}
+                      className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      {link.icon && <span className="mr-2">{link.icon}</span>}
+                      {link.icon}
                       {link.name}
                     </Link>
                   </li>
@@ -118,23 +113,27 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-base-content/10 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-base-content/70 text-sm">
-              © {currentYear} MiniCourse. All rights reserved.
-            </p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <Link href="/terms" className="text-sm text-base-content/70 hover:text-primary">
-                Terms of Service
-              </Link>
-              <Link href="/privacy" className="text-sm text-base-content/70 hover:text-primary">
-                Privacy Policy
-              </Link>
-              <Link href="/cookies" className="text-sm text-base-content/70 hover:text-primary">
-                Cookie Policy
-              </Link>
-            </div>
-          </div>
+        <Separator.Root className="my-8 h-px bg-border" />
+
+        {/* Bottom bar */}
+        <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+          <p className="text-sm text-muted-foreground">
+            © {currentYear} MiniCourse. All rights reserved.
+          </p>
+          <nav className="flex flex-wrap gap-1">
+            <Button asChild variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground">
+              <Link href="/terms">Terms</Link>
+            </Button>
+            <Button asChild variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground">
+              <Link href="/privacy">Privacy</Link>
+            </Button>
+            <Button asChild variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground">
+              <Link href="/cookies">Cookies</Link>
+            </Button>
+            <Button asChild variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground">
+              <Link href="/about">About</Link>
+            </Button>
+          </nav>
         </div>
       </div>
     </footer>

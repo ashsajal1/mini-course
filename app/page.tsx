@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import CourseCard from "@/app/components/course/course-card";
 import Link from "next/link";
 import prisma from "@/prisma/client";
+import { Button } from "@/app/components/ui/button";
 
 type CourseWithModuleCount = {
   id: string;
@@ -31,7 +32,7 @@ export default async function Home() {
 `;
 
   return (
-    <div className="min-h-screen w-full bg-base-100">
+    <div className="min-h-screen w-full bg-background">
       {/* Product Introduction Hero */}
       <section className="bg-primary text-primary-content">
         <div className="container mx-auto py-16 px-4 sm:px-6 md:px-8 text-center">
@@ -47,12 +48,12 @@ export default async function Home() {
             hands-on content, and build real skills at your own pace.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <a href="#courses" className="btn btn-accent text-accent-content">
-              Explore Courses
-            </a>
-            <Link href="/about" className="btn btn-outline btn-accent">
-              Learn More
-            </Link>
+            <Button asChild variant="accent">
+              <a href="#courses">Explore Courses</a>
+            </Button>
+            <Button asChild variant="outline" className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground hover:text-primary">
+              <Link href="/about">Learn More</Link>
+            </Button>
           </div>
           <dl className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
             <div className="p-4 rounded-lg bg-primary-content/5">
@@ -77,20 +78,20 @@ export default async function Home() {
 
       <div className="container mx-auto py-12 px-4 sm:px-6 md:px-8" id="courses">
         <header className="mb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-base-content">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
             Courses
           </h2>
-          <p className="mt-1 text-sm text-base-content/70">
+          <p className="mt-1 text-sm text-muted-foreground">
             Browse available courses
           </p>
         </header>
 
         {courses.length === 0 ? (
           <div className="text-center py-12">
-            <h2 className="text-xl font-medium text-base-content/80">
+            <h2 className="text-xl font-medium text-muted-foreground">
               No courses found
             </h2>
-            <p className="mt-2 text-base-content/60">
+            <p className="mt-2 text-muted-foreground">
               Check back later for new courses!
             </p>
           </div>
