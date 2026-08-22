@@ -7,6 +7,9 @@ import { getAverageRating } from "@/lib/rating-service";
 import { useEffect, useState } from "react";
 import SaveCourseButton from "./save-course-button";
 import StarRating from "../ui/star-rating";
+import { Card, CardContent } from "../ui/card";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 
 type CourseCardProps = {
   id: string;
@@ -50,11 +53,11 @@ export default function CourseCard({
   }, [id]);
 
   return (
-    <article
+    <Card
       key={id}
-      className="card bg-base-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+      className="overflow-hidden shadow-sm hover:shadow-md transition-shadow"
     >
-      <figure className="relative h-40 w-full bg-base-200">
+      <figure className="relative h-40 w-full bg-muted">
         <Image
           src={thumbnail_url || "/next.svg"}
           alt={title}
@@ -64,45 +67,47 @@ export default function CourseCard({
           priority={false}
         />
       </figure>
-      <div className="card-body p-4">
+      <CardContent className="p-4 flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="card-title text-base text-base-content">{title}</h2>
+          <h2 className="text-base font-semibold leading-none tracking-tight">{title}</h2>
           <div className="flex items-center gap-2">
-            <div className="badge badge-outline">{difficulty}</div>
-            <div className="badge badge-info badge-sm">
-              <Globe className="h-3 w-3 mr-1" />
+            <Badge variant="outline">{difficulty}</Badge>
+            <Badge variant="info" size="sm" className="gap-1">
+              <Globe className="h-3 w-3" />
               {(lang || 'en').toUpperCase()}
-            </div>
+            </Badge>
           </div>
         </div>
-        <p className="text-sm text-base-content/80 line-clamp-2 mt-2">
+        <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
           {description}
         </p>
-        <div className="flex items-center justify-between mt-2">
-          <div className="flex items-center gap-2 text-sm text-base-content/70">
+        <div className="flex items-center justify-between mt-1">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Users className="h-4 w-4" />
             <span>{enrollmentCount} students</span>
           </div>
-          <div className="text-sm text-base-content/70">
+          <div className="text-sm text-muted-foreground">
             {moduleCount} modules
           </div>
         </div>
         {ratingData.count > 0 && (
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex items-center gap-2 mt-1">
             <StarRating rating={ratingData.average} size={14} showValue />
-            <span className="text-xs text-base-content/60">
+            <span className="text-xs text-muted-foreground">
               ({ratingData.count})
             </span>
           </div>
         )}
-        <div className="card-actions justify-end mt-4">
+        <div className="flex justify-end gap-2 mt-3">
           <SaveCourseButton courseId={id} />
-          <Link href={`course/${id}`} className="btn btn-primary btn-sm">
-            View Course
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+          <Button asChild size="sm" variant="primary">
+            <Link href={`course/${id}`}>
+              View Course
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
         </div>
-      </div>
-    </article>
+      </CardContent>
+    </Card>
   );
 }

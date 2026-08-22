@@ -20,6 +20,10 @@ import EnrollButton from "./enroll-btn";
 import { auth } from "@clerk/nextjs/server";
 import StarRating from "@/app/components/ui/star-rating";
 import CourseRating from "./course-rating";
+import { Button } from "@/app/components/ui/button";
+import { Badge } from "@/app/components/ui/badge";
+import { Card, CardContent } from "@/app/components/ui/card";
+import { Accordion } from "radix-ui";
 
 export async function generateMetadata({
   params,
@@ -88,13 +92,15 @@ export default async function CoursePage({
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
-        <Link href="/" className="btn btn-ghost gap-2">
-          <ArrowLeft className="h-4 w-4" />
-          Back to Courses
-        </Link>
+        <Button asChild variant="ghost">
+          <Link href="/">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Courses
+          </Link>
+        </Button>
       </div>
 
-      <div className="card bg-base-100 shadow-xl">
+      <Card className="shadow-xl overflow-hidden">
         {/* Course Header */}
         <figure className="relative h-64">
           <Image
@@ -109,72 +115,60 @@ export default async function CoursePage({
           <div className="absolute bottom-0 left-0 p-6 text-white">
             <h1 className="text-3xl font-bold mb-2">{course.name}</h1>
             <div className="flex items-center gap-4">
-              <div className="badge badge-accent gap-2">
+              <Badge variant="accent" className="gap-2">
                 <Award className="h-3 w-3" />
                 {course.difficulty}
-              </div>
-              <div className="badge badge-ghost gap-2">
+              </Badge>
+              <Badge variant="ghost" className="gap-2">
                 <Clock className="h-3 w-3" />
                 10 hours
-              </div>
+              </Badge>
             </div>
           </div>
         </figure>
 
-        <div className="card-body">
+        <CardContent className="pt-6">
           {/* Course Actions */}
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
-                <Users className="h-4 w-4 text-base-content/70" />
+                <Users className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
                   {enrollmentCount} students enrolled
                 </span>
               </div>
             </div>
-            <button className="btn btn-ghost gap-2">
+            <Button variant="ghost">
               <Bookmark className="h-4 w-4" />
               Save for later
-            </button>
+            </Button>
           </div>
 
           {/* Course Content */}
           <div className="prose max-w-none">
             <h2 className="text-2xl font-bold mb-4">About This Course</h2>
-            <p className="text-base-content/80">{course.description}</p>
+            <p className="text-muted-foreground">{course.description}</p>
 
             <h3 className="text-xl font-bold mt-8 mb-4">Course Modules</h3>
-            <div className="space-y-4">
-              {course.modules.map((courseModule, index) => (
-                <div
+            <Accordion.Root type="single" defaultValue={course.modules[0]?.id} collapsible className="space-y-2">
+              {course.modules.map((courseModule) => (
+                <Accordion.Item
                   key={courseModule.id}
-                  className="collapse collapse-arrow bg-base-200"
+                  value={courseModule.id}
+                  className="border bg-muted rounded-lg overflow-hidden"
                 >
-                  <input
-                    aria-label="module"
-                    type="radio"
-                    name="my-accordion-2"
-                    defaultChecked={index === 0}
-                  />
-                  <div className="collapse-title text-lg font-medium">
-                    {courseModule.title}
-                  </div>
-                  {/* <div className="collapse-content">
-                    <div
-                      className="prose-sm mt-2"
-                      dangerouslySetInnerHTML={{ __html: courseModule.content }}
-                    />
-                    {courseModule.has_quiz && (
-                      <div className="mt-4">
-                        <span className="badge badge-primary gap-2">
-                          Quiz Available
-                        </span>
-                      </div>
-                    )}
-                  </div> */}
-                </div>
+                  <Accordion.Header>
+                    <Accordion.Trigger className="flex w-full items-center justify-between p-4 text-lg font-medium hover:bg-accent transition-colors [&[data-state=open]>svg]:rotate-180">
+                      {courseModule.title}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
+                    </Accordion.Trigger>
+                  </Accordion.Header>
+                  <Accordion.Content className="px-4 pb-4 data-[state=open]:animate-in data-[state=closed]:animate-out">
+                    <div className="text-sm text-muted-foreground">Module content</div>
+                  </Accordion.Content>
+                </Accordion.Item>
               ))}
-            </div>
+            </Accordion.Root>
           </div>
 
           {ratingData.count > 0 && (
@@ -182,7 +176,7 @@ export default async function CoursePage({
               <h3 className="text-xl font-bold mb-4">Course Rating</h3>
               <div className="flex items-center gap-2">
                 <StarRating rating={ratingData.average} size={20} showValue />
-                <span className="text-base-content/70">
+                <span className="text-muted-foreground">
                   ({ratingData.count} review{ratingData.count !== 1 ? 's' : ''})
                 </span>
               </div>
@@ -191,53 +185,50 @@ export default async function CoursePage({
 
           {clerkId && <CourseRating courseId={id} />}
 
-          <div className="card-actions justify-end gap-2 mt-8">
+          <div className="flex justify-end gap-2 mt-8">
             {!clerkId ? (
-              // If user is not logged in, direct them to sign in
-              <Link href="/sign-in" className="btn btn-primary gap-2">
-                Sign In to Enroll
-                <ArrowRight className="h-4 w-4" />
-              </Link>
+              <Button asChild variant="primary">
+                <Link href="/sign-in">
+                  Sign In to Enroll
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
             ) : isEnrolled ? (
-              // If user is already enrolled, take them to the learning page
-              <Link
-                href={`/course/learn/${id}`}
-                className="btn btn-primary gap-2"
-              >
-                Continue Learning
-                <ArrowRight className="h-4 w-4" />
-              </Link>
+              <Button asChild variant="primary">
+                <Link href={`/course/learn/${id}`}>
+                  Continue Learning
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
             ) : (
-              // If user is logged in but not enrolled, show enroll button
               <EnrollButton courseId={id} />
             )}
 
             {clerkId === course.creator && (
-              <Link
-                href={`/course/edit/${id}`}
-                className="btn btn-outline gap-2"
-              >
-                Edit Course
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-4 w-4"
-                >
-                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                  <path d="m15 5 4 4" />
-                </svg>
-              </Link>
+              <Button asChild variant="outline">
+                <Link href={`/course/edit/${id}`}>
+                  Edit Course
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-4 w-4"
+                  >
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                    <path d="m15 5 4 4" />
+                  </svg>
+                </Link>
+              </Button>
             )}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
