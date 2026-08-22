@@ -20,9 +20,6 @@ import EnrollButton from "./enroll-btn";
 import { auth } from "@clerk/nextjs/server";
 import StarRating from "@/app/components/ui/star-rating";
 import CourseRating from "./course-rating";
-import { Button } from "@/app/components/ui/button";
-import { Badge } from "@/app/components/ui/badge";
-import { Card, CardContent } from "@/app/components/ui/card";
 import { Accordion } from "radix-ui";
 
 export async function generateMetadata({
@@ -92,15 +89,13 @@ export default async function CoursePage({
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
-        <Button asChild variant="ghost">
-          <Link href="/">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Courses
-          </Link>
-        </Button>
+        <Link href="/" className="btn btn-ghost gap-2">
+          <ArrowLeft className="h-4 w-4" />
+          Back to Courses
+        </Link>
       </div>
 
-      <Card className="shadow-xl overflow-hidden">
+      <div className="card shadow-xl overflow-hidden">
         {/* Course Header */}
         <figure className="relative h-64">
           <Image
@@ -115,19 +110,19 @@ export default async function CoursePage({
           <div className="absolute bottom-0 left-0 p-6 text-white">
             <h1 className="text-3xl font-bold mb-2">{course.name}</h1>
             <div className="flex items-center gap-4">
-              <Badge variant="accent" className="gap-2">
+              <span className="badge badge-accent gap-2">
                 <Award className="h-3 w-3" />
                 {course.difficulty}
-              </Badge>
-              <Badge variant="ghost" className="gap-2">
+              </span>
+              <span className="badge badge-ghost gap-2">
                 <Clock className="h-3 w-3" />
                 10 hours
-              </Badge>
+              </span>
             </div>
           </div>
         </figure>
 
-        <CardContent className="pt-6">
+        <div className="p-6">
           {/* Course Actions */}
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-2">
@@ -138,10 +133,10 @@ export default async function CoursePage({
                 </span>
               </div>
             </div>
-            <Button variant="ghost">
+            <button className="btn btn-ghost gap-2">
               <Bookmark className="h-4 w-4" />
               Save for later
-            </Button>
+            </button>
           </div>
 
           {/* Course Content */}
@@ -187,48 +182,48 @@ export default async function CoursePage({
 
           <div className="flex justify-end gap-2 mt-8">
             {!clerkId ? (
-              <Button asChild variant="primary">
-                <Link href="/sign-in">
-                  Sign In to Enroll
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
+              <Link href="/sign-in" className="btn btn-primary gap-2">
+                Sign In to Enroll
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             ) : isEnrolled ? (
-              <Button asChild variant="primary">
-                <Link href={`/course/learn/${id}`}>
-                  Continue Learning
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
+              <Link
+                href={`/course/learn/${id}`}
+                className="btn btn-primary gap-2"
+              >
+                Continue Learning
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             ) : (
               <EnrollButton courseId={id} />
             )}
 
             {clerkId === course.creator && (
-              <Button asChild variant="outline">
-                <Link href={`/course/edit/${id}`}>
-                  Edit Course
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4"
-                  >
-                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                    <path d="m15 5 4 4" />
-                  </svg>
-                </Link>
-              </Button>
+              <Link
+                href={`/course/edit/${id}`}
+                className="btn btn-outline gap-2"
+              >
+                Edit Course
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4"
+                >
+                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                  <path d="m15 5 4 4" />
+                </svg>
+              </Link>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

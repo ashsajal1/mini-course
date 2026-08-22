@@ -2,7 +2,6 @@ export const dynamic = "force-dynamic";
 import CourseCard from "@/app/components/course/course-card";
 import Link from "next/link";
 import prisma from "@/prisma/client";
-import { Button } from "@/app/components/ui/button";
 
 type CourseWithModuleCount = {
   id: string;
@@ -29,7 +28,7 @@ export default async function Home() {
   JOIN "Module" m ON m.course_id = c.id
   GROUP BY c.id, c.name, c.description, c.difficulty, c.lang, c.thumbnail_url, c.category_id
   HAVING COUNT(m.id) >= 2;
-`;
+  `;
 
   return (
     <div className="min-h-screen w-full bg-background">
@@ -48,12 +47,12 @@ export default async function Home() {
             hands-on content, and build real skills at your own pace.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Button asChild variant="accent">
-              <a href="#courses">Explore Courses</a>
-            </Button>
-            <Button asChild variant="outline" className="bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground hover:text-primary">
-              <Link href="/about">Learn More</Link>
-            </Button>
+            <a href="#courses" className="btn btn-accent">
+              Explore Courses
+            </a>
+            <Link href="/about" className="btn btn-outline bg-transparent text-primary-foreground border-primary-foreground hover:bg-primary-foreground hover:text-primary">
+              Learn More
+            </Link>
           </div>
           <dl className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
             <div className="p-4 rounded-lg bg-primary-content/5">

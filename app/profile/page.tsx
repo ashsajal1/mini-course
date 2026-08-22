@@ -9,9 +9,6 @@ import { LogoutButton } from "../components/auth/logout-button";
 import { getEnrolledCourses } from "@/lib/enrollment-service";
 import { SavedCoursesSection } from "../components/profile/saved-courses-section";
 import type { Metadata } from "next";
-import { Button } from "@/app/components/ui/button";
-import { Badge } from "@/app/components/ui/badge";
-import { Card, CardContent } from "@/app/components/ui/card";
 
 export const metadata: Metadata = {
   title: "My Profile",
@@ -140,8 +137,8 @@ export default async function ProfilePage() {
     <div className="min-h-screen bg-muted p-4 md:p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header Section */}
-        <Card className="shadow-xl">
-          <CardContent className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left p-6">
+        <div className="card shadow-xl">
+          <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left p-6">
             <div className="avatar">
               <div className="w-24 rounded-full ring ring-primary ring-offset-background ring-offset-2">
                 <Image
@@ -155,24 +152,24 @@ export default async function ProfilePage() {
             <div className="flex-1">
               <h1 className="text-3xl font-bold">{user.fullName}</h1>
               <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
-                <Badge variant="default" size="lg">
+                <span className="badge badge-primary badge-lg">
                   {dbUser.level}
-                </Badge>
-                <Badge variant="secondary" size="lg">
+                </span>
+                <span className="badge badge-secondary badge-lg">
                   {dbUser.xp} XP
-                </Badge>
+                </span>
               </div>
             </div>
             <div className="w-full md:w-auto flex flex-col gap-2">
               {isAdmin && (
-                <Button asChild variant="secondary" size="sm">
-                  <Link href="/admin">Admin Dashboard</Link>
-                </Button>
+                <Link href="/admin" className="btn btn-secondary btn-sm">
+                  Admin Dashboard
+                </Link>
               )}
               <LogoutButton />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -207,8 +204,8 @@ export default async function ProfilePage() {
         </div>
 
         {/* Enrolled Courses Section */}
-        <Card className="shadow-xl">
-          <CardContent className="p-6">
+        <div className="card shadow-xl">
+          <div className="p-6">
             <h2 className="text-2xl font-semibold mb-4">Enrolled Courses</h2>
             {enrolledCourses.length === 0 ? (
               <p className="text-muted-foreground">
@@ -217,36 +214,37 @@ export default async function ProfilePage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {enrolledCourses.map((course) => (
-                  <Card key={course.id} className="bg-muted">
-                    <CardContent className="p-4">
+                  <div key={course.id} className="card bg-muted">
+                    <div className="p-4">
                       <h3 className="text-lg font-semibold">{course.name}</h3>
                       <p className="text-sm text-muted-foreground line-clamp-2">
                         {course.description}
                       </p>
                       <div className="flex justify-end gap-2 mt-2">
-                        <Badge variant="outline">
+                        <span className="badge badge-outline">
                           {course.difficulty}
-                        </Badge>
+                        </span>
                         {course.is_completed ? (
-                          <Badge variant="success">Completed</Badge>
+                          <span className="badge badge-success">Completed</span>
                         ) : (
-                          <Badge variant="warning">In Progress</Badge>
+                          <span className="badge badge-warning">In Progress</span>
                         )}
                       </div>
                       <div className="flex justify-end mt-2">
-                        <Button asChild variant="primary" size="sm">
-                          <a href={`/course/learn/${course.id}`}>
-                            {course.is_completed ? "Review" : "Continue"}
-                          </a>
-                        </Button>
+                        <a
+                          href={`/course/learn/${course.id}`}
+                          className="btn btn-primary btn-sm"
+                        >
+                          {course.is_completed ? "Review" : "Continue"}
+                        </a>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Saved Courses Section */}
         <SavedCoursesSection />

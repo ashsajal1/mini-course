@@ -4,8 +4,6 @@ import { getUserRatingForCourse } from "@/lib/rating-service";
 import StarRating from "@/app/components/ui/star-rating";
 import { handleRating } from "./actions";
 import { Star } from "lucide-react";
-import { Button } from "@/app/components/ui/button";
-import { Card, CardContent } from "@/app/components/ui/card";
 
 type CourseRatingProps = {
   courseId: string;
@@ -54,8 +52,8 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
       <h3 className="text-xl font-bold mb-4">Rate This Course</h3>
 
       {userRating ? (
-        <Card className="bg-muted">
-          <CardContent className="p-4">
+        <div className="card bg-muted">
+          <div className="p-4">
             <h4 className="font-semibold mb-2">Your Rating</h4>
             <div className="flex items-center gap-2 mb-2">
               <StarRating rating={userRating.rating} size={16} />
@@ -66,29 +64,26 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
                 &quot;{userRating.review}&quot;
               </p>
             )}
-            <Button
+            <button
               onClick={() => setShowForm(true)}
-              variant="outline"
-              size="sm"
-              className="mt-2"
+              className="btn btn-outline btn-sm mt-2"
             >
               Update Rating
-            </Button>
-          </CardContent>
-        </Card>
+            </button>
+          </div>
+        </div>
       ) : (
-        <Button
+        <button
           onClick={() => setShowForm(true)}
-          variant="primary"
-          size="sm"
+          className="btn btn-primary btn-sm"
         >
           Rate This Course
-        </Button>
+        </button>
       )}
 
       {showForm && (
-        <Card className="bg-muted mt-4">
-          <CardContent className="p-4">
+        <div className="card bg-muted mt-4">
+          <div className="p-4">
           <h4 className="font-semibold mb-4">
             {userRating ? "Update Your Rating" : "Rate This Course"}
           </h4>
@@ -97,12 +92,10 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
             <label className="block text-sm font-medium mb-2">Rating</label>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
-                <Button
+                <button
                   key={star}
                   onClick={() => setNewRating(star)}
-                  variant="ghost"
-                  size="sm"
-                  className="p-1 h-auto"
+                  className="btn btn-ghost btn-sm p-1 h-auto"
                 >
                   <Star
                     size={24}
@@ -112,7 +105,7 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
                         : "text-gray-300"
                     }
                   />
-                </Button>
+                </button>
               ))}
             </div>
           </div>
@@ -131,28 +124,26 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
           </div>
 
           <div className="flex gap-2">
-            <Button
+            <button
               onClick={handleSubmitRating}
               disabled={isSubmitting || newRating === 0}
-              variant="primary"
-              size="sm"
+              className="btn btn-primary btn-sm"
             >
               {isSubmitting ? "Submitting..." : "Submit Rating"}
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={() => {
                 setShowForm(false);
                 setNewRating(0);
                 setReview("");
               }}
-              variant="ghost"
-              size="sm"
+              className="btn btn-ghost btn-sm"
             >
               Cancel
-            </Button>
+            </button>
           </div>
-        </CardContent>
-        </Card>
+        </div>
+        </div>
       )}
     </div>
   );

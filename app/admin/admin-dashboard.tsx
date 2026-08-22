@@ -1,7 +1,6 @@
 "use client";
 
 import { AnalyticsData } from "@/lib/analytics-service";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
@@ -44,30 +43,30 @@ export default function AdminDashboard({ analyticsData }: AdminDashboardProps) {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {statsCards.map((stat) => (
-          <Card key={stat.title}>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+          <div key={stat.title} className="card">
+            <div className="flex flex-col space-y-1.5 p-6 pb-2">
+              <h3 className="text-sm font-medium text-muted-foreground">
                 {stat.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <div className="p-6 pt-0">
               <div className="text-2xl font-bold">{stat.value}</div>
               <p className="text-xs text-muted-foreground mt-1">
                 {stat.description}
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Course Creation Trend</CardTitle>
-            <CardDescription>Monthly course creation over the last 12 months</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <div className="card">
+          <div className="flex flex-col space-y-1.5 p-6">
+            <h3 className="text-2xl font-semibold leading-none tracking-tight">Course Creation Trend</h3>
+            <p className="text-sm text-muted-foreground">Monthly course creation over the last 12 months</p>
+          </div>
+          <div className="p-6 pt-0">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={analyticsData.courseCreationTrend}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -77,15 +76,15 @@ export default function AdminDashboard({ analyticsData }: AdminDashboardProps) {
                 <Bar dataKey="count" fill="#8884d8" />
               </BarChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Enrollment Trend</CardTitle>
-            <CardDescription>Monthly enrollments over the last 12 months</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <div className="card">
+          <div className="flex flex-col space-y-1.5 p-6">
+            <h3 className="text-2xl font-semibold leading-none tracking-tight">Enrollment Trend</h3>
+            <p className="text-sm text-muted-foreground">Monthly enrollments over the last 12 months</p>
+          </div>
+          <div className="p-6 pt-0">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={analyticsData.enrollmentTrend}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -95,18 +94,18 @@ export default function AdminDashboard({ analyticsData }: AdminDashboardProps) {
                 <Line type="monotone" dataKey="count" stroke="#82ca9d" strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Category Distribution</CardTitle>
-            <CardDescription>Courses by category</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <div className="card">
+          <div className="flex flex-col space-y-1.5 p-6">
+            <h3 className="text-2xl font-semibold leading-none tracking-tight">Category Distribution</h3>
+            <p className="text-sm text-muted-foreground">Courses by category</p>
+          </div>
+          <div className="p-6 pt-0">
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -126,15 +125,15 @@ export default function AdminDashboard({ analyticsData }: AdminDashboardProps) {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>User Level Distribution</CardTitle>
-            <CardDescription>User skill levels across the platform</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <div className="card">
+          <div className="flex flex-col space-y-1.5 p-6">
+            <h3 className="text-2xl font-semibold leading-none tracking-tight">User Level Distribution</h3>
+            <p className="text-sm text-muted-foreground">User skill levels across the platform</p>
+          </div>
+          <div className="p-6 pt-0">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={analyticsData.userLevelDistribution}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -144,8 +143,8 @@ export default function AdminDashboard({ analyticsData }: AdminDashboardProps) {
                 <Bar dataKey="count" fill="#ffc658" />
               </BarChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

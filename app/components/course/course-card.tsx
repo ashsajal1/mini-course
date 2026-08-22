@@ -7,9 +7,6 @@ import { getAverageRating } from "@/lib/rating-service";
 import { useEffect, useState } from "react";
 import SaveCourseButton from "./save-course-button";
 import StarRating from "../ui/star-rating";
-import { Card, CardContent } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
 
 type CourseCardProps = {
   id: string;
@@ -53,9 +50,9 @@ export default function CourseCard({
   }, [id]);
 
   return (
-    <Card
+    <div
       key={id}
-      className="overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+      className="card overflow-hidden shadow-sm hover:shadow-md transition-shadow"
     >
       <figure className="relative h-40 w-full bg-muted">
         <Image
@@ -67,15 +64,15 @@ export default function CourseCard({
           priority={false}
         />
       </figure>
-      <CardContent className="p-4 flex flex-col gap-2">
+      <div className="p-4 flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2">
           <h2 className="text-base font-semibold leading-none tracking-tight">{title}</h2>
           <div className="flex items-center gap-2">
-            <Badge variant="outline">{difficulty}</Badge>
-            <Badge variant="info" size="sm" className="gap-1">
+            <span className="badge badge-outline">{difficulty}</span>
+            <span className="badge badge-info badge-sm gap-1">
               <Globe className="h-3 w-3" />
               {(lang || 'en').toUpperCase()}
-            </Badge>
+            </span>
           </div>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
@@ -100,14 +97,12 @@ export default function CourseCard({
         )}
         <div className="flex justify-end gap-2 mt-3">
           <SaveCourseButton courseId={id} />
-          <Button asChild size="sm" variant="primary">
-            <Link href={`course/${id}`}>
-              View Course
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <Link href={`course/${id}`} className="btn btn-primary btn-sm gap-2">
+            View Course
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

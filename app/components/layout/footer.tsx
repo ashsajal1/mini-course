@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { Mail, MapPin, Phone, Twitter, Linkedin, Facebook, Instagram, Youtube, BookOpen } from 'lucide-react';
-import { Button } from '@/app/components/ui/button';
 import { Separator } from 'radix-ui';
 
 interface FooterLink {
@@ -85,9 +84,9 @@ export default function Footer() {
             </p>
             <div className="flex gap-2 mt-6">
               {socialLinks.map((social) => (
-                <Button key={social.name} asChild variant="ghost" size="icon" className="rounded-full border" aria-label={social.name}>
-                  <a href={social.href}>{social.icon}</a>
-                </Button>
+                <a key={social.name} href={social.href} className="inline-flex items-center justify-center rounded-full border h-9 w-9 hover:bg-accent hover:text-accent-foreground" aria-label={social.name}>
+                  {social.icon}
+                </a>
               ))}
             </div>
           </div>
@@ -121,18 +120,18 @@ export default function Footer() {
             © {currentYear} MiniCourse. All rights reserved.
           </p>
           <nav className="flex flex-wrap gap-1">
-            <Button asChild variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground">
-              <Link href="/terms">Terms</Link>
-            </Button>
-            <Button asChild variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground">
-              <Link href="/privacy">Privacy</Link>
-            </Button>
-            <Button asChild variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground">
-              <Link href="/cookies">Cookies</Link>
-            </Button>
-            <Button asChild variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground">
-              <Link href="/about">About</Link>
-            </Button>
+            <Link href="/terms" className="inline-flex items-center justify-center rounded-md h-7 px-3 text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground">
+              Terms
+            </Link>
+            <Link href="/privacy" className="inline-flex items-center justify-center rounded-md h-7 px-3 text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground">
+              Privacy
+            </Link>
+            <Link href="/cookies" className="inline-flex items-center justify-center rounded-md h-7 px-3 text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground">
+              Cookies
+            </Link>
+            <Link href="/about" className="inline-flex items-center justify-center rounded-md h-7 px-3 text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground">
+              About
+            </Link>
           </nav>
         </div>
       </div>

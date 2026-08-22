@@ -4,7 +4,6 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { handleEnrollment } from "./actions";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { Button } from "@/app/components/ui/button";
 
 interface EnrollButtonProps {
   courseId: string;
@@ -28,10 +27,10 @@ export default function EnrollButton({ courseId }: EnrollButtonProps) {
   };
 
   return (
-    <Button
+    <button
       onClick={onEnroll}
       disabled={isPending}
-      variant="primary"
+      className="btn btn-primary gap-2"
     >
       {isPending ? (
         <>
@@ -44,6 +43,6 @@ export default function EnrollButton({ courseId }: EnrollButtonProps) {
           <ArrowRight className="h-4 w-4" />
         </>
       )}
-    </Button>
+    </button>
   );
 }
