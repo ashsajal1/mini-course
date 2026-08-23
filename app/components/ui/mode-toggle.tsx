@@ -34,7 +34,7 @@ export function ModeToggle() {
         <DropdownMenu.Content
           align="end"
           sideOffset={8}
-          className="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md"
+          className="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-card p-1 text-card-foreground shadow-md"
         >
           <DropdownMenu.Item
             onClick={() => setTheme("light")}

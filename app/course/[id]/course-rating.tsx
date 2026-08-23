@@ -117,7 +117,7 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
             <textarea
               value={review}
               onChange={(e) => setReview(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               rows={3}
               placeholder="Share your thoughts about this course..."
             />

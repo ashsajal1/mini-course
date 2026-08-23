@@ -1,88 +1,43 @@
 @import "tailwindcss";
 
 @theme {
-  --color-border: hsl(243 25% 90%);
-  --color-input: hsl(243 25% 90%);
-  --color-ring: hsl(243 75% 59%);
+  /* Core palette — indigo & teal learning theme */
   --color-background: hsl(248 60% 99%);
   --color-foreground: hsl(245 40% 15%);
+  --color-card: hsl(0 0% 100%);
   --color-primary: hsl(243 75% 59%);
   --color-primary-foreground: hsl(250 100% 98%);
   --color-secondary: hsl(250 100% 96%);
   --color-secondary-foreground: hsl(245 55% 35%);
-  --color-muted: hsl(248 40% 96%);
-  --color-muted-foreground: hsl(243 15% 45%);
   --color-accent: hsl(173 85% 28%);
   --color-accent-foreground: hsl(180 100% 97%);
-  --color-destructive: hsl(0 84% 48%);
+  --color-muted: hsl(248 40% 96%);
+  --color-muted-foreground: hsl(243 15% 45%);
   --color-success: hsl(152 70% 36%);
-  --color-success-foreground: hsl(150 100% 98%);
   --color-warning: hsl(38 95% 44%);
-  --color-warning-foreground: hsl(40 100% 98%);
   --color-info: hsl(203 90% 46%);
-  --color-info-foreground: hsl(200 100% 98%);
-  --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(245 40% 15%);
-  --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(245 40% 15%);
+  --color-border: hsl(243 25% 90%);
   --radius: 0.5rem;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Light mode — indigo & teal learning palette */
-:root {
-  --color-background: hsl(248 60% 99%);
-  --color-foreground: hsl(245 40% 15%);
-  --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(245 40% 15%);
-  --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(245 40% 15%);
-  --color-primary: hsl(243 75% 59%);
-  --color-primary-foreground: hsl(250 100% 98%);
-  --color-secondary: hsl(250 100% 96%);
-  --color-secondary-foreground: hsl(245 55% 35%);
-  --color-muted: hsl(248 40% 96%);
-  --color-muted-foreground: hsl(243 15% 45%);
-  --color-accent: hsl(173 85% 28%);
-  --color-accent-foreground: hsl(180 100% 97%);
-  --color-destructive: hsl(0 84% 48%);
-  --color-success: hsl(152 70% 36%);
-  --color-success-foreground: hsl(150 100% 98%);
-  --color-warning: hsl(38 95% 44%);
-  --color-warning-foreground: hsl(40 100% 98%);
-  --color-info: hsl(203 90% 46%);
-  --color-info-foreground: hsl(200 100% 98%);
-  --color-border: hsl(243 25% 90%);
-  --color-input: hsl(243 25% 90%);
-  --color-ring: hsl(243 75% 59%);
-}
-
-/* Dark mode — indigo night with glowing accents */
 .dark {
   --color-background: hsl(245 35% 8%);
   --color-foreground: hsl(250 40% 94%);
   --color-card: hsl(245 28% 11%);
-  --color-card-foreground: hsl(250 40% 94%);
-  --color-popover: hsl(245 28% 11%);
-  --color-popover-foreground: hsl(250 40% 94%);
   --color-primary: hsl(239 84% 67%);
   --color-primary-foreground: hsl(245 60% 12%);
   --color-secondary: hsl(246 22% 17%);
   --color-secondary-foreground: hsl(250 60% 92%);
-  --color-muted: hsl(246 20% 16%);
-  --color-muted-foreground: hsl(243 15% 68%);
   --color-accent: hsl(172 66% 52%);
   --color-accent-foreground: hsl(176 65% 10%);
-  --color-destructive: hsl(0 72% 56%);
+  --color-muted: hsl(246 20% 16%);
+  --color-muted-foreground: hsl(243 15% 68%);
   --color-success: hsl(152 60% 46%);
-  --color-success-foreground: hsl(155 80% 10%);
   --color-warning: hsl(40 95% 55%);
-  --color-warning-foreground: hsl(35 90% 12%);
   --color-info: hsl(202 85% 58%);
-  --color-info-foreground: hsl(210 90% 12%);
   --color-border: hsl(245 18% 22%);
-  --color-input: hsl(245 18% 22%);
 }
 
 * {
@@ -95,7 +50,6 @@ body {
 }
 
 /* Compatibility shim for daisyUI class names -> Tailwind + CSS variables */
-/* Keeps existing pages visually intact after removing daisyUI */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -144,10 +98,10 @@ body {
 .badge-accent { background-color: var(--color-accent); color: var(--color-accent-foreground); border-color: transparent; }
 .badge-ghost { background-color: var(--color-muted); color: var(--color-muted-foreground); border-color: transparent; }
 .badge-neutral { background-color: hsl(245 25% 22%); color: hsl(250 40% 96%); border-color: transparent; }
-.badge-info { background-color: var(--color-info); color: var(--color-info-foreground); border-color: transparent; }
-.badge-success { background-color: var(--color-success); color: var(--color-success-foreground); border-color: transparent; }
-.badge-warning { background-color: var(--color-warning); color: var(--color-warning-foreground); border-color: transparent; }
-.badge-error, .badge-destructive { background-color: var(--color-destructive); color: hsl(0 0% 98%); border-color: transparent; }
+.badge-info { background-color: var(--color-info); color: white; border-color: transparent; }
+.badge-success { background-color: var(--color-success); color: white; border-color: transparent; }
+.badge-warning { background-color: var(--color-warning); color: hsl(35 90% 12%); border-color: transparent; }
+.badge-error, .badge-destructive { background-color: hsl(0 84% 48%); color: white; border-color: transparent; }
 .badge-sm { font-size: 0.7rem; padding: 0 0.4rem; height: 1.25rem; }
 .badge-lg { font-size: 0.9rem; padding: 0.25rem 0.75rem; }
 
@@ -155,7 +109,7 @@ body {
   border-radius: var(--radius);
   border: 1px solid var(--color-border);
   background-color: var(--color-card);
-  color: var(--color-card-foreground);
+  color: var(--color-foreground);
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 .card-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
@@ -180,14 +134,6 @@ body {
 .progress::-webkit-progress-bar { background-color: var(--color-muted); }
 .progress::-webkit-progress-value { background-color: var(--color-primary); transition: width 300ms ease; }
 .progress::-moz-progress-bar { background-color: var(--color-primary); }
-.progress-accent::-webkit-progress-value { background-color: var(--color-accent); }
-.progress-accent::-moz-progress-bar { background-color: var(--color-accent); }
-.progress-success::-webkit-progress-value { background-color: var(--color-success); }
-.progress-success::-moz-progress-bar { background-color: var(--color-success); }
-.progress-warning::-webkit-progress-value { background-color: var(--color-warning); }
-.progress-warning::-moz-progress-bar { background-color: var(--color-warning); }
-.progress-info::-webkit-progress-value { background-color: var(--color-info); }
-.progress-info::-moz-progress-bar { background-color: var(--color-info); }
 
 /* Navbar sheet animations */
 @keyframes sheet-in {
