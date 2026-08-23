@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  /* Core palette — indigo & teal learning theme */
+  /* Core palette — deep blue & emerald learning theme */
   --color-background: hsl(248 60% 99%);
   --color-foreground: hsl(245 40% 15%);
   --color-card: hsl(0 0% 100%);
-  --color-primary: hsl(243 75% 59%);
-  --color-primary-foreground: hsl(250 100% 98%);
-  --color-secondary: hsl(250 100% 96%);
-  --color-secondary-foreground: hsl(245 55% 35%);
+  --color-primary: #1d4ed8;                 /* Deep Blue */
+  --color-primary-foreground: hsl(210 100% 98%);
+  --color-secondary: #10b981;               /* Emerald */
+  --color-secondary-foreground: hsl(160 100% 98%);
   --color-accent: hsl(173 85% 28%);
   --color-accent-foreground: hsl(180 100% 97%);
   --color-muted: hsl(248 40% 96%);
@@ -26,10 +26,10 @@
   --color-background: hsl(245 35% 8%);
   --color-foreground: hsl(250 40% 94%);
   --color-card: hsl(245 28% 11%);
-  --color-primary: hsl(239 84% 67%);
-  --color-primary-foreground: hsl(245 60% 12%);
-  --color-secondary: hsl(246 22% 17%);
-  --color-secondary-foreground: hsl(250 60% 92%);
+  --color-primary: hsl(217 91% 58%);
+  --color-primary-foreground: hsl(218 100% 97%);
+  --color-secondary: hsl(161 79% 45%);
+  --color-secondary-foreground: hsl(162 70% 10%);
   --color-accent: hsl(172 66% 52%);
   --color-accent-foreground: hsl(176 65% 10%);
   --color-muted: hsl(246 20% 16%);
