@@ -55,10 +55,10 @@ export default function CourseCard({
   }, [id]);
 
   return (
-    <div className="group card overflow-hidden rounded-2xl flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
+    <div className="group card relative overflow-hidden rounded-2xl flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
       {/* Full-card click target */}
       <Link
-        href={`course/${id}`}
+        href={`/course/${id}`}
         className="absolute inset-0 z-10"
         aria-label={`View ${title}`}
       />
