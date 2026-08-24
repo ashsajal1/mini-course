@@ -146,18 +146,7 @@ export default async function ProfilePage() {
       <div className="max-w-5xl mx-auto px-4 py-8 md:py-10 space-y-8">
         {/* Header Section */}
         <div className="rounded-2xl bg-card ring-1 ring-border shadow-xl shadow-primary/5 overflow-hidden">
-          <div className="relative h-32 sm:h-40 bg-gradient-to-br from-primary via-primary/90 to-secondary/80 overflow-hidden">
-            {/* Decorative blobs */}
-            <div className="pointer-events-none absolute inset-0">
-              <div className="absolute -top-16 -left-10 h-48 w-48 rounded-full bg-white/15 blur-2xl" />
-              <div className="absolute -bottom-20 right-16 h-44 w-44 rounded-full bg-white/10 blur-2xl" />
-              <div className="absolute top-4 right-1/3 h-20 w-20 rounded-full bg-white/15 blur-xl" />
-              <div className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:44px_44px]" />
-            </div>
-            {/* Fade into card */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/10 to-transparent" />
-          </div>
-          <div className="px-6 pb-6 -mt-10">
+          <div className="px-6 py-6">
             <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6 text-center md:text-left">
               <Image
                 src={user.imageUrl}
