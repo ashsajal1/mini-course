@@ -56,13 +56,13 @@ export default async function Home() {
             <div className="text-center lg:text-left">
               <span className="inline-flex items-center gap-2 px-3 py-1 mb-6 text-xs font-semibold uppercase tracking-wider rounded-full bg-primary/10 text-primary ring-1 ring-primary/20">
                 <Sparkles className="h-3.5 w-3.5" />
-                Mini Course Platform
+                AI-Powered Mini Course Platform
               </span>
               <h1 className="text-4xl sm:text-5xl xl:text-6xl font-extrabold leading-[1.1] tracking-tight text-foreground mb-6">
-                Learn something new,{" "}
+                Turn any doc into{" "}
                 <span className="relative inline-block">
                   <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                    one mini course
+                    bite-sized lessons with AI in clicks
                   </span>
                   <svg
                     aria-hidden
@@ -78,13 +78,12 @@ export default async function Home() {
                       strokeLinecap="round"
                     />
                   </svg>
-                </span>{" "}
-                at a time
+                </span>
               </h1>
               <p className="mx-auto lg:mx-0 max-w-xl text-base sm:text-lg text-muted-foreground mb-8">
-                Browse, enroll in, and complete bite-sized courses. Track your
-                progress, practice with hands-on content, and build real skills
-                at your own pace.
+                Paste a link to any documentation, blog, or article — or upload
+                your own documents — and AI converts them into short, easy to
+                learn concepts. Then track your progress as you master them.
               </p>
 
               <div className="flex flex-wrap justify-center lg:justify-start gap-3 mb-10">
