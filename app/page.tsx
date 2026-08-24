@@ -92,10 +92,7 @@ export default async function Home() {
                   Explore Courses
                   <ArrowRight className="h-5 w-5" />
                 </a>
-                <Link
-                  href="/about"
-                  className="btn btn-lg btn-ghost ring-1 ring-base-300 hover:bg-base-200"
-                >
+                <Link href="/about" className="btn btn-outline btn-lg">
                   Learn More
                 </Link>
               </div>
@@ -189,7 +186,7 @@ export default async function Home() {
       </section>
 
       {/* Courses */}
-      <div className="container mx-auto py-14 px-4 sm:px-6 md:px-8" id="courses">
+      <div className="container mx-auto py-14 px-4 sm:px-6 md:px-8 scroll-mt-20" id="courses">
         <header className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wider text-accent mb-1">
