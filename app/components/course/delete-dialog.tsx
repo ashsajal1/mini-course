@@ -23,13 +23,13 @@ export default function DeleteDialog({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-base-100 p-6 rounded-lg w-full max-w-md">
+      <div className="bg-card p-6 rounded-lg w-full max-w-md">
         <div className="flex flex-col items-center text-center">
           <div className="bg-error/10 p-3 rounded-full mb-4">
             <AlertCircle className="w-8 h-8 text-error" />
           </div>
           <h3 className="text-lg font-semibold mb-2">{title}</h3>
-          <p className="text-base-content/70 mb-6">{description}</p>
+          <p className="text-muted-foreground mb-6">{description}</p>
         </div>
         <div className="flex justify-end gap-3">
           <button

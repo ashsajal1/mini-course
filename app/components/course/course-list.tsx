@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Search, Filter, X } from "lucide-react";
 import { Course, Category } from "@/generated/prisma";
 import CourseCard from "@/app/components/course/course-card";
@@ -26,6 +26,34 @@ export default function CourseList({
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  // Keyboard shortcut: Ctrl/Cmd+K or "/" focuses search
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const typing =
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable;
+      if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !typing)) {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  // Search suggestions from visible courses
+  const suggestions = useMemo(() => {
+    if (searchQuery.trim() === "") return [];
+    const q = searchQuery.toLowerCase();
+    return courses
+      .filter((course) => course.name.toLowerCase().includes(q))
+      .slice(0, 6);
+  }, [courses, searchQuery]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -90,22 +118,81 @@ export default function CourseList({
   return (
     <div className="space-y-6">
       {/* Search and Filter Bar */}
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col md:flex-row gap-3 mt-3">
         <div className="relative flex-1">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-base-content/70" />
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <Search className="h-4.5 w-4.5 text-muted-foreground" />
           </div>
           <input
+            ref={searchRef}
             type="text"
             placeholder="Search courses..."
-            className="input input-bordered w-full pl-10 pr-4 py-2"
+            className="w-full h-11 pl-10 pr-20 rounded-xl bg-card border border-border text-sm text-foreground placeholder:text-muted-foreground transition-all focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setShowSuggestions(true);
+            }}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                setSearchQuery("");
+                searchRef.current?.blur();
+              }
+            }}
           />
+          <div className="absolute inset-y-0 right-0 pr-3 flex items-center gap-1.5">
+            {searchQuery ? (
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  searchRef.current?.focus();
+                }}
+                className="grid place-items-center h-6 w-6 rounded-full bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            ) : (
+              <kbd className="hidden sm:inline-flex items-center h-5.5 px-1.5 rounded-md border border-border bg-muted text-[10px] font-semibold text-muted-foreground">
+                /
+              </kbd>
+            )}
+          </div>
+
+          {/* Suggestions dropdown */}
+          {showSuggestions && searchQuery.trim() !== "" && (
+            <div className="absolute z-20 top-full mt-2 w-full rounded-xl bg-card border border-border shadow-xl overflow-hidden">
+              {suggestions.length > 0 ? (
+                suggestions.map((course) => (
+                  <button
+                    key={course.id}
+                    onMouseDown={() => {
+                      setSearchQuery(course.name);
+                      setShowSuggestions(false);
+                    }}
+                    className="w-full flex items-center justify-between gap-3 px-4 py-2.5 text-left text-sm hover:bg-muted transition-colors"
+                  >
+                    <span className="truncate font-medium text-foreground">
+                      {course.name}
+                    </span>
+                    <span className="badge badge-secondary badge-sm shrink-0">
+                      {course.difficulty}
+                    </span>
+                  </button>
+                ))
+              ) : (
+                <p className="px-4 py-3 text-sm text-muted-foreground">
+                  No courses match &ldquo;{searchQuery}&rdquo;
+                </p>
+              )}
+            </div>
+          )}
         </div>
         <div className="flex gap-2">
           <button
-            className="btn btn-outline"
+            className="btn btn-outline h-11 rounded-xl"
             onClick={() => setShowFilters(!showFilters)}
           >
             <Filter className="h-4 w-4 mr-2" />
@@ -117,7 +204,7 @@ export default function CourseList({
             )}
           </button>
           {hasActiveFilters && (
-            <button onClick={clearFilters} className="btn btn-ghost">
+            <button onClick={clearFilters} className="btn btn-ghost h-11 rounded-xl">
               Clear all
             </button>
           )}
@@ -159,7 +246,7 @@ export default function CourseList({
 
       {/* Filter Panel */}
       {showFilters && (
-        <div className="bg-base-200 dark:bg-base-300 p-4 rounded-lg space-y-4">
+        <div className="bg-muted dark:bg-muted p-4 rounded-lg space-y-4">
           <div>
             <h3 className="font-medium mb-3">Category</h3>
             <div className="flex flex-wrap gap-2">
@@ -200,13 +287,23 @@ export default function CourseList({
         </div>
       )}
 
+      {/* Result count */}
+      {hasActiveFilters && filteredCourses.length > 0 && (
+        <p className="text-sm text-muted-foreground">
+          <span className="font-semibold text-foreground">
+            {filteredCourses.length}
+          </span>{" "}
+          {filteredCourses.length === 1 ? "course" : "courses"} found
+        </p>
+      )}
+
       {/* Course Grid */}
       {filteredCourses.length === 0 ? (
         <div className="text-center py-12">
-          <h3 className="text-lg font-medium text-base-content mb-2">
+          <h3 className="text-lg font-medium text-foreground mb-2">
             No courses found
           </h3>
-          <p className="text-base-content/70 mb-4">
+          <p className="text-muted-foreground mb-4">
             {hasActiveFilters
               ? "Try adjusting your search or filter criteria"
               : "No courses available at the moment"}

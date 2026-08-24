@@ -226,11 +226,11 @@ export default function Modules({
     return (
       <div className="text-center py-12">
         <div className="max-w-md mx-auto">
-          <div className="w-24 h-24 rounded-full bg-base-200 flex items-center justify-center mx-auto mb-6">
-            <Plus className="w-12 h-12 text-base-content/30" />
+          <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center mx-auto mb-6">
+            <Plus className="w-12 h-12 text-foreground/30" />
           </div>
           <h2 className="text-2xl font-bold mb-2">No modules yet</h2>
-          <p className="text-base-content/70 mb-6">
+          <p className="text-muted-foreground mb-6">
             Create your first module to start adding content
           </p>
           <button
@@ -289,7 +289,7 @@ export default function Modules({
                     <div
                       ref={provided.innerRef}
                       {...provided.draggableProps}
-                      className="card bg-base-100 shadow-lg"
+                      className="card bg-card shadow-lg"
                     >
                       <div className="card-body">
                         {/* Module Header */}
@@ -297,7 +297,7 @@ export default function Modules({
                           <div className="flex items-start gap-3 flex-1">
                             <div
                               {...provided.dragHandleProps}
-                              className="mt-2 cursor-grab active:cursor-grabbing text-base-content/40 hover:text-base-content"
+                              className="mt-2 cursor-grab active:cursor-grabbing text-foreground/40 hover:text-foreground"
                             >
                               <GripVertical className="w-5 h-5" />
                             </div>
@@ -382,7 +382,7 @@ export default function Modules({
 
                         {/* Module Content - Shown when expanded */}
                         {activeModule === module.id && (
-                          <div className="space-y-4 pt-4 border-t border-base-300">
+                          <div className="space-y-4 pt-4 border-t border">
                             {/* Action Buttons */}
                             <div className="flex flex-wrap gap-2">
                               <Link
@@ -439,13 +439,13 @@ export default function Modules({
                                           <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
-                                            className="card bg-base-200 hover:bg-base-300 transition-colors"
+                                            className="card bg-muted hover:bg-muted transition-colors"
                                           >
                                             <div className="card-body p-4">
                                               <div className="flex items-center gap-4">
                                                 <div
                                                   {...provided.dragHandleProps}
-                                                  className="cursor-grab active:cursor-grabbing text-base-content/40 hover:text-base-content"
+                                                  className="cursor-grab active:cursor-grabbing text-foreground/40 hover:text-foreground"
                                                 >
                                                   <GripVertical className="w-5 h-5" />
                                                 </div>
@@ -466,7 +466,7 @@ export default function Modules({
                                                     </h5>
                                                   </div>
                                                   {contentData.content && (
-                                                    <p className="text-sm text-base-content/60 line-clamp-1">
+                                                    <p className="text-sm text-muted-foreground line-clamp-1">
                                                       {contentData.content}
                                                     </p>
                                                   )}

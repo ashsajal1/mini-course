@@ -228,28 +228,28 @@ export default function CourseOutlineEditor({
   return (
     <div className="space-y-5">
       {/* Course Header Card */}
-      <div className="card bg-base-100 border border-base-300 shadow-sm">
+      <div className="card bg-card border border shadow-sm">
         <div className="card-body !p-5">
           {isEditingCourse ? (
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-base-content/50 uppercase tracking-wider">
+                <label className="text-xs font-semibold text-foreground/50 uppercase tracking-wider">
                   Course Title
                 </label>
                 <input
                   type="text"
-                  className="input w-full rounded-xl border-2 border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+                  className="input w-full rounded-xl border-2 border focus:border-primary focus:shadow-md focus:shadow-primary/5"
                   value={outline.title}
                   onChange={(e) => updateOutline({ title: e.target.value })}
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-base-content/50 uppercase tracking-wider">
+                <label className="text-xs font-semibold text-foreground/50 uppercase tracking-wider">
                   Description
                 </label>
                 <textarea
-                  className="textarea w-full rounded-xl border-2 border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5 resize-none"
+                  className="textarea w-full rounded-xl border-2 border focus:border-primary focus:shadow-md focus:shadow-primary/5 resize-none"
                   rows={3}
                   value={outline.description}
                   onChange={(e) =>
@@ -260,11 +260,11 @@ export default function CourseOutlineEditor({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-base-content/50 uppercase tracking-wider">
+                  <label className="text-xs font-semibold text-foreground/50 uppercase tracking-wider">
                     Difficulty
                   </label>
                   <select
-                    className="select w-full rounded-xl border-2 border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+                    className="select w-full rounded-xl border-2 border focus:border-primary focus:shadow-md focus:shadow-primary/5"
                     value={outline.difficulty}
                     onChange={(e) =>
                       updateOutline({
@@ -280,12 +280,12 @@ export default function CourseOutlineEditor({
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-base-content/50 uppercase tracking-wider">
+                  <label className="text-xs font-semibold text-foreground/50 uppercase tracking-wider">
                     Duration
                   </label>
                   <input
                     type="text"
-                    className="input w-full rounded-xl border-2 border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+                    className="input w-full rounded-xl border-2 border focus:border-primary focus:shadow-md focus:shadow-primary/5"
                     value={outline.estimatedDuration}
                     onChange={(e) =>
                       updateOutline({ estimatedDuration: e.target.value })
@@ -295,12 +295,12 @@ export default function CourseOutlineEditor({
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-base-content/50 uppercase tracking-wider">
+                  <label className="text-xs font-semibold text-foreground/50 uppercase tracking-wider">
                     Language
                   </label>
                   <input
                     type="text"
-                    className="input w-full rounded-xl border-2 border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+                    className="input w-full rounded-xl border-2 border focus:border-primary focus:shadow-md focus:shadow-primary/5"
                     value={outline.language}
                     onChange={(e) =>
                       updateOutline({ language: e.target.value })
@@ -336,7 +336,7 @@ export default function CourseOutlineEditor({
                 <h2 className="text-xl font-bold leading-tight">
                   {outline.title}
                 </h2>
-                <p className="text-sm text-base-content/50 line-clamp-2">
+                <p className="text-sm text-foreground/50 line-clamp-2">
                   {outline.description}
                 </p>
                 <div className="flex flex-wrap gap-1.5 pt-1">
@@ -350,7 +350,7 @@ export default function CourseOutlineEditor({
                   <span className="px-2.5 py-0.5 rounded-full bg-accent/10 text-accent text-xs font-medium">
                     {outline.language.toUpperCase()}
                   </span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-base-200 text-base-content/50 text-xs font-medium">
+                  <span className="px-2.5 py-0.5 rounded-full bg-muted text-foreground/50 text-xs font-medium">
                     {outline.modules.length} module
                     {outline.modules.length !== 1 ? "s" : ""}
                   </span>
@@ -373,7 +373,7 @@ export default function CourseOutlineEditor({
         <h3 className="text-base font-semibold flex items-center gap-2">
           <FileText className="h-4 w-4 text-primary" />
           Modules
-          <span className="text-xs font-normal text-base-content/40">
+          <span className="text-xs font-normal text-foreground/40">
             ({outline.modules.length})
           </span>
         </h3>
@@ -388,10 +388,10 @@ export default function CourseOutlineEditor({
 
       {/* Empty State */}
       {outline.modules.length === 0 && (
-        <div className="card bg-base-100 border border-base-300 border-dashed">
+        <div className="card bg-card border border border-dashed">
           <div className="card-body items-center text-center !py-10">
-            <FileText className="h-8 w-8 text-base-content/15 mb-1" />
-            <p className="text-sm text-base-content/40">
+            <FileText className="h-8 w-8 text-foreground/15 mb-1" />
+            <p className="text-sm text-foreground/40">
               No modules yet. Click &quot;Add Module&quot; to get started.
             </p>
           </div>
@@ -403,7 +403,7 @@ export default function CourseOutlineEditor({
         {outline.modules.map((module, index) => (
           <div
             key={index}
-            className="card bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-shadow"
+            className="card bg-card border border shadow-sm hover:shadow-md transition-shadow"
           >
             {editingModule === index ? (
               <div className="card-body !p-5">
@@ -427,7 +427,7 @@ export default function CourseOutlineEditor({
                     <div className="flex-shrink-0 w-7 h-7 rounded-lg bg-primary/10 text-primary font-bold text-xs flex items-center justify-center">
                       {module.order}
                     </div>
-                    <div className="flex-shrink-0 text-base-content/30">
+                    <div className="flex-shrink-0 text-foreground/30">
                       {expandedModules.has(index) ? (
                         <ChevronDown className="h-3.5 w-3.5" />
                       ) : (
@@ -438,7 +438,7 @@ export default function CourseOutlineEditor({
                       <h4 className="font-semibold text-sm leading-tight truncate">
                         {module.title}
                       </h4>
-                      <div className="flex items-center gap-2.5 mt-0.5 text-xs text-base-content/40">
+                      <div className="flex items-center gap-2.5 mt-0.5 text-xs text-foreground/40">
                         <span className="inline-flex items-center gap-0.5">
                           <Clock className="h-2.5 w-2.5" />
                           {module.estimatedDuration}
@@ -506,15 +506,15 @@ export default function CourseOutlineEditor({
 
                 {/* Expanded Content */}
                 {expandedModules.has(index) && (
-                  <div className="border-t border-base-200 px-4 py-3 space-y-4">
-                    <p className="text-sm text-base-content/60">
+                  <div className="border-t border px-4 py-3 space-y-4">
+                    <p className="text-sm text-muted-foreground">
                       {module.description}
                     </p>
 
                     {/* Learning Objectives */}
                     {module.learningObjectives.length > 0 && (
                       <div>
-                        <h5 className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-base-content/35 mb-1.5">
+                        <h5 className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-foreground/35 mb-1.5">
                           <Target className="h-3 w-3" />
                           Learning Objectives
                         </h5>
@@ -534,10 +534,10 @@ export default function CourseOutlineEditor({
                     {/* Slides */}
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <h5 className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-base-content/35">
+                        <h5 className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-foreground/35">
                           <FileText className="h-3 w-3" />
                           Slides
-                          <span className="text-base-content/25">
+                          <span className="text-foreground/25">
                             ({module.slides?.length || 0})
                           </span>
                         </h5>
@@ -553,15 +553,15 @@ export default function CourseOutlineEditor({
                         {module.slides?.map((slide, si) => (
                           <div
                             key={si}
-                            className="flex items-start gap-2 p-2.5 rounded-lg bg-base-200/50 group/slide"
+                            className="flex items-start gap-2 p-2.5 rounded-lg bg-muted/50 group/slide"
                           >
-                            <span className="flex-shrink-0 w-5 h-5 rounded bg-base-300 text-base-content/40 text-[10px] flex items-center justify-center font-bold mt-0.5">
+                            <span className="flex-shrink-0 w-5 h-5 rounded bg-muted text-foreground/40 text-[10px] flex items-center justify-center font-bold mt-0.5">
                               {si + 1}
                             </span>
                             <div className="flex-1 space-y-1">
                               <input
                                 type="text"
-                                className="input input-sm w-full rounded-lg border-base-200 bg-base-100 text-sm focus:border-primary"
+                                className="input input-sm w-full rounded-lg border bg-card text-sm focus:border-primary"
                                 value={slide.title}
                                 onChange={(e) =>
                                   updateSlideInModule(index, si, {
@@ -571,7 +571,7 @@ export default function CourseOutlineEditor({
                                 placeholder="Slide title"
                               />
                               <textarea
-                                className="textarea textarea-sm w-full rounded-lg border-base-200 bg-base-100 text-xs focus:border-primary resize-none"
+                                className="textarea textarea-sm w-full rounded-lg border bg-card text-xs focus:border-primary resize-none"
                                 rows={2}
                                 value={slide.content}
                                 onChange={(e) =>
@@ -591,7 +591,7 @@ export default function CourseOutlineEditor({
                           </div>
                         ))}
                         {(!module.slides || module.slides.length === 0) && (
-                          <p className="text-xs text-base-content/30 italic py-1.5">
+                          <p className="text-xs text-foreground/30 italic py-1.5">
                             No slides yet.
                           </p>
                         )}
@@ -601,10 +601,10 @@ export default function CourseOutlineEditor({
                     {/* Questions */}
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <h5 className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-base-content/35">
+                        <h5 className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-foreground/35">
                           <HelpCircle className="h-3 w-3" />
                           Questions
-                          <span className="text-base-content/25">
+                          <span className="text-foreground/25">
                             ({module.questions?.length || 0})
                           </span>
                         </h5>
@@ -620,16 +620,16 @@ export default function CourseOutlineEditor({
                         {module.questions?.map((question, qi) => (
                           <div
                             key={qi}
-                            className="p-2.5 rounded-lg bg-base-200/50 group/q"
+                            className="p-2.5 rounded-lg bg-muted/50 group/q"
                           >
                             <div className="flex items-start gap-2">
-                              <span className="flex-shrink-0 w-5 h-5 rounded bg-base-300 text-base-content/40 text-[10px] flex items-center justify-center font-bold mt-0.5">
+                              <span className="flex-shrink-0 w-5 h-5 rounded bg-muted text-foreground/40 text-[10px] flex items-center justify-center font-bold mt-0.5">
                                 {qi + 1}
                               </span>
                               <div className="flex-1 space-y-1.5">
                                 <input
                                   type="text"
-                                  className="input input-sm w-full rounded-lg border-base-200 bg-base-100 text-sm focus:border-primary"
+                                  className="input input-sm w-full rounded-lg border bg-card text-sm focus:border-primary"
                                   value={question.title}
                                   onChange={(e) =>
                                     updateQuestionInModule(index, qi, {
@@ -639,7 +639,7 @@ export default function CourseOutlineEditor({
                                   placeholder="Question title"
                                 />
                                 <textarea
-                                  className="textarea textarea-sm w-full rounded-lg border-base-200 bg-base-100 text-xs focus:border-primary resize-none"
+                                  className="textarea textarea-sm w-full rounded-lg border bg-card text-xs focus:border-primary resize-none"
                                   rows={2}
                                   value={question.content}
                                   onChange={(e) =>
@@ -673,12 +673,12 @@ export default function CourseOutlineEditor({
                                         }}
                                         className="radio radio-primary radio-xs"
                                       />
-                                      <span className="flex-shrink-0 text-[10px] font-bold text-base-content/30 w-4">
+                                      <span className="flex-shrink-0 text-[10px] font-bold text-foreground/30 w-4">
                                         {String.fromCharCode(65 + oi)}
                                       </span>
                                       <input
                                         type="text"
-                                        className="input input-sm flex-1 rounded-lg border-base-200 bg-base-100 text-xs focus:border-primary"
+                                        className="input input-sm flex-1 rounded-lg border bg-card text-xs focus:border-primary"
                                         value={option.text}
                                         onChange={(e) => {
                                           const newOptions = [
@@ -711,7 +711,7 @@ export default function CourseOutlineEditor({
                         ))}
                         {(!module.questions ||
                           module.questions.length === 0) && (
-                          <p className="text-xs text-base-content/30 italic py-1.5">
+                          <p className="text-xs text-foreground/30 italic py-1.5">
                             No questions yet.
                           </p>
                         )}
@@ -748,7 +748,7 @@ export default function CourseOutlineEditor({
       {previewModule !== null && (
         <dialog className="modal modal-open">
           <div className="modal-box max-w-3xl max-h-[85vh] p-0 overflow-hidden">
-            <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 bg-base-100 border-b border-base-200">
+            <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 bg-card border-b border">
               <h3 className="font-bold text-sm flex items-center gap-2">
                 <Eye className="h-4 w-4 text-primary" />
                 Module Preview
@@ -769,7 +769,7 @@ export default function CourseOutlineEditor({
                   <>
                     <div className="p-3.5 rounded-xl bg-primary/5 border border-primary/15">
                       <h4 className="text-lg font-bold mb-0.5">{m.title}</h4>
-                      <p className="text-sm text-base-content/50 mb-2">
+                      <p className="text-sm text-foreground/50 mb-2">
                         {m.description}
                       </p>
                       <div className="flex gap-1.5">
@@ -811,7 +811,7 @@ export default function CourseOutlineEditor({
                           {m.slides.map((slide, idx) => (
                             <div
                               key={idx}
-                              className="p-3 rounded-xl bg-base-200/50 border border-base-200"
+                              className="p-3 rounded-xl bg-muted/50 border border"
                             >
                               <h6 className="font-medium text-sm mb-1.5">
                                 {slide.title || `Slide ${idx + 1}`}
@@ -847,13 +847,13 @@ export default function CourseOutlineEditor({
                                     ),
                                     code: (props) => (
                                       <code
-                                        className="bg-base-300 px-1 py-0.5 rounded text-xs"
+                                        className="bg-muted px-1 py-0.5 rounded text-xs"
                                         {...props}
                                       />
                                     ),
                                     pre: (props) => (
                                       <pre
-                                        className="bg-base-300 p-2 rounded overflow-x-auto my-1 text-xs"
+                                        className="bg-muted p-2 rounded overflow-x-auto my-1 text-xs"
                                         {...props}
                                       />
                                     ),
@@ -878,12 +878,12 @@ export default function CourseOutlineEditor({
                           {m.questions.map((q, idx) => (
                             <div
                               key={idx}
-                              className="p-3 rounded-xl bg-base-200/50 border border-base-200"
+                              className="p-3 rounded-xl bg-muted/50 border border"
                             >
                               <h6 className="font-medium text-sm mb-1">
                                 {q.title || `Question ${idx + 1}`}
                               </h6>
-                              <p className="text-sm mb-2 text-base-content/70">
+                              <p className="text-sm mb-2 text-muted-foreground">
                                 {q.content}
                               </p>
                               <div className="space-y-1">
@@ -893,7 +893,7 @@ export default function CourseOutlineEditor({
                                     className={`flex items-center gap-2 text-sm px-2.5 py-1 rounded-lg ${
                                       opt.isCorrect
                                         ? "bg-success/10 text-success font-medium"
-                                        : "text-base-content/50"
+                                        : "text-foreground/50"
                                     }`}
                                   >
                                     <div
@@ -917,7 +917,7 @@ export default function CourseOutlineEditor({
               })()}
             </div>
 
-            <div className="sticky bottom-0 px-5 py-3 bg-base-100 border-t border-base-200">
+            <div className="sticky bottom-0 px-5 py-3 bg-card border-t border">
               <button
                 className="btn btn-sm w-full"
                 onClick={() => setPreviewModule(null)}
@@ -952,12 +952,12 @@ function ModuleEditor({ module, onSave, onCancel }: ModuleEditorProps) {
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-base-content/50 uppercase tracking-wider">
+          <label className="text-xs font-semibold text-foreground/50 uppercase tracking-wider">
             Module Title
           </label>
           <input
             type="text"
-            className="input w-full rounded-xl border-2 border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+            className="input w-full rounded-xl border-2 border focus:border-primary focus:shadow-md focus:shadow-primary/5"
             value={editedModule.title}
             onChange={(e) =>
               setEditedModule((prev) => ({ ...prev, title: e.target.value }))
@@ -965,12 +965,12 @@ function ModuleEditor({ module, onSave, onCancel }: ModuleEditorProps) {
           />
         </div>
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-base-content/50 uppercase tracking-wider">
+          <label className="text-xs font-semibold text-foreground/50 uppercase tracking-wider">
             Duration
           </label>
           <input
             type="text"
-            className="input w-full rounded-xl border-2 border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5"
+            className="input w-full rounded-xl border-2 border focus:border-primary focus:shadow-md focus:shadow-primary/5"
             value={editedModule.estimatedDuration}
             onChange={(e) =>
               setEditedModule((prev) => ({
@@ -984,11 +984,11 @@ function ModuleEditor({ module, onSave, onCancel }: ModuleEditorProps) {
       </div>
 
       <div className="space-y-1.5">
-        <label className="text-xs font-semibold text-base-content/50 uppercase tracking-wider">
+        <label className="text-xs font-semibold text-foreground/50 uppercase tracking-wider">
           Description
         </label>
         <textarea
-          className="textarea w-full rounded-xl border-2 border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5 resize-none"
+          className="textarea w-full rounded-xl border-2 border focus:border-primary focus:shadow-md focus:shadow-primary/5 resize-none"
           rows={2}
           value={editedModule.description}
           onChange={(e) =>
@@ -1001,7 +1001,7 @@ function ModuleEditor({ module, onSave, onCancel }: ModuleEditorProps) {
       </div>
 
       <div className="space-y-1.5">
-        <label className="text-xs font-semibold text-base-content/50 uppercase tracking-wider">
+        <label className="text-xs font-semibold text-foreground/50 uppercase tracking-wider">
           Learning Objectives
         </label>
         <div className="space-y-1.5">
@@ -1009,7 +1009,7 @@ function ModuleEditor({ module, onSave, onCancel }: ModuleEditorProps) {
             <div key={index} className="flex gap-1.5">
               <input
                 type="text"
-                className="input flex-1 rounded-xl border-2 border-base-300 focus:border-primary focus:shadow-md focus:shadow-primary/5 text-sm"
+                className="input flex-1 rounded-xl border-2 border focus:border-primary focus:shadow-md focus:shadow-primary/5 text-sm"
                 value={objective}
                 onChange={(e) => {
                   const newObjectives = [...editedModule.learningObjectives];

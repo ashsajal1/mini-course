@@ -57,13 +57,13 @@ export default async function ManageCourse({
 
   if (!course) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-200">
+      <div className="min-h-screen flex items-center justify-center bg-muted">
         <div className="text-center">
           <div className="w-20 h-20 rounded-full bg-error/10 flex items-center justify-center mx-auto mb-4">
             <BookOpen className="w-10 h-10 text-error" />
           </div>
           <h1 className="text-3xl font-bold mb-2">Course Not Found</h1>
-          <p className="text-base-content/70 mb-6">
+          <p className="text-muted-foreground mb-6">
             This course doesn&apos;t exist or has been deleted.
           </p>
           <Link href="/" className="btn btn-primary">
@@ -88,12 +88,12 @@ export default async function ManageCourse({
   return (
     <div className="min-h-screen bg-gradient-to-br from-base-200 via-base-200 to-base-300">
       {/* Top Navigation Bar */}
-      <div className="bg-base-100 border-b border-base-300 sticky top-0 z-10">
+      <div className="bg-card border-b border sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link
               href="/"
-              className="flex items-center gap-2 text-base-content/70 hover:text-base-content transition-colors"
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="font-medium">Back</span>
@@ -121,7 +121,7 @@ export default async function ManageCourse({
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-4">
             {/* Course Info Card */}
-            <div className="card bg-base-100 shadow-xl">
+            <div className="card bg-card shadow-xl">
               <div className="card-body">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg">
@@ -138,7 +138,7 @@ export default async function ManageCourse({
 
                 <div className="space-y-3">
                   <div>
-                    <div className="text-xs text-base-content/60 uppercase tracking-wide mb-1">
+                    <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
                       Difficulty
                     </div>
                     <div
@@ -156,10 +156,10 @@ export default async function ManageCourse({
 
                   {course.description && (
                     <div>
-                      <div className="text-xs text-base-content/60 uppercase tracking-wide mb-1">
+                      <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
                         Description
                       </div>
-                      <p className="text-sm text-base-content/80 line-clamp-3">
+                      <p className="text-sm text-muted-foreground line-clamp-3">
                         {course.description}
                       </p>
                     </div>
@@ -175,13 +175,13 @@ export default async function ManageCourse({
             />
 
             {/* Stats Cards */}
-            <div className="card bg-base-100 shadow-xl">
+            <div className="card bg-card shadow-xl">
               <div className="card-body">
-                <h3 className="font-bold text-sm text-base-content/70 uppercase tracking-wide mb-3">
+                <h3 className="font-bold text-sm text-muted-foreground uppercase tracking-wide mb-3">
                   Content Stats
                 </h3>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-base-200 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
                         <BookOpen className="w-4 h-4 text-primary" />
@@ -193,7 +193,7 @@ export default async function ManageCourse({
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 bg-base-200 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-info/10 flex items-center justify-center">
                         <FileText className="w-4 h-4 text-info" />
@@ -205,7 +205,7 @@ export default async function ManageCourse({
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 bg-base-200 rounded-lg">
+                  <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
                         <HelpCircle className="w-4 h-4 text-success" />
@@ -223,7 +223,7 @@ export default async function ManageCourse({
 
           {/* Main Content Area */}
           <div className="lg:col-span-3">
-            <div className="card bg-base-100 shadow-xl">
+            <div className="card bg-card shadow-xl">
               <div className="card-body">
                 <Modules
                   modules={course.modules ?? []}

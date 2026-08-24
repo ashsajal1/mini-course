@@ -62,7 +62,7 @@ export default function QuestionAiAssistant({
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="btn btn-ghost btn-sm w-full justify-between border border-base-300 hover:bg-base-200"
+        className="btn btn-ghost btn-sm w-full justify-between border border hover:bg-muted"
       >
         <span className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
@@ -77,7 +77,7 @@ export default function QuestionAiAssistant({
 
       {/* Expandable Panel */}
       {isExpanded && (
-        <div className="mt-2 space-y-4 rounded-lg border border-base-300 bg-base-200/50 p-4">
+        <div className="mt-2 space-y-4 rounded-lg border border bg-muted/50 p-4">
           {/* Previous Slide Content Preview */}
           <div>
             <label className="mb-1.5 flex items-center justify-between text-sm">
@@ -87,7 +87,7 @@ export default function QuestionAiAssistant({
               </span>
             </label>
             {hasSlideContent ? (
-              <div className="rounded-lg bg-base-100 p-3 text-sm text-base-content/80 max-h-32 overflow-y-auto border border-base-300">
+              <div className="rounded-lg bg-card p-3 text-sm text-muted-foreground max-h-32 overflow-y-auto border border">
                 <pre className="whitespace-pre-wrap font-mono text-xs">
                   {previousSlideContent}
                 </pre>

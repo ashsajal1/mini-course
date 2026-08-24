@@ -71,7 +71,7 @@ export default function EditSlidePage() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-      <div className="bg-base-100 p-6 rounded-lg">
+      <div className="bg-card p-6 rounded-lg">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold">Edit Slide</h3>
         </div>

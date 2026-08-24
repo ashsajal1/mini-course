@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { ArrowRight, Users, Globe } from "lucide-react";
+import { ArrowRight, Globe, Layers, Users } from "lucide-react";
 import Link from "next/link";
 import { getCourseEnrollmentCount } from "@/lib/enrollment-service";
 import { getAverageRating } from "@/lib/rating-service";
@@ -18,6 +18,14 @@ type CourseCardProps = {
   moduleCount: number;
 };
 
+const difficultyBadge: Record<string, string> = {
+  Beginner: "badge-success",
+  Intermediate: "badge-warning",
+  Advanced: "badge-info",
+};
+
+const FALLBACK_IMAGE = "/placeholder-course.svg";
+
 export default function CourseCard({
   id,
   title,
@@ -29,6 +37,11 @@ export default function CourseCard({
 }: CourseCardProps) {
   const [enrollmentCount, setEnrollmentCount] = useState(0);
   const [ratingData, setRatingData] = useState({ average: 0, count: 0 });
+  const [imgSrc, setImgSrc] = useState(thumbnail_url || FALLBACK_IMAGE);
+
+  useEffect(() => {
+    setImgSrc(thumbnail_url || FALLBACK_IMAGE);
+  }, [thumbnail_url]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +54,6 @@ export default function CourseCard({
         setRatingData(rating);
       } catch (error) {
         console.warn("Failed to fetch course data:", error);
-        // Set defaults on error
         setEnrollmentCount(0);
         setRatingData({ average: 0, count: 0 });
       }
@@ -50,59 +62,78 @@ export default function CourseCard({
   }, [id]);
 
   return (
-    <article
-      key={id}
-      className="card bg-base-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
-    >
-      <figure className="relative h-40 w-full bg-base-200">
+    <div className="group card relative overflow-hidden rounded-2xl flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5">
+      {/* Full-card click target */}
+      <Link
+        href={`/course/${id}`}
+        className="absolute inset-0 z-10"
+        aria-label={`View ${title}`}
+      />
+
+      <figure className="relative h-44 w-full overflow-hidden bg-muted">
         <Image
-          src={thumbnail_url || "/next.svg"}
+          src={imgSrc}
           alt={title}
           fill
-          className="object-cover"
-          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 25vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           priority={false}
+          onError={() => setImgSrc(FALLBACK_IMAGE)}
+        />
+        {/* Scrim for legibility */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/20" />
+
+        <span
+          className={`absolute top-3 left-3 badge ${difficultyBadge[difficulty] ?? "badge-outline"} border-0 shadow-sm`}
+        >
+          {difficulty}
+        </span>
+
+        <span className="absolute bottom-3 left-3 inline-flex items-center gap-1 rounded-md bg-black/50 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">
+          <Globe className="h-3 w-3" />
+          {(lang || "en").toUpperCase()}
+        </span>
+
+        <SaveCourseButton
+          courseId={id}
+          className="absolute top-2.5 right-2.5 z-20 rounded-full bg-background/90 shadow-sm backdrop-blur-sm hover:bg-background"
         />
       </figure>
-      <div className="card-body p-4">
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="card-title text-base text-base-content">{title}</h2>
-          <div className="flex items-center gap-2">
-            <div className="badge badge-outline">{difficulty}</div>
-            <div className="badge badge-info badge-sm">
-              <Globe className="h-3 w-3 mr-1" />
-              {(lang || 'en').toUpperCase()}
-            </div>
-          </div>
-        </div>
-        <p className="text-sm text-base-content/80 line-clamp-2 mt-2">
+
+      <div className="relative z-20 pointer-events-none p-5 pt-4 flex flex-col gap-2 flex-1">
+        <h2 className="text-base font-semibold leading-snug tracking-tight line-clamp-1 transition-colors group-hover:text-primary">
+          {title}
+        </h2>
+        <p className="text-sm text-muted-foreground line-clamp-2">
           {description}
         </p>
-        <div className="flex items-center justify-between mt-2">
-          <div className="flex items-center gap-2 text-sm text-base-content/70">
-            <Users className="h-4 w-4" />
-            <span>{enrollmentCount} students</span>
-          </div>
-          <div className="text-sm text-base-content/70">
-            {moduleCount} modules
-          </div>
+
+        <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+          <span className="flex items-center gap-1.5">
+            <Users className="h-3.5 w-3.5" />
+            {enrollmentCount}{" "}
+            {enrollmentCount === 1 ? "student" : "students"}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Layers className="h-3.5 w-3.5" />
+            {moduleCount} {moduleCount === 1 ? "module" : "modules"}
+          </span>
         </div>
-        {ratingData.count > 0 && (
-          <div className="flex items-center gap-2 mt-2">
+
+        <div className="mt-auto pt-3 border-t border-border flex items-center justify-between gap-2">
+          {ratingData.count > 0 ? (
             <StarRating rating={ratingData.average} size={14} showValue />
-            <span className="text-xs text-base-content/60">
-              ({ratingData.count})
+          ) : (
+            <span className="text-xs italic text-muted-foreground">
+              Not yet rated
             </span>
-          </div>
-        )}
-        <div className="card-actions justify-end mt-4">
-          <SaveCourseButton courseId={id} />
-          <Link href={`course/${id}`} className="btn btn-primary btn-sm">
-            View Course
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+          )}
+          <span className="pointer-events-none inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-all duration-300 group-hover:gap-2.5">
+            View
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+          </span>
         </div>
       </div>
-    </article>
+    </div>
   );
 }

@@ -38,7 +38,7 @@ export default function CourseList() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-100">
+      <div className="min-h-screen flex items-center justify-center bg-card">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
           <span className="text-lg">Loading courses...</span>
@@ -49,7 +49,7 @@ export default function CourseList() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-100 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-card p-4">
         <div className="alert alert-error max-w-md">
           <AlertCircle className="w-6 h-6" />
           <span>{error}</span>
@@ -62,11 +62,11 @@ export default function CourseList() {
   }
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="min-h-screen bg-card">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-3">Your Courses</h1>
-          <p className="text-lg text-base-content/70">
+          <p className="text-lg text-muted-foreground">
             Select a course to manage its content
           </p>
         </div>
@@ -75,10 +75,10 @@ export default function CourseList() {
           {courses.map((course) => (
             <div
               key={course.id}
-              className="card bg-base-200 shadow-xl hover:shadow-2xl transition-shadow duration-300"
+              className="card bg-muted shadow-xl hover:shadow-2xl transition-shadow duration-300"
             >
               {course.thumbnail_url && (
-                <figure className="h-48 bg-base-300">
+                <figure className="h-48 bg-muted">
                   <Image
                     src={course.thumbnail_url}
                     alt={course.name}
@@ -98,7 +98,7 @@ export default function CourseList() {
                   </div>
                   <div className="badge badge-ghost">ID: {course.id}</div>
                 </div>
-                <p className="mt-2 text-base-content/80 line-clamp-2">
+                <p className="mt-2 text-muted-foreground line-clamp-2">
                   {course.description}
                 </p>
                 <div className="card-actions justify-end mt-4">
@@ -115,14 +115,14 @@ export default function CourseList() {
           ))}
 
           {/* Add New Course Card */}
-          <div className="card bg-base-200 shadow-xl border-2 border-dashed border-base-content/20 hover:border-primary/50 transition-colors">
+          <div className="card bg-muted shadow-xl border-2 border-dashed border-base-content/20 hover:border-primary/50 transition-colors">
             <div className="card-body items-center justify-center">
               <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-base-300 flex items-center justify-center mx-auto mb-4">
-                  <Plus className="w-8 h-8 text-base-content/50" />
+                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+                  <Plus className="w-8 h-8 text-foreground/50" />
                 </div>
                 <h3 className="text-lg font-medium mb-2">Create New Course</h3>
-                <p className="text-sm text-base-content/60 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   Start building your new course from scratch
                 </p>
                 <Link
@@ -139,11 +139,11 @@ export default function CourseList() {
         {courses.length === 0 && (
           <div className="text-center py-16">
             <div className="max-w-md mx-auto">
-              <div className="w-24 h-24 rounded-full bg-base-200 flex items-center justify-center mx-auto mb-6">
-                <Plus className="w-12 h-12 text-base-content/30" />
+              <div className="w-24 h-24 rounded-full bg-muted flex items-center justify-center mx-auto mb-6">
+                <Plus className="w-12 h-12 text-foreground/30" />
               </div>
               <h2 className="text-2xl font-bold mb-2">No courses yet</h2>
-              <p className="text-base-content/70 mb-6">
+              <p className="text-muted-foreground mb-6">
                 You haven&apos;t created any courses yet. Get started by
                 creating your first course.
               </p>

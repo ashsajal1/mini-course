@@ -110,7 +110,7 @@ export default async function page({
         {/* Back to Course */}
         <Link
           href={`/course/${courseId}`}
-          className="inline-flex items-center gap-1.5 text-sm text-base-content/50 hover:text-primary transition-colors mb-6"
+          className="inline-flex items-center gap-1.5 text-sm text-foreground/50 hover:text-primary transition-colors mb-6"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Course
@@ -124,18 +124,18 @@ export default async function page({
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
             Course Learning Path
           </h1>
-          <p className="text-sm text-base-content/50 max-w-md mx-auto">
+          <p className="text-sm text-foreground/50 max-w-md mx-auto">
             Follow the modules below to track your progress through the course.
           </p>
         </div>
 
         {/* Progress Card */}
-        <div className="card bg-base-100 border border-base-300 shadow-sm mb-8">
+        <div className="card bg-card border border shadow-sm mb-8">
           <div className="card-body !p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="space-y-0.5">
                 <h3 className="text-sm font-semibold">Your Progress</h3>
-                <p className="text-xs text-base-content/40">
+                <p className="text-xs text-foreground/40">
                   {completedCount} of {totalModules} modules completed
                 </p>
               </div>
@@ -143,10 +143,10 @@ export default async function page({
                 <span className="text-2xl font-bold text-primary">
                   {progressPercent}
                 </span>
-                <span className="text-sm text-base-content/40">%</span>
+                <span className="text-sm text-foreground/40">%</span>
               </div>
             </div>
-            <div className="w-full bg-base-200 rounded-full h-2.5 overflow-hidden">
+            <div className="w-full bg-muted rounded-full h-2.5 overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-700 ${
                   allCompleted
@@ -179,7 +179,7 @@ export default async function page({
                 {!isLast && (
                   <div
                     className={`absolute left-5 top-11 w-0.5 h-[calc(100%-2.75rem)] ${
-                      isCompleted ? "bg-success/40" : "bg-base-200"
+                      isCompleted ? "bg-success/40" : "bg-muted"
                     }`}
                   />
                 )}
@@ -194,7 +194,7 @@ export default async function page({
                           ? "bg-success text-success-content"
                           : isNextModule
                             ? "bg-primary text-primary-content ring-4 ring-primary/20"
-                            : "bg-base-200 text-base-content/40"
+                            : "bg-muted text-foreground/40"
                       }`}
                     >
                       {isCompleted ? (
@@ -211,8 +211,8 @@ export default async function page({
                       isNextModule
                         ? "border-primary/30 bg-primary/[0.02]"
                         : isCompleted
-                          ? "border-success/20 bg-base-100"
-                          : "border-base-200 bg-base-100"
+                          ? "border-success/20 bg-card"
+                          : "border bg-card"
                     }`}
                   >
                     <div className="card-body !p-4">
@@ -236,7 +236,7 @@ export default async function page({
                             )}
                           </div>
 
-                          <div className="flex items-center gap-3 text-xs text-base-content/40">
+                          <div className="flex items-center gap-3 text-xs text-foreground/40">
                             <span className="inline-flex items-center gap-1">
                               <FileText className="h-3 w-3" />
                               {module._count.slides} slide
@@ -301,10 +301,10 @@ export default async function page({
         </div>
 
         {courseModules.length === 0 && (
-          <div className="card bg-base-100 border border-base-200 border-dashed">
+          <div className="card bg-card border border border-dashed">
             <div className="card-body items-center text-center !py-12">
-              <BookOpen className="h-10 w-10 text-base-content/15 mb-2" />
-              <p className="text-sm text-base-content/40">
+              <BookOpen className="h-10 w-10 text-foreground/15 mb-2" />
+              <p className="text-sm text-foreground/40">
                 No modules in this course yet.
               </p>
             </div>

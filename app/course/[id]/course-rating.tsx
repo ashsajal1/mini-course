@@ -52,23 +52,25 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
       <h3 className="text-xl font-bold mb-4">Rate This Course</h3>
 
       {userRating ? (
-        <div className="bg-base-200 p-4 rounded-lg">
-          <h4 className="font-semibold mb-2">Your Rating</h4>
-          <div className="flex items-center gap-2 mb-2">
-            <StarRating rating={userRating.rating} size={16} />
-            <span>{userRating.rating} star{userRating.rating !== 1 ? 's' : ''}</span>
+        <div className="card bg-muted">
+          <div className="p-4">
+            <h4 className="font-semibold mb-2">Your Rating</h4>
+            <div className="flex items-center gap-2 mb-2">
+              <StarRating rating={userRating.rating} size={16} />
+              <span>{userRating.rating} star{userRating.rating !== 1 ? 's' : ''}</span>
+            </div>
+            {userRating.review && (
+              <p className="text-sm text-muted-foreground italic">
+                &quot;{userRating.review}&quot;
+              </p>
+            )}
+            <button
+              onClick={() => setShowForm(true)}
+              className="btn btn-outline btn-sm mt-2"
+            >
+              Update Rating
+            </button>
           </div>
-          {userRating.review && (
-            <p className="text-sm text-base-content/80 italic">
-              &quot;{userRating.review}&quot;
-            </p>
-          )}
-          <button
-            onClick={() => setShowForm(true)}
-            className="btn btn-sm btn-outline mt-2"
-          >
-            Update Rating
-          </button>
         </div>
       ) : (
         <button
@@ -80,7 +82,8 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
       )}
 
       {showForm && (
-        <div className="bg-base-200 p-4 rounded-lg mt-4">
+        <div className="card bg-muted mt-4">
+          <div className="p-4">
           <h4 className="font-semibold mb-4">
             {userRating ? "Update Your Rating" : "Rate This Course"}
           </h4>
@@ -92,7 +95,7 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
                 <button
                   key={star}
                   onClick={() => setNewRating(star)}
-                  className="btn btn-ghost btn-sm p-1"
+                  className="btn btn-ghost btn-sm p-1 h-auto"
                 >
                   <Star
                     size={24}
@@ -114,7 +117,7 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
             <textarea
               value={review}
               onChange={(e) => setReview(e.target.value)}
-              className="textarea textarea-bordered w-full"
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               rows={3}
               placeholder="Share your thoughts about this course..."
             />
@@ -139,6 +142,7 @@ export default function CourseRating({ courseId }: CourseRatingProps) {
               Cancel
             </button>
           </div>
+        </div>
         </div>
       )}
     </div>

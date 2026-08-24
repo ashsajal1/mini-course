@@ -54,7 +54,7 @@ export default function Slide({
     ),
     pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
       <pre
-        className="group bg-base-200 dark:bg-base-300 p-4 rounded-lg overflow-x-auto my-4"
+        className="group bg-muted dark:bg-muted p-4 rounded-lg overflow-x-auto my-4"
         {...props}
       />
     ),
@@ -63,7 +63,7 @@ export default function Slide({
 
       return (
         <code
-          className={`bg-base-200 dark:bg-base-300 px-1.5 py-0.5 rounded in-[.group]:bg-transparent in-[.group]:p-0 ${
+          className={`bg-muted dark:bg-muted px-1.5 py-0.5 rounded in-[.group]:bg-transparent in-[.group]:p-0 ${
             className || ""
           }`}
           {...rest}
@@ -108,7 +108,7 @@ export default function Slide({
       </div>
 
       {slide?.references && slide.references.length > 0 && (
-        <div className="mt-12 border-t border-base-300 pt-8">
+        <div className="mt-12 border-t border pt-8">
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-primary" />
             References & Resources
@@ -117,7 +117,7 @@ export default function Slide({
             {slide.references
               .filter((ref) => ref && ref.trim())
               .map((ref, i) => (
-                <li key={i} className="card bg-base-200 p-4 rounded-lg">
+                <li key={i} className="card bg-muted p-4 rounded-lg">
                   <div className="prose dark:prose-invert max-w-none text-sm">
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}

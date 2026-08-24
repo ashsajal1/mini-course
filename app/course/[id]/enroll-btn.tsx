@@ -7,9 +7,13 @@ import { ArrowRight, Loader2 } from "lucide-react";
 
 interface EnrollButtonProps {
   courseId: string;
+  className?: string;
 }
 
-export default function EnrollButton({ courseId }: EnrollButtonProps) {
+export default function EnrollButton({
+  courseId,
+  className = "",
+}: EnrollButtonProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -30,7 +34,7 @@ export default function EnrollButton({ courseId }: EnrollButtonProps) {
     <button
       onClick={onEnroll}
       disabled={isPending}
-      className="btn btn-primary gap-2"
+      className={`btn btn-primary gap-2 ${className}`}
     >
       {isPending ? (
         <>
