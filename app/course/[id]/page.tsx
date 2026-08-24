@@ -107,7 +107,7 @@ export default async function CoursePage({
       {/* Banner */}
       <section className="relative h-72 sm:h-80">
         <Image
-          src={course.thumbnail_url || "/placeholder-course.jpg"}
+          src={course.thumbnail_url || "/placeholder-course.svg"}
           alt={course.name}
           fill
           className="object-cover"

@@ -24,6 +24,8 @@ const difficultyBadge: Record<string, string> = {
   Advanced: "badge-info",
 };
 
+const FALLBACK_IMAGE = "/placeholder-course.svg";
+
 export default function CourseCard({
   id,
   title,
@@ -35,6 +37,11 @@ export default function CourseCard({
 }: CourseCardProps) {
   const [enrollmentCount, setEnrollmentCount] = useState(0);
   const [ratingData, setRatingData] = useState({ average: 0, count: 0 });
+  const [imgSrc, setImgSrc] = useState(thumbnail_url || FALLBACK_IMAGE);
+
+  useEffect(() => {
+    setImgSrc(thumbnail_url || FALLBACK_IMAGE);
+  }, [thumbnail_url]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,12 +72,13 @@ export default function CourseCard({
 
       <figure className="relative h-44 w-full overflow-hidden bg-muted">
         <Image
-          src={thumbnail_url || "/next.svg"}
+          src={imgSrc}
           alt={title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           priority={false}
+          onError={() => setImgSrc(FALLBACK_IMAGE)}
         />
         {/* Scrim for legibility */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/20" />

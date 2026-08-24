@@ -57,8 +57,8 @@ describe("CourseCard Component", () => {
     expect(image).toHaveAttribute("alt", "Test Course");
 
     // Check link
-    const link = screen.getByRole("link", { name: /view course/i });
-    expect(link).toHaveAttribute("href", "course/course-123");
+    const link = screen.getByRole("link", { name: /view test course/i });
+    expect(link).toHaveAttribute("href", "/course/course-123");
   });
 
   it("fetches and displays enrollment count", async () => {
@@ -85,8 +85,8 @@ describe("CourseCard Component", () => {
     render(<CourseCard {...courseWithoutImage} />);
 
     const image = screen.getByRole("img");
-    // In the component: src={thumbnail_url || "/next.svg"}
-    expect(image).toHaveAttribute("src", "/next.svg");
+    // In the component: src={thumbnail_url || "/placeholder-course.svg"}
+    expect(image).toHaveAttribute("src", "/placeholder-course.svg");
   });
 
   it("displays language badge correctly", () => {
@@ -97,7 +97,7 @@ describe("CourseCard Component", () => {
 
     const languageBadge = screen.getByText("EN");
     expect(languageBadge).toBeInTheDocument();
-    expect(languageBadge.closest(".badge")).toHaveClass("badge-info");
+    expect(languageBadge.closest("span")).toHaveClass("bg-black/50");
   });
 
   it("displays different languages correctly", () => {
@@ -129,7 +129,7 @@ describe("CourseCard Component", () => {
     render(<CourseCard {...mockCourse} />);
 
     // Check for the globe icon within the language badge
-    const languageBadge = screen.getByText("EN").closest(".badge");
+    const languageBadge = screen.getByText("EN").closest("span");
     const globeIcon = languageBadge?.querySelector("svg");
     expect(globeIcon).toBeInTheDocument();
   });
