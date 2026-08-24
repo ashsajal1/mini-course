@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ArrowRight, Layers, Pencil, Plus } from "lucide-react";
 
 type CreatedCoursesProps = {
   courses: Array<{
@@ -14,63 +15,95 @@ type CreatedCoursesProps = {
   }>;
 };
 
+const difficultyBadge: Record<string, string> = {
+  Beginner: "badge-success",
+  Intermediate: "badge-warning",
+  Advanced: "badge-info",
+};
+
 export function CreatedCoursesSection({ courses }: CreatedCoursesProps) {
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">My Created Courses</h2>
+    <section className="space-y-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-2xl font-bold tracking-tight">My Created Courses</h2>
+        {courses.length > 0 && (
+          <span className="text-sm text-muted-foreground">
+            {courses.length} {courses.length === 1 ? "course" : "courses"}
+          </span>
+        )}
+      </div>
+
       {courses.length === 0 ? (
-        <div className="card bg-card shadow-xl">
-          <div className="card-body text-center">
-            <p className="text-lg text-muted-foreground">
-              You haven&apos;t created any courses yet.
-            </p>
-            <div className="mt-4">
-              <Link href="/course/create" className="btn btn-primary">
-                Create Course
-              </Link>
-            </div>
+        <div className="rounded-2xl bg-card ring-1 ring-border p-10 text-center">
+          <div className="grid place-items-center h-12 w-12 mx-auto mb-3 rounded-xl bg-primary/10 text-primary">
+            <Plus className="h-6 w-6" />
           </div>
+          <p className="text-muted-foreground mb-4">
+            You haven&apos;t created any courses yet.
+          </p>
+          <Link
+            href="/course/create"
+            className="btn btn-primary btn-sm gap-1.5 mx-auto"
+          >
+            Create your first course
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
+        <ul className="space-y-3">
           {courses.map((course) => (
-            <div
+            <li
               key={course.id}
-              className="card bg-card shadow-xl hover:shadow-2xl transition-shadow"
+              className="group rounded-2xl bg-card ring-1 ring-border p-4 flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-lg hover:shadow-primary/5 transition-shadow"
             >
-              <div className="card-body flex flex-col sm:flex-row gap-6 items-center text-center sm:text-left">
-                <div className="relative w-full sm:w-32 h-48 sm:h-20 shrink-0 rounded-lg overflow-hidden">
-                  <Image
-                    src={course.thumbnail_url}
-                    alt={course.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex-1 w-full sm:w-auto">
-                  <h3 className="card-title text-lg justify-center sm:justify-start">
-                    {course.name}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {course._count.modules} modules • {course.difficulty}
-                  </p>
-                  <p className="text-xs text-foreground/50 mt-1">
+              <div className="relative w-full sm:w-32 h-40 sm:h-20 shrink-0 rounded-xl overflow-hidden bg-muted">
+                <Image
+                  src={course.thumbnail_url || "/placeholder-course.svg"}
+                  alt={course.name}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="128px"
+                />
+              </div>
+
+              <div className="flex-1 min-w-0 text-center sm:text-left">
+                <h3 className="font-semibold leading-snug truncate group-hover:text-primary transition-colors">
+                  {course.name}
+                </h3>
+                <div className="mt-1.5 flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                  <span className={`badge ${difficultyBadge[course.difficulty] ?? "badge-outline"} border-0`}>
+                    {course.difficulty}
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <Layers className="h-3.5 w-3.5" />
+                    {course._count.modules}{" "}
+                    {course._count.modules === 1 ? "module" : "modules"}
+                  </span>
+                  <span>
                     Created {new Date(course.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-                <div className="w-full sm:w-auto">
-                  <Link
-                    href={`/course/edit/${course.id}`}
-                    className="btn btn-primary w-full sm:w-auto"
-                  >
-                    Edit
-                  </Link>
+                  </span>
                 </div>
               </div>
-            </div>
+
+              <div className="flex gap-2 shrink-0">
+                <Link
+                  href={`/course/${course.id}`}
+                  className="btn btn-outline btn-sm gap-1.5 flex-1 sm:flex-none"
+                >
+                  View
+                </Link>
+                <Link
+                  href={`/course/edit/${course.id}`}
+                  className="btn btn-primary btn-sm gap-1.5 flex-1 sm:flex-none"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  Edit
+                </Link>
+              </div>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
-    </div>
+    </section>
   );
 }
